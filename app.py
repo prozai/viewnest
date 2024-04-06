@@ -1,10 +1,11 @@
 from flask import Flask, request, redirect, render_template, session
-from sqlalchemy import create_engine, Column, String, Integer
+from sqlalchemy import create_engine, Column, String, Integer, Date, Float
 from sqlalchemy.orm import declarative_base, sessionmaker
 from werkzeug.security import generate_password_hash, check_password_hash
+from datetime import date
 
 app = Flask(__name__)
-app.secret_key = "password"  # Change this to a random secret key
+app.secret_key = "your_secret_key"  # Change this to a random secret key
 
 Base = declarative_base()
 
@@ -19,6 +20,31 @@ class SystemAdmin(Base):
         self.username = username
         self.password = generate_password_hash(password)  # Hash the password
 
+class Property(Base):
+    __tablename__ = "Property"
+
+    ID = Column(Integer, primary_key=True)
+    propertyname = Column(String)
+    propertytype = Column(String)
+    district = Column(String)
+    bedroom_no = Column(Integer)
+    price = Column(Float)
+    psf = Column(Integer)
+    listing_date = Column(Date)
+    date_sold = Column(Date)
+    image_url = Column(String) 
+
+    def __init__(self, propertyname, propertytype, district, bedroom_no, price, psf, listing_date, date_sold, image_url):
+        self.propertyname = propertyname
+        self.propertytype = propertytype
+        self.district = district
+        self.bedroom_no = bedroom_no
+        self.price = price
+        self.psf = psf
+        self.listing_date = listing_date
+        self.date_sold = date_sold
+        self.image_url = image_url
+
 engine = create_engine("sqlite:///viewnest.db", echo=True)
 Base.metadata.create_all(bind=engine)
 
@@ -30,14 +56,24 @@ admin = SystemAdmin("admin", "password")
 db_session.add(admin)
 db_session.commit()
 
+# Sample property creation
+listing_date1 = date(2024, 4, 4)
+property1 = Property("12 Woodlands Street 12", "Landed", "Woodlands", 5, 1200000.00, 2938, listing_date1, None, "https://images.unsplash.com/photo-1559329145-afaf18e3f349?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&dl=k8-9brIbLCo950-unsplash.jpg")
+listing_date2 = date(2024, 2, 13)
+date_sold2 = date(2024, 4, 3)
+property2 = Property("694A Tampines Street 41", "HDB", "Tampines", 3, 690000.00, 1382, listing_date2, date_sold2, "https://stacked-editorial.sgp1.digitaloceanspaces.com/editorial/wp-content/uploads/2022/06/15120942/Tampines-GreenRidges-127-facade.jpg")
+db_session.add(property1)
+db_session.add(property2)
+db_session.commit()  
+
 @app.route('/')
 def index():
-    return render_template('login.html')
+    return render_template('index.html')
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        username = request.form['username']
+        username = request.form['loginid']
         password = request.form['password']
         user = db_session.query(SystemAdmin).filter_by(username=username).first()
         if user and check_password_hash(user.password, password):
@@ -59,6 +95,11 @@ def dashboard():
 def logout():
     session.pop('user_id', None)
     return redirect('/')
+
+@app.route('/view_properties')
+def view_properties():
+    properties = db_session.query(Property).all()
+    return render_template('view_properties.html', properties=properties)
 
 if __name__ == '__main__':
     app.run(debug=True)
