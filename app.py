@@ -1,5 +1,5 @@
 from flask import Flask, request, redirect, render_template, session
-from sqlalchemy import create_engine, Column, String, Integer, Date, Float
+from sqlalchemy import create_engine, Column, String, Integer, Date, Float, Boolean
 from sqlalchemy.orm import declarative_base, sessionmaker
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import date
@@ -33,8 +33,9 @@ class Property(Base):
     listing_date = Column(Date)
     date_sold = Column(Date)
     image_url = Column(String) 
+    sold = Column(Boolean)
 
-    def __init__(self, propertyname, propertytype, district, bedroom_no, price, psf, listing_date, date_sold, image_url):
+    def __init__(self, propertyname, propertytype, district, bedroom_no, price, psf, listing_date, date_sold, image_url, sold):
         self.propertyname = propertyname
         self.propertytype = propertytype
         self.district = district
@@ -44,6 +45,7 @@ class Property(Base):
         self.listing_date = listing_date
         self.date_sold = date_sold
         self.image_url = image_url
+        self.sold = sold
 
 engine = create_engine("sqlite:///viewnest.db", echo=True)
 Base.metadata.create_all(bind=engine)
@@ -58,13 +60,17 @@ db_session.commit()
 
 # Sample property creation
 listing_date1 = date(2024, 4, 4)
-property1 = Property("12 Woodlands Street 12", "Landed", "Woodlands", 5, 1200000.00, 2938, listing_date1, None, "https://images.unsplash.com/photo-1559329145-afaf18e3f349?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&dl=k8-9brIbLCo950-unsplash.jpg")
+property1 = Property("12 Woodlands Street 12", "HDB", "Woodlands", 3, 800000.00, 2938, listing_date1, None, "./static/uploads/properties/property1.jpg", False)
 listing_date2 = date(2024, 2, 13)
 date_sold2 = date(2024, 4, 3)
-property2 = Property("694A Tampines Street 41", "HDB", "Tampines", 3, 690000.00, 1382, listing_date2, date_sold2, "https://stacked-editorial.sgp1.digitaloceanspaces.com/editorial/wp-content/uploads/2022/06/15120942/Tampines-GreenRidges-127-facade.jpg")
-db_session.add(property1)
-db_session.add(property2)
-db_session.commit()  
+property2 = Property("29 Tampines Street 41", "Condo", "Tampines", 3, 1200000.00, 1382, listing_date2, date_sold2, "./static/uploads/properties/property2.jpg", True)
+# Check if properties already exist before adding them
+existing_properties = db_session.query(Property).filter(Property.propertyname.in_(["12 Woodlands Street 12", "694A Tampines Street 41"])).all()
+
+if not existing_properties:
+    db_session.add(property1)
+    db_session.add(property2)
+    db_session.commit()
 
 @app.route('/')
 def index():
