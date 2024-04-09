@@ -122,7 +122,7 @@ def create_property():
         db_session.add(new_property)
         db_session.commit()
 
-        return redirect('/') # need to change to view_properties page
+        return redirect('/') # need to change to home page
     
     return render_template('create_property.html', form=CreateProperty)
 
