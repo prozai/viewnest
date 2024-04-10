@@ -14,15 +14,21 @@
                     <h1>Real Estate Listing</h1>
                 </div>
                 <div class="flex-container">
-                    <input class="textarea" type="text" placeholder="Username" name="loginid" value="admin"required>
+                    <input class="textarea" type="text" placeholder="Username" name="username" value="admin"required>
                 </div>
                 <div class="flex-container password-container">
-                    <input class="textarea" id="password" type="password" placeholder="Password" name="password" value="password" required >
-                    <button type="button" onclick="togglePasswordVisibility()" class="peek-btn" id="peek-btn">
-                        <i class="fas fa-eye peek-btn"></i> <!-- This is the show icon -->
-                    </button>
+                    <div class="flex-container-row">
+                        <input class="textpassword" id="password" type="password" placeholder="Password" name="password" value="password" required >
+
+                    </div>
+                    <div class="flex-container">
+                        <button type="button" onclick="togglePasswordVisibility()" class="peek-btn" id="peek-btn">
+                            <i class="fas fa-eye peek-btn"></i> <!-- This is the show icon -->
+                        </button>
+                    </div>
                 </div>
-                <div class="flex-container">
+                
+                <div class="flex-container flex-container-row">
                     <button class="button" id="loginBtn" type="submit"><span>Log In</span></button>
                 </div>
             </form>

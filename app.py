@@ -55,10 +55,11 @@ def dashboard():
             return f'Welcome, {user.username}!'
     return redirect('/login')
 
+# Add a logout route
 @app.route('/logout')
 def logout():
     session.pop('user_id', None)
-    return redirect('/')
+    return redirect('/login')
 
 if __name__ == '__main__':
     app.run(debug=True)
