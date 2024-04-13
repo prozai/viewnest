@@ -1,5 +1,5 @@
 from flask import Flask, request, redirect, render_template, session
-from sqlalchemy import create_engine, Column, String, Integer, Date, Float
+from sqlalchemy import create_engine, Column, String, Integer, Date, Float, Boolean
 from sqlalchemy.orm import declarative_base, sessionmaker
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
@@ -27,6 +27,7 @@ class Property(Base):
     __tablename__ = "Property"
 
     ID = Column(Integer, primary_key=True)
+    user_id = Column(Integer)
     propertyname = Column(String)
     propertytype = Column(String)
     district = Column(String)
@@ -36,8 +37,10 @@ class Property(Base):
     listing_date = Column(Date)
     date_sold = Column(Date)
     image_url = Column(String) 
+    sold = Column(Boolean)
 
-    def __init__(self, propertyname, propertytype, district, bedroom_no, price, psf, listing_date, date_sold, image_url):
+    def __init__(self, user_id, propertyname, propertytype, district, bedroom_no, price, psf, listing_date, date_sold, image_url, sold):
+        self.user_id = user_id
         self.propertyname = propertyname
         self.propertytype = propertytype
         self.district = district
@@ -47,6 +50,8 @@ class Property(Base):
         self.listing_date = listing_date
         self.date_sold = date_sold
         self.image_url = image_url
+        self.sold = sold
+
 
 engine = create_engine("sqlite:///viewnest.db", echo=True)
 Base.metadata.create_all(bind=engine)
@@ -90,6 +95,9 @@ def logout():
     return redirect('/')
 
 @app.route('/create_property', methods=['GET', 'POST'])
+# class CreatePropertyController:
+#     @staticmethod
+#     def create():
 def create_property():
     CreateProperty = createProperty(request.form)
     if request.method == 'POST':
@@ -109,7 +117,8 @@ def create_property():
         else:
             image_path = None
         
-        new_property = Property(propertyname=propertyname,
+        new_property = Property(user_id=session['user_id'],
+                                propertyname=propertyname,
                                 propertytype=propertytype,
                                 district=district,
                                 bedroom_no=bedroom_no,
@@ -117,14 +126,21 @@ def create_property():
                                 psf=psf,
                                 listing_date=datetime.now().date(),
                                 date_sold=None,
-                                image_url=image_path)
+                                image_url=image_path,
+                                sold=False)
 
         db_session.add(new_property)
         db_session.commit()
 
-        return redirect('/') # need to change to home page
+        return redirect('/REA_properties')
     
     return render_template('create_property.html', form=CreateProperty)
+    # return CreatePropertyController.create()
+
+@app.route('/REA_properties')
+def REA_properties():
+    properties = db_session.query(Property).filter_by(user_id=session['user_id']).all()
+    return render_template('REA_properties.html', properties=properties)
 
 if __name__ == '__main__':
     app.run(debug=True)
