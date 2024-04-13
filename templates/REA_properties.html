@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Property Listings</title>
+    <style>
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .property-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        .property-item {
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: #f9f9f9;
+        }
+        .property-image {
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>My Property Listings</h1>
+        <!-- <div class="search-bar">
+            <input type="text" id="search" placeholder="Search Property...">
+            <button onclick="searchProperties()">Search</button>
+        </div> -->
+        <ul class="property-list">
+            {% for property in properties %}
+                <li class="property-item">
+                    <img src="{{ property.image_url }}" alt="{{ property.propertyname }} image" class="property-image"> <!-- Display image -->
+                    <strong>{{ property.propertyname }}</strong><br>
+                    District: {{ property.district }}<br>
+                    Bedrooms: {{ property.bedroom_no }}<br>
+                    Price: ${{ '%.2f' | format(property.price) }}<br>
+                    PSF: {{ property.psf }}<br>
+                    Listing Date: {{ property.listing_date }}<br>
+                    {% if property.sold %}
+                    Date Sold: {{ property.date_sold }}<br>
+                    <strong>SOLD</strong>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+</body>
+</html>
