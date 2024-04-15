@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Property Listings</title>
+    <style>
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .button-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .button-container button {
+            margin: 0 5px;
+        }
+        .search-bar {
+            text-align: center;
+        }
+        .search-bar input {
+            margin-right: 5px;
+        }
+        .property-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        .property-item {
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: #f9f9f9;
+        }
+        .property-image {
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>ViewNest Property Listings</h1>
+        <div class="button-container">
+            <button onclick="showAvailable()">Available</button>
+            <button onclick="showSold()">Sold</button>
+            <button onclick="showAll()">Show All</button>
+        </div>
+        <div class="search-bar">
+            <input type="text" id="search" placeholder="Search Property...">
+            <button onclick="searchProperties()">Search</button>
+            <button onclick="clearSearch()">Clear Search</button>
+        </div>
+        <p id="filter-status"><strong>Showing All Properties</strong></p>
+        <ul class="property-list">
+            {% for property in properties %}
+                <li class="property-item {% if property.sold %}sold{% endif %}">
+                    <img src="{{ property.image_url }}" alt="{{ property.propertyname }} image" class="property-image"> <!-- Display image -->
+                    <div>
+                        <br><strong>{{ property.propertyname }}</strong><br>
+                        Property Type: {{ property.propertytype }}<br>
+                        District: {{ property.district }}<br>
+                        Bedrooms: {{ property.bedroom_no }}<br>
+                        Price: ${{ "{:,.2f}".format(property.price) }}<br>
+                        PSF: {{ property.psf }}<br>
+                        Listing Date: {{ property.listing_date }}<br>
+                        {% if property.date_sold %}
+                        Sold Date: {{ property.date_sold }}<br> <!-- Display sold date if available -->
+                        {% else %}
+                        Not Sold Yet<br> <!-- Display if property hasn't been sold -->
+                        {% endif %}
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <script>
+        function showAvailable() {
+            document.getElementById('filter-status').innerHTML = '<strong>Showing All Available Properties</strong>';
+            var items = document.getElementsByClassName('property-item');
+            for (var i = 0; i < items.length; i++) {
+                if (items[i].classList.contains('sold')) {
+                    items[i].style.display = 'none';
+                } else {
+                    items[i].style.display = 'block';
+                }
+            }
+        }
+
+        function showSold() {
+            document.getElementById('filter-status').innerHTML = '<strong>Showing All Sold Properties</strong>';
+            var items = document.getElementsByClassName('property-item');
+            for (var i = 0; i < items.length; i++) {
+                if (items[i].classList.contains('sold')) {
+                    items[i].style.display = 'block';
+                } else {
+                    items[i].style.display = 'none';
+                }
+            }
+        }
+
+        function showAll() {
+            document.getElementById('filter-status').innerHTML = '<strong>Showing All Properties</strong>';
+            var items = document.getElementsByClassName('property-item');
+            for (var i = 0; i < items.length; i++) {
+                items[i].style.display = 'block';
+            }
+        }
+
+        function clearSearch() {
+            var input = document.getElementById('search');
+            input.value = ''; 
+            searchProperties(); 
+            document.getElementById('filter-status').innerHTML = '<strong>Search Result Cleared.</strong>'
+        }
+
+
+        function searchProperties() {
+    var input, filter, ul, li, a, i, txtValue;
+    input = document.getElementById('search');
+    filter = input.value.toUpperCase();
+    ul = document.getElementsByClassName('property-list')[0];
+    li = ul.getElementsByTagName('li');
+    for (i = 0; i < li.length; i++) {
+        a = li[i].getElementsByTagName('strong')[0];
+        txtValue = a.textContent || a.innerText;
+        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+            li[i].style.display = 'block'; // Make the property visible
+        } else {
+            li[i].style.display = 'none'; // Hide the property
+        }
+    }
+            document.getElementById('filter-status').innerHTML = '<strong>Showing Search Results For "' + input.value + '".</strong>'
+        }
+    </script>
+</body>
+</html>
