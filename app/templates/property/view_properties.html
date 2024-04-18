@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Property Listings</title>
+    <title>ViewNest Property Listings</title>
     <style>
         .container {
             max-width: 800px;
@@ -65,21 +65,24 @@
         <ul class="property-list">
             {% for property in properties %}
                 <li class="property-item {% if property.sold %}sold{% endif %}">
-                    <img src="{{ property.image_url }}" alt="{{ property.propertyname }} image" class="property-image"> <!-- Display image -->
+                    <img src="{{ property.image_url }}" alt="{{ property.propertyname }} image" class="property-image"> 
                     <div>
                         <br><strong>{{ property.propertyname }}</strong><br>
                         Property Type: {{ property.propertytype }}<br>
                         District: {{ property.district }}<br>
                         Bedrooms: {{ property.bedroom_no }}<br>
-                        Price: ${{ "{:,.2f}".format(property.price) }}<br>
                         PSF: {{ property.psf }}<br>
                         Listing Date: {{ property.listing_date }}<br>
                         {% if property.date_sold %}
-                        Sold Date: {{ property.date_sold }}<br> <!-- Display sold date if available -->
+                        Sold Date: {{ property.date_sold }}<br> 
                         {% else %}
-                        Not Sold Yet<br> <!-- Display if property hasn't been sold -->
+                        Not Sold Yet<br> 
                         {% endif %}
+                        <br><strong>S${{ "{:,.2f}".format(property.price) }}</strong><br>
+                        <br>
                     </div>
+                    <button onclick="calculateProperty('{{ property.propertyname }}', '{{ property.price }}')">Calculate Mortgage</button>
+
                 </li>
             {% endfor %}
         </ul>
@@ -135,13 +138,18 @@
         a = li[i].getElementsByTagName('strong')[0];
         txtValue = a.textContent || a.innerText;
         if (txtValue.toUpperCase().indexOf(filter) > -1) {
-            li[i].style.display = 'block'; // Make the property visible
+            li[i].style.display = 'block'; 
         } else {
-            li[i].style.display = 'none'; // Hide the property
+            li[i].style.display = 'none'; 
         }
     }
             document.getElementById('filter-status').innerHTML = '<strong>Showing Search Results For "' + input.value + '".</strong>'
         }
+
+        function calculateProperty(propertyName, propertyPrice) {
+            window.location.href = '/view_calculation?propertyName=' + encodeURIComponent(propertyName) + '&propertyPrice=' + encodeURIComponent(propertyPrice);
+        }
+
     </script>
 </body>
 </html>

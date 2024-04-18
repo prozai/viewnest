@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ViewNest Mortgage Calculation</title>
+    <style>
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .property-image {
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 20px;
+        }
+        .input-container {
+            margin-bottom: 10px;
+        }
+        input:read-only {
+            cursor: not-allowed;
+        }
+        .input-container label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .input-container input {
+            width: 100%;
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+        .button-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .button-container button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            background-color: #007bff;
+            color: #fff;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>ViewNest Mortgage Calculation</h1>
+        <div class="input-container">
+            <label for="propertyName">Property Name:</label>
+            <input type="text" id="propertyName" value="" readonly>
+        </div>
+        <div class="input-container">
+            <label for="propertyPrice">Property Price:</label>
+            <input type="text" id="propertyPrice" value="" readonly>
+        </div>
+        <div class="input-container">
+            <label for="loanAmount">Loan Amount (S$):</label>
+            <input type="text" id="loanAmount" placeholder="Enter Loan Amount" required>
+        </div>
+        <div class="input-container">
+            <label for="interestRate">Interest Rate (%):</label>
+            <input type="text" id="interestRate" placeholder="e.g. 2" required>
+        </div>
+        <div class="input-container">
+            <label for="loanTenure">Loan Tenure (Years):</label>
+            <input type="text" id="loanTenure" placeholder="e.g. 30" required>
+        </div>
+        <div class="button-container">
+            <button onclick="calculateLoan()">Calculate</button>
+        </div>
+        <div class="button-container">
+            <button onclick="back()">Back</button>
+        </div>
+    </div>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const propertyName = urlParams.get('propertyName');
+        const propertyPrice = urlParams.get('propertyPrice');
+
+        document.getElementById('propertyName').value = propertyName;
+        document.getElementById('propertyPrice').value = propertyPrice;
+
+        function calculateLoan() {
+            // Retrieve input values
+            const loanAmount = parseFloat(document.getElementById('loanAmount').value.replace(/,/g, '')); // Remove commas from input
+            const interestRate = parseFloat(document.getElementById('interestRate').value);
+            const loanTenure = parseInt(document.getElementById('loanTenure').value);
+
+            // Calculate monthly payment
+            const monthlyInterestRate = interestRate / 100 / 12;
+            const numberOfPayments = loanTenure * 12;
+            const denominator = Math.pow(1 + monthlyInterestRate, numberOfPayments) - 1;
+            const monthlyPayment = (loanAmount * monthlyInterestRate * Math.pow(1 + monthlyInterestRate, numberOfPayments)) / denominator;
+
+            // Display the result
+            alert('Monthly Payment: $' + monthlyPayment.toFixed(2));
+        }
+
+        function back() {
+            window.location.href = '/view_properties'; // Redirect to view_properties.html
+        }
+    </script>
+</body>
+</html>
