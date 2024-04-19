@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+</head>
+<body>
+    <h2>Login</h2>
+    <form method="POST" action="{{ loginIndex }}">
+        {{ form.hidden_tag() }}
+        <div>
+            <label for="username">Username:</label>
+            {{ form.username(class="form-control", id="username") }}
+            {% for error in form.username.errors %}
+                <p class="error">{{ error }}</p>
+            {% endfor %}
+        </div>
+        <div>
+            <label for="password">Password:</label>
+            {{ form.password(class="form-control", id="password") }}
+            {% for error in form.password.errors %}
+                <p class="error">{{ error }}</p>
+            {% endfor %}
+        </div>
+        <button type="submit">Login</button>
+    </form>
+</body>
+</html>

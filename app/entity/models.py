@@ -2,6 +2,7 @@ from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 from app import Base, session
+from werkzeug.security import check_password_hash
 
 #Base = declarative_base()
 
@@ -152,6 +153,10 @@ class User(Base):
     def get_all_accounts():
         users=session.query(User).all()
         return users
+    
+    #Login
+    def check_password(self, password):
+        return check_password_hash(self.password_hash, password)
     
     # Function to read one account record in DB
 

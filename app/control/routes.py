@@ -1,13 +1,43 @@
-from flask import render_template, flash, redirect, url_for
+from flask import render_template, flash, redirect, url_for, request
 from flask_babel import _
 from werkzeug.security import generate_password_hash
 from app.control.adminController import RegisterProfile, RegisterAccount, showAllProfiles, showAllAccounts
+from app.control.loginController import LoginForm
 from app.entity.models import User, UserProfile
 from app.control import bp
+from flask_login import login_user, current_user, login_required, logout_user
+from app import Base, session
 
 @bp.route('/')
 def index():
     return render_template('index.html', title="")
+@bp.route('/loginIndex', methods=['GET', 'POST'])
+def loginIndex():
+    form = LoginForm()
+    if form.validate_on_submit():
+        username = form.username.data
+        password = form.password.data
+
+        user = User.query.filter_by(username=username).first()
+        if user:
+            # Debugging: Print the retrieved user's password hash
+            print("Password Hash from Database:", user.password_hash)
+            
+            if user.check_password(password):
+                login_user(user)
+                return redirect('systemAdmin/index.html')
+            else:
+                print("Incorrect password")
+        else:
+            print("User not found")
+
+        return redirect('/dashboard')
+
+    return render_template('login/loginIndex.html', form=form)
+@bp.route('/dashboard')
+def dashboard():
+
+            return 'Login failed'
 
 @bp.route('/adminIndex')
 def adminIndex():
