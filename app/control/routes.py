@@ -18,14 +18,16 @@ def loginIndex():
         username = form.username.data
         password = form.password.data
 
-        user = User.query.filter_by(username=username).first()
+        user = session.query(User).filter_by(username=username).first()
         if user:
             # Debugging: Print the retrieved user's password hash
             print("Password Hash from Database:", user.password_hash)
             
             if user.check_password(password):
-                login_user(user)
-                return redirect('systemAdmin/index.html')
+            #    login_user(user)
+            #    session['username'] = user.username  # Store user ID in session
+
+                return redirect('/adminIndex')
             else:
                 print("Incorrect password")
         else:

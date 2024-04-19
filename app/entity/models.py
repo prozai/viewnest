@@ -68,6 +68,7 @@ class UserProfile(Base):
 # User Class
 class User(Base):
     __tablename__ = "users_info"
+#   is_active = session(session.Boolean, default=True)  # Add the is_active attribute
 
     user_id = Column(Integer, primary_key=True, autoincrement=True, unique=True)
     profile_id = Column(Integer, ForeignKey('user_profile.profile_id'))
