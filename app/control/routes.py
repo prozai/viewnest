@@ -57,16 +57,3 @@ def addAccount():
         except Exception as e:
             print(e)
     return render_template('systemAdmin/register-account.html', title='Register Account', form=form)
-
-@bp.route('/view_properties')
-def view_properties():
-    add_sample_properties()
-    properties = show_all_properties()
-    return render_template('property/view_properties.html', properties=properties)
-
-@bp.route('/view_calculation')
-def view_calculation():
-    # Retrieve property name and price from URL parameters
-    property_name = request.args.get('propertyName')
-    property_price = request.args.get('propertyPrice')
-    return render_template('property/view_calculation.html', property_name=property_name, property_price=property_price)

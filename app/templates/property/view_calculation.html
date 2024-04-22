@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ViewNest Mortgage Calculation</title>
+    <title>ViewNest Mortgage Calculator</title>
     <style>
         .container {
             max-width: 800px;
@@ -55,15 +55,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>ViewNest Mortgage Calculation</h1>
-        <div class="input-container">
-            <label for="propertyName">Property Name:</label>
-            <input type="text" id="propertyName" value="" readonly>
-        </div>
-        <div class="input-container">
-            <label for="propertyPrice">Property Price:</label>
-            <input type="text" id="propertyPrice" value="" readonly>
-        </div>
+        <h1>ViewNest Mortgage Calculator</h1>
         <div class="input-container">
             <label for="loanAmount">Loan Amount (S$):</label>
             <input type="text" id="loanAmount" placeholder="Enter Loan Amount" required>
@@ -84,24 +76,30 @@
         </div>
     </div>
     <script>
-        const urlParams = new URLSearchParams(window.location.search);
-        const propertyName = urlParams.get('propertyName');
-        const propertyPrice = urlParams.get('propertyPrice');
-
-        document.getElementById('propertyName').value = propertyName;
-        document.getElementById('propertyPrice').value = propertyPrice;
-
         function calculateLoan() {
             // Retrieve input values
-            const loanAmount = parseFloat(document.getElementById('loanAmount').value.replace(/,/g, '')); // Remove commas from input
-            const interestRate = parseFloat(document.getElementById('interestRate').value);
-            const loanTenure = parseInt(document.getElementById('loanTenure').value);
+            var loanAmount = parseFloat(document.getElementById('loanAmount').value.replace(/,/g, '')); // Remove commas from input
+            var interestRate = parseFloat(document.getElementById('interestRate').value);
+            var loanTenure = parseInt(document.getElementById('loanTenure').value);
+
+            if (loanAmount.toString().length < 5 || loanAmount.toString().length > 10) {
+            alert("Loan Amount must be between $10,000 and $99,999,999");
+            return;
+            }
+            if (parseFloat(interestRate) >= 100) {
+                alert("Interest Rate must be less than 100%.");
+                return;
+            }
+            if (parseInt(loanTenure) >= 100) {
+                alert("Maximum Loan Tenure must be less than 100 years.");
+                return;
+            }
 
             // Calculate monthly payment
-            const monthlyInterestRate = interestRate / 100 / 12;
-            const numberOfPayments = loanTenure * 12;
-            const denominator = Math.pow(1 + monthlyInterestRate, numberOfPayments) - 1;
-            const monthlyPayment = (loanAmount * monthlyInterestRate * Math.pow(1 + monthlyInterestRate, numberOfPayments)) / denominator;
+            var monthlyInterestRate = interestRate / 100 / 12;
+            var numberOfPayments = loanTenure * 12;
+            var denominator = Math.pow(1 + monthlyInterestRate, numberOfPayments) - 1;
+            var monthlyPayment = (loanAmount * monthlyInterestRate * Math.pow(1 + monthlyInterestRate, numberOfPayments)) / denominator;
 
             // Display the result
             alert('Monthly Payment: $' + monthlyPayment.toFixed(2));

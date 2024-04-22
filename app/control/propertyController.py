@@ -1,6 +1,8 @@
 from datetime import date
 from app import session 
 from app.entity.models import Property 
+from app.control import bp
+from flask import render_template, request
 
 # Function to add sample properties.
 def add_sample_properties():
@@ -37,3 +39,14 @@ def show_all_properties():
         return None
     finally:
         session.close()
+
+@bp.route('/view_properties')
+def view_properties():
+    add_sample_properties()
+    properties = show_all_properties()
+    return render_template('property/view_properties.html', properties=properties)
+
+@bp.route('/view_calculation')
+def view_calculation():
+    return render_template('property/view_calculation.html')
+
