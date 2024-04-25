@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column, Integer, String, ForeignKey, Float, Date, Boolean
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 from app import Base, session
@@ -161,3 +161,33 @@ class User(Base):
 
     def __repr__(self):
         return f'User("{self.user_id}","{self.profile_id}""{self.fname}","{self.lname}","{self.email}","{self.username}","{self.phonenum}")'
+
+# Property Class
+class Property(Base):
+    __tablename__ = "Property"
+
+    ID = Column(Integer, primary_key=True)
+    user_id = Column(Integer)
+    propertyname = Column(String)
+    propertytype = Column(String)
+    district = Column(String)
+    bedroom_no = Column(Integer)
+    price = Column(Float)
+    psf = Column(Integer)
+    listing_date = Column(Date)
+    date_sold = Column(Date)
+    image_url = Column(String) 
+    sold = Column(Boolean)
+
+    def __init__(self, user_id, propertyname, propertytype, district, bedroom_no, price, psf, listing_date, date_sold, image_url, sold):
+        self.user_id = user_id
+        self.propertyname = propertyname
+        self.propertytype = propertytype
+        self.district = district
+        self.bedroom_no = bedroom_no
+        self.price = price
+        self.psf = psf
+        self.listing_date = listing_date
+        self.date_sold = date_sold
+        self.image_url = image_url
+        self.sold = sold
