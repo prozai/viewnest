@@ -1,9 +1,15 @@
-from flask import render_template, flash, redirect, url_for
+from flask import render_template, flash, redirect, url_for, request, session
 from flask_babel import _
 from werkzeug.security import generate_password_hash
+from app import session
 from app.control.adminController import RegisterProfile, RegisterAccount, showAllProfiles, showAllAccounts
+from app.control.propertyController import createPropertyForm
 from app.entity.models import User, UserProfile
+from app.entity.models import Property
 from app.control import bp
+from werkzeug.utils import secure_filename
+import os
+from datetime import datetime
 
 @bp.route('/')
 def index():
@@ -55,3 +61,51 @@ def addAccount():
         except Exception as e:
             print(e)
     return render_template('systemAdmin/register-account.html', title='Register Account', form=form)
+
+# Create Property Listing
+@bp.route('/create_property', methods=['GET', 'POST'])
+def create_property():
+    # session['user_id'] = user.id
+    CreateProperty = createPropertyForm(request.form)
+    if request.method == 'POST':
+        propertyname = CreateProperty.propertyname.data
+        propertytype = CreateProperty.propertytype.data
+        district = CreateProperty.district.data
+        bedroom_no = CreateProperty.bedroom_no.data
+        price = CreateProperty.price.data
+        psf = CreateProperty.psf.data
+        image_file = request.files.get('image_url')
+        
+        if image_file:
+            filename = secure_filename(image_file.filename)
+            upload_folder = './app/static/uploads/properties/'
+            path = './static/uploads/properties/'
+            image_file.save(os.path.join(upload_folder, filename))
+            image_path = os.path.join(path, filename)
+        else:
+            image_path = None
+        
+        new_property = Property(user_id=1, # session['user_id']
+                                propertyname=propertyname,
+                                propertytype=propertytype,
+                                district=district,
+                                bedroom_no=bedroom_no,
+                                price=price,
+                                psf=psf,
+                                listing_date=datetime.now().date(),
+                                date_sold=None,
+                                image_url=image_path,
+                                sold=False)
+
+        session.add(new_property)
+        session.commit()
+
+        return redirect('REA_properties')
+    
+    return render_template('REAgent/create_property.html', form=CreateProperty)
+
+# REA View Property Listings
+@bp.route('/REA_properties')
+def REA_properties():
+    properties = session.query(Property).filter_by(user_id=1).all() # session['user_id']
+    return render_template('REAgent/REA_properties.html', properties=properties)
