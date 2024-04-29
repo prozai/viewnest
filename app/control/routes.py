@@ -1,13 +1,11 @@
-from flask import render_template, flash, redirect, url_for, request, session
+from flask import jsonify, render_template, flash, redirect, url_for, request, session
 from flask_babel import _
 from werkzeug.security import generate_password_hash
 from app import session
 from app.control.adminController import RegisterProfile, RegisterAccount, showAllProfiles, showAllAccounts
-from app.control.propertyController import createPropertyForm
 from app.entity.models import User, UserProfile
 from app.entity.models import Property
 from app.control import bp
-from werkzeug.utils import secure_filename
 import os
 from datetime import datetime
 
@@ -65,44 +63,46 @@ def addAccount():
 # Create Property Listing
 @bp.route('/create_property', methods=['GET', 'POST'])
 def create_property():
-    # session['user_id'] = user.id
-    CreateProperty = createPropertyForm(request.form)
     if request.method == 'POST':
-        propertyname = CreateProperty.propertyname.data
-        propertytype = CreateProperty.propertytype.data
-        district = CreateProperty.district.data
-        bedroom_no = CreateProperty.bedroom_no.data
-        price = CreateProperty.price.data
-        psf = CreateProperty.psf.data
-        image_file = request.files.get('image_url')
-        
+        propertyname = request.form['propertyname']
+        propertytype = request.form['propertytype']
+        district = request.form['district']
+        bedroom_no = request.form['bedroom_no']
+        price = request.form['price']
+        psf = request.form['psf']
+        image_file = request.files['image_url']
+
         if image_file:
-            filename = secure_filename(image_file.filename)
+            new_property = Property(user_id=1,  # session['user_id']
+                                    propertyname=propertyname,
+                                    propertytype=propertytype,
+                                    district=district,
+                                    bedroom_no=bedroom_no,
+                                    price=price,
+                                    psf=psf,
+                                    listing_date=datetime.now().date(),
+                                    date_sold=None,
+                                    image_url=None,
+                                    sold=False)
+            session.add(new_property)
+            session.commit()
+            
+            propertyid = new_property.ID
+            filename = f"{propertyid}.{image_file.filename.split('.')[-1]}"
             upload_folder = './app/static/uploads/properties/'
             path = './static/uploads/properties/'
             image_file.save(os.path.join(upload_folder, filename))
             image_path = os.path.join(path, filename)
+            
+            new_property.image_url = image_path
+            session.commit()
+
         else:
             image_path = None
-        
-        new_property = Property(user_id=1, # session['user_id']
-                                propertyname=propertyname,
-                                propertytype=propertytype,
-                                district=district,
-                                bedroom_no=bedroom_no,
-                                price=price,
-                                psf=psf,
-                                listing_date=datetime.now().date(),
-                                date_sold=None,
-                                image_url=image_path,
-                                sold=False)
 
-        session.add(new_property)
-        session.commit()
+        return jsonify({'success': True})
 
-        return redirect('REA_properties')
-    
-    return render_template('REAgent/create_property.html', form=CreateProperty)
+    return render_template('REAgent/create_property.html')
 
 # REA View Property Listings
 @bp.route('/REA_properties')
