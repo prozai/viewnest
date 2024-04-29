@@ -53,41 +53,68 @@
   </style>
 </head>
 <body>
-  {% macro render_field(field) %}
-  {{ field.label }}
-  {{ field(**kwargs)|safe }}
-  {% if field.errors %}
-    {% for error in field.errors %}
-      <div class="text-danger">{{ error }}</div>
-    {% endfor %}
-  {% endif %}
-{% endmacro %}
   <h1> Create Property Listing </h1>
   <div class="form-container">
-    <form method="POST" action="" enctype="multipart/form-data">
+    <form id="propertyForm" enctype="multipart/form-data">
       <div class="form-group">
-        {{ render_field(form.propertyname, class="form-control") }}
+        <label for="propertyname">Property Name:</label>
+        <input type="text" id="propertyname" class="form-control" required>
       </div>
       <div class="form-group">
-        {{ render_field(form.propertytype, class="form-control") }}
-      </div>  
-      <div class="form-group">
-        {{ render_field(form.district, class="form-control") }}
+        <label for="propertytype">Property Type:</label>
+        <input type="text" id="propertytype" class="form-control" required>
       </div>
       <div class="form-group">
-        {{ render_field(form.bedroom_no, class="form-control") }}
+        <label for="district">District:</label>
+        <input type="text" id="district" class="form-control" required>
       </div>
       <div class="form-group">
-        {{ render_field(form.price, class="form-control") }}
+        <label for="bedroom_no">No. of bedrooms:</label>
+        <input type="text" id="bedroom_no" class="form-control" required>
       </div>
       <div class="form-group">
-        {{ render_field(form.psf, class="form-control") }}
-      </div>  
-      <div class="form-group">
-        {{ render_field(form.image_url, class="form-control-image") }}
+        <label for="price">Price ($):</label>
+        <input type="text" id="price" class="form-control" required>
       </div>
-      <input type="submit" value="SUBMIT" class="btn btn-primary"/>
+      <div class="form-group">
+        <label for="psf">Square Feet (m):</label>
+        <input type="text" id="psf" class="form-control" required>
+      </div>
+      <div class="form-group">
+        <label for="image_url">Image:</label>
+        <input type="file" id="image_url" class="form-control-image" required>
+      </div>
+      <button type="button" onclick="submitForm()" class="btn btn-primary">Submit</button>
     </form>
   </div>
+
+  <script>
+    function submitForm() {
+      var formData = new FormData();
+      formData.append('propertyname', document.getElementById('propertyname').value);
+      formData.append('propertytype', document.getElementById('propertytype').value);
+      formData.append('district', document.getElementById('district').value);
+      formData.append('bedroom_no', document.getElementById('bedroom_no').value);
+      formData.append('price', document.getElementById('price').value);
+      formData.append('psf', document.getElementById('psf').value);
+
+      var imageFile = document.getElementById('image_url').files[0];
+      formData.append('image_url', imageFile);
+
+      fetch('/create_property', {
+        method: 'POST',
+        body: formData
+      })
+      .then(response => {
+        if (response.ok) {
+          window.location.href = '/REA_properties';
+        } else {
+          console.error('Form submission failed!');
+        }
+      });
+    }
+
+        
+  </script>
 </body>
 </html>
