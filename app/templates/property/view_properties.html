@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ViewNest Property Listings</title>
     <style>
+        body {
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        }
         .container {
             max-width: 800px;
             margin: 20px auto;
@@ -22,7 +25,29 @@
             margin-bottom: 20px;
         }
         .button-container button {
-            margin: 0 5px;
+            background-color: rgba(51, 51, 51, 0.05);
+            border-radius: 8px;
+            border-width: 0;
+            color: #333333;
+            cursor: pointer;
+            display: inline-block;
+            font-family: "Haas Grot Text R Web", "Helvetica Neue", Helvetica, Arial, sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            line-height: 20px;
+            list-style: none;
+            margin: 0;
+            padding: 10px 12px;
+            text-align: center;
+            transition: all 200ms;
+            vertical-align: baseline;
+            white-space: nowrap;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+        }
+        .button searchPropertyButton{
+            text-align: right;
         }
         .search-bar {
             text-align: center;
@@ -40,6 +65,7 @@
             padding: 10px;
             margin-bottom: 10px;
             background-color: #f9f9f9;
+            font-size: x-large
         }
         .property-image {
             max-width: 100%;
@@ -51,39 +77,33 @@
 <body>
     <div class="container">
         <h1>ViewNest Property Listings</h1>
+        <br>
+        <p id="filter-status"><strong>Showing All Properties</strong></p>
         <div class="button-container">
             <button onclick="showAvailable()">Available</button>
             <button onclick="showSold()">Sold</button>
             <button onclick="showAll()">Show All</button>
         </div>
-        <div class="search-bar">
-            <input type="text" id="search" placeholder="Search Property...">
-            <button onclick="searchProperties()">Search</button>
-            <button onclick="clearSearch()">Clear Search</button>
-        </div>
         <div class="button-container">
-            <br>
-            <button onclick="calculateProperty()">Mortgage Calculator</button>
+            <button onclick="viewSearchProperties()">Search Properties</button>
+            <button onclick="viewCalculateProperty()">Mortgage Calculator</button>
         </div>
-        <p id="filter-status"><strong>Showing All Properties</strong></p>
+
         <ul class="property-list">
             {% for property in properties %}
-                <li class="property-item {% if property.sold %}sold{% endif %}">
+                <li onclick="viewPropertyDetail('{{ property.ID }}')" style="cursor: pointer;" class="property-item {% if property.sold %}sold{% endif %}">
                     <img src="{{ property.image_url }}" alt="{{ property.propertyname }} image" class="property-image"> 
                     <div>
-                        <br><strong>{{ property.propertyname }}</strong><br>
-                        Property Type: {{ property.propertytype }}<br>
-                        District: {{ property.district }}<br>
-                        Bedrooms: {{ property.bedroom_no }}<br>
-                        PSF: {{ property.psf }}<br>
-                        Listing Date: {{ property.listing_date }}<br>
-                        {% if property.date_sold %}
-                        Sold Date: {{ property.date_sold }}<br> 
-                        {% else %}
-                        Not Sold Yet<br> 
-                        {% endif %}
-                        <br><strong>S${{ "{:,.2f}".format(property.price) }}</strong><br>
-                        <br>
+                        <strong>{{ property.propertyname }}</strong>
+                        <strong style="float: right;">S${{ "{:,.2f}".format(property.price) }}</strong><br>
+                        <span>{{ property.propertytype }}</span>
+                        {% if property.sold %}
+                        <span style="float: right;">Sold</span>
+                    {% else %}
+                        <span style="float: right;">Available</span>
+                    {% endif %}
+                        <div style="clear: both;"></div>
+
                     </div>
                 </li>
             {% endfor %}
@@ -130,28 +150,17 @@
         }
 
 
-        function searchProperties() {
-    var input, filter, ul, li, a, i, txtValue;
-    input = document.getElementById('search');
-    filter = input.value.toUpperCase();
-    ul = document.getElementsByClassName('property-list')[0];
-    li = ul.getElementsByTagName('li');
-    for (i = 0; i < li.length; i++) {
-        a = li[i].getElementsByTagName('strong')[0];
-        txtValue = a.textContent || a.innerText;
-        if (txtValue.toUpperCase().indexOf(filter) > -1) {
-            li[i].style.display = 'block'; 
-        } else {
-            li[i].style.display = 'none'; 
-        }
-    }
-            document.getElementById('filter-status').innerHTML = '<strong>Showing Search Results For "' + input.value + '".</strong>'
+        function viewSearchProperties() {
+            window.location.href = '/search_properties';
         }
 
-        function calculateProperty(propertyName, propertyPrice) {
+        function viewCalculateProperty(propertyName, propertyPrice) {
             window.location.href = '/view_calculation';
         }
 
+        function viewPropertyDetail(propertyId) {
+            window.location.href = '/view_property_detail/' + propertyId;
+        }
     </script>
 </body>
 </html>

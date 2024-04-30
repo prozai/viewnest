@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ViewNest Property Listings</title>
+    <style>
+        body {
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1, h2 {
+            text-align: center;
+        }
+        .property-display {
+            list-style-type: none;
+            padding: 0;
+        }
+        .property-item {
+            border: 1px solid #ccc; 
+            border-radius: 5px; 
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+        .property-image {
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 10px;
+        }
+        .property-name {
+            font-size: 1.5em; 
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .property-price {
+            font-size: 1.3em; 
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>ViewNest Property Listings</h1>
+        <h2>Property Details</h2>
+        <ul class="property-display">
+            <li class="property-item">
+                <img src="{{ url_for('static', filename=property.image_url.replace('static/', '')) }}" alt="{{ property.propertyname }} image" class="property-image">
+                <div class="property-details">
+                    <div class="property-name">{{ property.propertyname }}</div>
+                    Property Type: {{ property.propertytype }}<br>
+                    District: {{ property.district }}<br>
+                    Bedrooms: {{ property.bedroom_no }}<br>
+                    PSF: {{ property.psf }}<br>
+                    Listing Date: {{ property.listing_date }}<br>
+                    {% if property.date_sold %}
+                    Sold Date: {{ property.date_sold }}<br> 
+                    {% else %}
+                    Not Sold Yet<br> 
+                    {% endif %}
+                    <br><div class="property-price">S${{ "{:,.2f}".format(property.price) }}</div>
+                </div>
+            </li>
+        </ul>
+    </div>
+</body>
+</html>

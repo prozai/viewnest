@@ -2,7 +2,7 @@ from datetime import date
 from app import session 
 from app.entity.models import Property 
 from app.control import bp
-from flask import render_template, request
+from flask import render_template, request, redirect, url_for, flash
 
 # Function to add sample properties.
 def add_sample_properties():
@@ -40,6 +40,17 @@ def show_all_properties():
     finally:
         session.close()
 
+# Function to show selected property.
+def get_property(property_id):
+    try:
+        property = session.query(Property).filter_by(ID=property_id).first()
+        return property
+    except Exception as e:
+        print(f"Error fetching property: {e}")
+        return None
+    finally:
+        session.close()
+
 @bp.route('/view_properties')
 def view_properties():
     add_sample_properties()
@@ -50,3 +61,7 @@ def view_properties():
 def view_calculation():
     return render_template('property/view_calculation.html')
 
+@bp.route('/view_property_detail/<int:property_id>')
+def view_property_detail(property_id):
+    property = get_property(property_id)
+    return render_template('property/view_property_detail.html', property=property)
