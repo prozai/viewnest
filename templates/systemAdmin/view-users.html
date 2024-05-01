@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block title %} View All Profile {% endblock %}
+
+{% block body %} 
+<div class="container">
+    <div class="my-2">
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Email</th>
+                        <th>Phone Number</th>
+                        <th>Username</th>
+                        <th>Profile Type</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr>
+                        <td>{{user.user_id}}</td>
+                        <td>{{user.fname}}</td>
+                        <td>{{user.lname}}</td>
+                        <td>{{user.email}}</td>
+                        <td>{{user.phonenum}}</td>
+                        <td>{{user.username}}</td>
+                        <td>{{user.userprofile.roles}}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
