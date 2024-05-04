@@ -96,7 +96,7 @@
                     <div>
                         <strong>{{ property.propertyname }}</strong>
                         <strong style="float: right;">S${{ "{:,.2f}".format(property.price) }}</strong><br>
-                        <span>{{ property.propertytype }}</span>
+                        <span>{{ property.propertytype }} ({{ property.bedroom_no }} Bedroom)</span>
                         {% if property.sold %}
                         <span style="float: right;">Sold</span>
                     {% else %}

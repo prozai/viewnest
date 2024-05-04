@@ -178,6 +178,7 @@ class Property(Base):
     date_sold = Column(Date)
     image_url = Column(String) 
     sold = Column(Boolean)
+    view_count = Column(Integer, default=0)
 
     def __init__(self, propertyname, propertytype, district, bedroom_no, price, psf, listing_date, date_sold, image_url, sold):
         self.propertyname = propertyname

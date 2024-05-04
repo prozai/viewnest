@@ -51,6 +51,21 @@ def get_property(property_id):
     finally:
         session.close()
 
+# Function to add view count to property when viewed.
+def add_viewCount(property_id):
+    try:
+        property = session.query(Property).filter_by(ID=property_id).first()
+        if property:
+            property.view_count += 1
+            session.commit()
+            return property
+    except Exception as e:
+            session.rollback()
+            print(f"Error fetching property: {e}")
+            return None
+    finally:
+        session.close()
+
 @bp.route('/view_properties')
 def view_properties():
     add_sample_properties()
@@ -64,4 +79,5 @@ def view_calculation():
 @bp.route('/view_property_detail/<int:property_id>')
 def view_property_detail(property_id):
     property = get_property(property_id)
+    add_viewCount(property_id)
     return render_template('property/view_property_detail.html', property=property)
