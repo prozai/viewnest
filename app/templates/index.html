@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Welcome to ViewNest</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+    }
+    h1 {
+        font-size: 7em;
+        margin-bottom: 20px;
+    }
+    h2 {
+        font-size: 2em;
+        margin-top: 10px;
+        color: #555;
+    }
+
+    .button {
+        display: inline-block;
+        padding: 100px 200px;
+        font-size: 1.5em;
+        text-decoration: none;
+        color: #fff;
+        background-size: cover;
+        background-position: center;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        margin: 10px;
+        transition: all 0.3s ease;
+    }
+    .button.view-properties {
+        background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("./static/uploads/properties/property1.jpg"); 
+    }
+    .button.login {
+        background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('./static/uploads/properties/property1.jpg'); 
+    }
+    .button:hover {
+        opacity: 0.8;
+    }
+</style>
+</head>
+<body>
+    <h1>Welcome to ViewNest</h1>
+    <h2>What will you like to do today?</h2>
+
+    <a href="/view_properties" class="button view-properties">View Properties</a>
+    <a href="#" class="button login">Login</a>
+</body>
+</html>
