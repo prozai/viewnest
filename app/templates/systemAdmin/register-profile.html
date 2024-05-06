@@ -7,24 +7,46 @@
         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12">
             <div class="card">
                 <div class="card-body">
-                    <form method="post">
-                        {{ form.hidden_tag() }}
-                        <p>
-                            {{ form.role.label }} <br>
-                            {{ form.role(size=73 )}} <br>
-                            {% if form.role.errors %}
-                                <span style="color: red;"> {{ form.role.errors[0] }}</span>
-                            {% endif %}
-                        </p>
-                        <p>
-                            {{ form.description.label }} <br>
-                            {{ form.description(rows=4, cols=75)}} <br>
-                        </p>
-                        <p> {{ form.submit(class_='btn btn-outline-success') }}</p>
+                    <form method="post" class='needs-validation' id="createprofile" novalidate>
+                        <div>
+                            <label for="role"  class="form-label">Role name:</label>
+                            <input type="text" class="form-control" id="role" name="role" value= "Renter" size="50" required>
+                            <div class="invalid-feedback">
+                                Please enter a valid role name.
+                            </div>
+                        </div>
+                        <div>
+                            <label for="description"  class="form-label">Description:</label>
+                            <textarea class="form-control" id="description" name="description" rows=4 cols=50></textarea>
+                        </div>
+                        <div>
+                            <button type="submit" class="btn btn-outline-success">Submit</button>
+                        </div>
                     </form>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+    (function () {
+      'use strict'
+    
+      var forms = document.querySelectorAll('.needs-validation')
+    
+      Array.prototype.slice.call(forms)
+       .forEach(function (form) {
+          form.addEventListener('submit', function (event) {
+            if (!form.checkValidity()) {
+              event.preventDefault()
+              event.stopPropagation()
+            }
+    
+            form.classList.add('was-validated')
+          }, false)
+        })
+    })()
+</script>
+
 {% endblock %}
