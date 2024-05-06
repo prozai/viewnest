@@ -1,5 +1,5 @@
 import os
-from flask import Flask, request
+from flask import Flask
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
@@ -34,21 +34,23 @@ def create_app(config_class=Config):
     session.add(buyer)
     session.commit()
 
-    seller = UserProfile('seller')
+    seller = UserProfile(roles='seller')
     session.add(seller)
     session.commit()
 
-    realEstateAgent = UserProfile('real estate agent')
+    realEstateAgent = UserProfile(roles='real estate agent')
     session.add(realEstateAgent)
     session.commit()
 
-    admin = UserProfile('system admin')
+    admin = UserProfile(roles='system admin')
     session.add(admin)
     session.commit()
 
     # Register blueprint
-    from app.control.routes import bp 
-    app.register_blueprint(bp)
+    from app.control.adminController import adminBP
+    from app.control.mainController import mainBP
+    app.register_blueprint(adminBP)
+    app.register_blueprint(mainBP)
 
     # Close session on app teardown
     #@app.teardown_appcontext
@@ -58,4 +60,3 @@ def create_app(config_class=Config):
     return app
 
 from app.entity import models
-
