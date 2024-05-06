@@ -7,23 +7,24 @@
 </head>
 <body>
     <h2>Login</h2>
-    <form method="POST" action="{{ loginIndex }}">
-        {{ form.hidden_tag() }}
+    <form method="POST" action="">
         <div>
-            <label for="username">Username:</label>
-            {{ form.username(class="form-control", id="username") }}
-            {% for error in form.username.errors %}
-                <p class="error">{{ error }}</p>
-            {% endfor %}
+            <label for="username">Username</label>
+            <input type="text" name="username" id="username" value="admin" required>
         </div>
         <div>
-            <label for="password">Password:</label>
-            {{ form.password(class="form-control", id="password") }}
-            {% for error in form.password.errors %}
-                <p class="error">{{ error }}</p>
-            {% endfor %}
+            <label for="password">Password</label>
+            <input type="password" name="password" id="password" value="password"required>
         </div>
         <button type="submit">Login</button>
     </form>
 </body>
+<script>
+    // check username and password not empty
+    document.querySelector('forma').addEventListener('onFocus', function(e){
+        if(e.target.value === ''){
+            alert('Please fill in the username and password');
+        }
+    }, true);
+</script>
 </html>

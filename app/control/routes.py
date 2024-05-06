@@ -11,35 +11,10 @@ from app import Base, session
 @bp.route('/')
 def index():
     return render_template('index.html', title="")
-@bp.route('/loginIndex', methods=['GET', 'POST'])
-def loginIndex():
-    form = LoginForm()
-    if form.validate_on_submit():
-        username = form.username.data
-        password = form.password.data
 
-        user = session.query(User).filter_by(username=username).first()
-        if user:
-            # Debugging: Print the retrieved user's password hash
-            print("Password Hash from Database:", user.password_hash)
-            
-            if user.check_password(password):
-            #    login_user(user)
-            #    session['username'] = user.username  # Store user ID in session
-
-                return redirect('/adminIndex')
-            else:
-                print("Incorrect password")
-        else:
-            print("User not found")
-
-        return redirect('/dashboard')
-
-    return render_template('login/loginIndex.html', form=form)
 @bp.route('/dashboard')
 def dashboard():
-
-            return 'Login failed'
+    return 'Login failed'
 
 @bp.route('/adminIndex')
 def adminIndex():
