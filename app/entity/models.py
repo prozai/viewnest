@@ -1,9 +1,6 @@
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column, Integer, String, ForeignKey, Boolean
 from sqlalchemy.orm import relationship
-from sqlalchemy.ext.declarative import declarative_base
 from app import Base, session
-
-#Base = declarative_base()
 
 # User Profile Class
 class UserProfile(Base):
@@ -12,6 +9,7 @@ class UserProfile(Base):
     profile_id = Column(Integer, primary_key=True, autoincrement=True, unique=True)
     roles = Column(String(255), unique=True)
     description = Column(String(255), nullable=True)
+    suspend_status = Column(Boolean, nullable=False)
     user = relationship("User", back_populates="userprofile")
 
     # Constructor
@@ -19,6 +17,7 @@ class UserProfile(Base):
         #self.profile_id = profile_id
         self.roles = roles
         self.description = description
+        self.suspend_status = False
 
     # Get methods
     def get_profile_id(self):
@@ -30,6 +29,9 @@ class UserProfile(Base):
     def get_description(self):
         return self.description
     
+    def get_suspend_status(self):
+        return self.suspend_status
+    
     # Set methods
     def set_profile_id(self, id):
         self.profile_id = id
@@ -40,11 +42,15 @@ class UserProfile(Base):
     def set_description(self, description):
         self.description = description
 
+    def set_suspend_status(self, status):
+        self.suspend_status = status
+
     # Function to create new profile record in DB
-    def create_new_profile(self):
+    @classmethod
+    def create_new_profile(cls, profile):
         try:
             #with session.begin():
-                session.add(self)
+                session.add(profile)
                 session.commit()
         except Exception as e:
             session.rollback()
@@ -53,16 +59,44 @@ class UserProfile(Base):
             session.close()
         
     # Function to retrieve all profile records
-    @staticmethod
-    def get_all_profiles():
-        profiles = session.query(UserProfile).all()
+    @classmethod
+    def get_all_profiles(cls):
+        profiles = session.query(cls).filter(cls.suspend_status==False).all()
         return profiles
 
     # Function to retrieve one profile record using profile name
-    @staticmethod
-    def get_profile_by_name(name):
-        profile = session.query(UserProfile).filter(UserProfile.roles==name).one()
+    @classmethod
+    def get_profile_by_name(cls, name):
+        profile = session.query(cls).filter(cls.roles==name).first()
         return profile
+
+    # Function to update profile information
+    @classmethod
+    def update_profile(cls, current_role, name, description):
+        profile = session.query(cls).filter(cls.roles==current_role).first()
+        profile.set_role(name)
+        profile.set_description(description)
+        session.commit()
+
+    # Function to suspend profile
+    @classmethod
+    def suspend_profile(cls, role):
+        profile = session.query(cls).filter(cls.roles==role).first()
+        profile.set_suspend_status(True) 
+        session.commit()
+
+    # Function to search profile
+    @classmethod
+    def searchProfile(cls, search_term, attribute):
+        if attribute == 'profile_id':
+            profiles = session.query(cls).filter(cls.profile_id==search_term).all()
+        elif attribute == 'roles':
+            profiles = session.query(cls).filter(cls.roles==search_term).all()
+        elif attribute == 'description':
+            profiles = session.query(cls).filter(cls.description.contains(search_term)).all()
+        
+        return profiles
+            
 
 # User Class
 class User(Base):
@@ -76,6 +110,7 @@ class User(Base):
     phonenum = Column(String(8), nullable=False)
     username = Column(String(255), nullable=False, unique=True)
     password_hash = Column(String(255), nullable=False)
+    suspend_status = Column(Boolean, nullable=False)
     userprofile = relationship("UserProfile", back_populates="user")
 
     # Constructor
@@ -87,6 +122,7 @@ class User(Base):
         self.phonenum = phonenum
         self.username = username
         self.password_hash = password_hash
+        self.suspend_status = False
 
     # Get methods
     def get_user_id(self):
@@ -112,6 +148,9 @@ class User(Base):
     
     def get_password_hash(self):
         return self.password_hash
+    
+    def get_suspend_status(self):
+        return self.suspend_status
 
     # Set methods
     def set_profile_id(self, id):
@@ -135,11 +174,15 @@ class User(Base):
     def set_password_hash(self, pw_hash):
         self.password_hash = pw_hash
 
+    def set_suspend_status(self, status):
+        self.suspend_status = status
+
     # Function to create new account record in DB
-    def create_new_account(self):
+    @classmethod
+    def create_new_account(cls, account):
         try:
             #with session.begin():
-                session.add(self)
+                session.add(account)
                 session.commit()
         except Exception as e:
             session.rollback()
@@ -148,16 +191,38 @@ class User(Base):
             session.close()
 
     # Function to read all account records in DB
-    @staticmethod
-    def get_all_accounts():
-        users=session.query(User).all()
+    @classmethod
+    def get_all_accounts(cls):
+        users=session.query(cls).filter(cls.suspend_status==False).all()
         return users
     
-    # Function to read one account record in DB
+    # Function to search account record in DB
 
     # Function to update account record in DB
+    @classmethod
+    def update_account(cls, username, new_fname, new_lname, new_email, new_phone_num, new_password_hash):
+        try:
+            account = session.query(cls).filter(cls.username==username).first()
+            if new_fname != "":
+                account.set_fname(new_fname)
+            if new_lname != "":
+                account.set_lname(new_lname)
+            if new_email != "":
+                account.set_email(new_email)
+            if new_phone_num != "":
+                account.set_phone_num(new_phone_num)
+            if new_password_hash != "":
+                account.set_password_hash(new_password_hash)
+            session.commit()
+        except Exception as e:
+            print(e)
 
-    # Function to delete account record in DB
+    # Function to suspend account record 
+    @classmethod
+    def suspend_account(cls, username):
+        account = session.query(cls).filter(cls.username==username).first()
+        account.set_suspend_status(True) 
+        session.commit()
 
     def __repr__(self):
         return f'User("{self.user_id}","{self.profile_id}""{self.fname}","{self.lname}","{self.email}","{self.username}","{self.phonenum}")'
