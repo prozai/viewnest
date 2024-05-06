@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container my-2">
+    <div class="row-12 d-flex align-items-center h-100 justify-content-center flex-column">
+        <h1>Update User Account</h1>
+        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12">
+            <div class="card">
+                <div class="card-body">
+                    <form method="post" class='needs-validation' id="createaccount" novalidate>
+                        <!-- Username -->
+                        <div>
+                            <label for="username" class="form-label">Enter username:</label>
+                            <input type="text" class="form-control" id="username" name="username" size="50" required>
+                            <div class="invalid-feedback">
+                                Please enter a valid username.
+                            </div>
+                        </div>
+                        <br>
+
+                        <h2> Edit Account </h2>
+
+                        <!-- First Name -->
+                        <div>
+                            <label for="fname" class="form-label">First Name:</label>
+                            <input type="text" class="form-control" id="fname" name="fname" size="50" >
+                            <div class="invalid-feedback">
+                                Please enter your first name.
+                            </div>
+                        </div>
+                        <br>
+
+                        <!-- Last Name -->
+                        <div>
+                            <label for="lname" class="form-label">Last Name:</label>
+                            <input type="text"  class="form-control" id="lname" name="lname" size="50" >
+                            <div class="invalid-feedback">
+                                Please enter your last name.
+                            </div>
+                        </div>
+                        <br>
+
+                        <!-- Email -->
+                        <div>
+                            <label for="email" class="form-label">Email:</label>
+                            <input type="email" class="form-control" id="email" name="email" >
+                            <div class="invalid-feedback">
+                                Please enter a valid email address.
+                            </div>
+                        </div>
+                        <br>
+
+                        <!-- Phone Number -->
+                        <div>
+                            <label for="phonenum" class="form-label">Phone Number:</label>
+                            <input type="tel" class="form-control" id="phonenum" name="phonenum" size="50" >
+                            <div class="invalid-feedback">
+                                Please enter a valid phone number.
+                            </div>
+                        </div>
+                        <br>
+
+                        <!-- Password -->
+                        <div>
+                            <label for="password" class="form-label">Password:</label>
+                            <input type="password" class="form-control" id="password" name="password" size="50">
+                            <div class="invalid-feedback"></div>
+                        </div>
+                        <br>
+
+                        <!-- Confirm Password -->
+                        <div>
+                            <label for="password2" class="form-label">Confirm Password:</label>
+                            <input type="password" class="form-control" id="password2" name="password2" size="50">
+                            <div class="invalid-feedback"></div>
+                        </div>
+                        <br>
+
+                        <!-- Submit Button -->
+                        <div>
+                            <button type="submit" class="btn btn-outline-success">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+(function () {
+    'use strict'
+
+    var forms = document.querySelectorAll('.needs-validation')
+
+    Array.prototype.slice.call(forms)
+    .forEach(function (form) {
+      form.addEventListener('submit', function (event) {
+        if (!form.checkValidity()) {
+            event.preventDefault()
+            event.stopPropagation()
+        }
+
+        form.classList.add('was-validated')
+      }, false)
+
+      // Additional checks
+      // Check password validity 
+      document.getElementById('password').addEventListener('input', function() {
+        var password = this.value;
+        var passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$%*?&!])[A-Za-z\d@$%*?&]{8,}$/;
+        if (!passwordRegex.test(password)) {
+            this.setCustomValidity('Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long.');
+        } else {
+            this.setCustomValidity('');
+        }
+        this.reportValidity()
+      });
+
+      document.getElementById('password2').addEventListener('input', function() {
+        var password1 = document.getElementById('password').value;
+        if (this.value!== password1) {
+          this.setCustomValidity('Passwords do not match.');
+        } else {
+          this.setCustomValidity('');
+        }
+        this.reportValidity()
+      });
+
+      // Check phone number validity 
+      document.getElementById('phonenum').addEventListener('input', function() {
+        var phonenum = this.value;
+        var phoneNumberRegex = /(6|8|9){1}\d{7}/;
+        if (!phoneNumberRegex.test(phonenum)) {
+            this.setCustomValidity('Phone number must start with 6, 8 or 9 and must be 8 digits.');
+        } else {
+            this.setCustomValidity('');
+        }
+        this.reportValidity()
+      });
+    });
+})();
+
+</script>
+{% endblock %}
