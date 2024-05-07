@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="'container my-2">
+    <div class="row-12 d-flex align-items-center h-100 justify-content-center flex-column">
+        <h1>Update Profile</h1>
+        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12">
+            <div class="card">
+                <div class="card-body">
+                    <form method="post" class='needs-validation' id="createprofile" novalidate>
+                        <!-- Profile Role -->
+                        <div>
+                            <label for="profile_role" class="form-label">Profile Role:</label>
+                            <select class="form-select" id="profile_role" name="profile_role">
+                                <option value="system admin">System Admin</option>
+                                <option value="buyer">Buyer</option>
+                                <option value="seller">Seller</option>
+                                <option value="real estate agent">Real Estate Agent</option>
+                            </select>
+                            <div class="invalid-feedback">
+                                Please select a valid role.
+                            </div>
+                        </div>
+                        <br>
+
+                        <div>
+                            <label for="role"  class="form-label">Updated Role name:</label>
+                            <input type="text" class="form-control" id="role" name="role" value= "Renter" size="50" required>
+                            <div class="invalid-feedback">
+                                Please enter a valid role name.
+                            </div>
+                        </div>
+                        <div>
+                            <label for="description"  class="form-label">Description:</label>
+                            <textarea class="form-control" id="description" name="description" rows=4 cols=50></textarea>
+                        </div>
+                        <div>
+                            <button type="submit" class="btn btn-outline-success">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    (function () {
+      'use strict'
+    
+      var forms = document.querySelectorAll('.needs-validation')
+    
+      Array.prototype.slice.call(forms)
+       .forEach(function (form) {
+          form.addEventListener('submit', function (event) {
+            if (!form.checkValidity()) {
+              event.preventDefault()
+              event.stopPropagation()
+            }
+    
+            form.classList.add('was-validated')
+          }, false)
+        })
+    })()
+</script>
+
+{% endblock %}

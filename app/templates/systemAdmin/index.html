@@ -1,0 +1,126 @@
+{% extends 'base.html' %}
+
+{% block title %} Account Management {% endblock %}
+
+{% block body %} 
+<div class="container my-5">
+    <h1> Welcome, Admin!</h1><br> 
+    <h2> What would you like to do today? </h2><br>
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="card text-white bg-success mb-3">
+                <div class="card-body">
+                    <h3>Register New User Account</h3>
+                    <a href="/registerAccount" class="nav-link text-white">Click here to register</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="card text-white bg-success mb-3">
+                <div class="card-body">
+                    <h3>Register New User Profile </h3>
+                    <a href="/registerProfile" class="nav-link text-white">Click here to register</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="card text-white bg-info mb-3">
+                <div class="card-body">
+                    <h3>View All Users</h3>
+                    <a href="/allUsers" class="nav-link text-white">Click here to view</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="card text-white bg-info mb-3">
+                <div class="card-body">
+                    <h3>View All Profiles</h3>
+                    <a href="/allProfiles" class="nav-link text-white">Click here to view</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="card text-white bg-info mb-3">
+                <div class="card-body">
+                    <h3>Update User Information</h3>
+                    <a href="/updateAccount" class="nav-link text-white">Click here to view</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="card text-white bg-info mb-3">
+                <div class="card-body">
+                    <h3>View All Profiles</h3>
+                    <a href="/updateProfile" class="nav-link text-white">Click here to update</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="card text-white bg-info mb-3">
+                <div class="card-body">
+                    <h3>Suspend User </h3>
+                    <a href="/suspendAccount" class="nav-link text-white">Click here to view</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="card text-white bg-info mb-3">
+                <div class="card-body">
+                    <h3>Suspend Profile</h3>
+                    <a href="/suspendProfile" class="nav-link text-white">Click here to update</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- For Testing. Do not remove. -->
+<!--
+<div class="container my-5">
+    <div class="d-flex justify-content-center align-items-center">
+        <div class="row">
+            <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12">
+                <div class="card text-white bg-success mb-3">
+                    <div class="card-body bg-success">
+                        <h3>Register New User Account</h3>
+                        <a href="/registerAccount" class="nav-link text-white">Click here to register</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12">
+                <div class="card text-white bg-success mb-3">
+                    <div class="card-body bg-info">
+                        <h3>Register New User Profile </h3>
+                        <a href="/registerProfile" class="nav-link text-white">Click here to register</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12">
+                <div class="card text-white bg-info mb-3">
+                    <div class="card-body bg-info">
+                        <h3>View All Users</h3>
+                        <a href="/allUsers" class="nav-link text-white">Click here to view</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12">
+                <div class="card text-white bg-info mb-3">
+                    <div class="card-body bg-info">
+                        <h3>View All Profiles</h3>
+                        <a href="/allProfiles" class="nav-link text-white">Click here to view</a>
+                    </div>
+                </div>
+            </div>
+        </div>     
+    </div>
+</div>
+{% endblock %}
+
+-->
