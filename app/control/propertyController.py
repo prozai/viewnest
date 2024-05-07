@@ -74,43 +74,31 @@ def view_calculation():
     return render_template('property/search.html', results=results)
 
 class SearchController:
-    def search(self):
-        search_query = request.form.get('query')
+    def search(self, search_query):
         if not search_query:
             return jsonify({'error': 'No query provided'}), 400
 
         results = Property.search_by_name(search_query)
-        return render_template('property/search.html', results=results)
+        return results
     
-    def searchSold(self):
+
+    def searchSold(self, search_query):
         search_query = request.form.get('query')
         if not search_query:
             return jsonify({'error': 'No query provided'}), 400
 
         results = Property.search_by_sold(search_query)
-        return render_template('property/search.html', results=results)
-
-    def searchAvailable(self):
+        return results
+    
+    def searchAvailable(self, search_query):
         search_query = request.form.get('query')
         if not search_query:
             return jsonify({'error': 'No query provided'}), 400
 
         results = Property.search_by_avail(search_query)
-        return render_template('property/search.html', results=results)
+        return results
     
 search_controller = SearchController()
 
     
 
-
-@bp.route('/search', methods=['POST', 'GET'])
-def search():
-    return search_controller.search()
-
-@bp.route('/searchSold', methods=['POST', 'GET'])
-def searchSold():
-    return search_controller.searchSold()
-
-@bp.route('/searchAvailable', methods=['POST', 'GET'])
-def searchAvailable():
-    return search_controller.searchAvailable()

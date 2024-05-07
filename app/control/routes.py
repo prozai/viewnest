@@ -6,7 +6,7 @@ from app.control.propertyController import ViewProperties,SearchController
 from app.entity.models import User, UserProfile, Property
 from app.control import bp
 from app import session
-
+from app.boundary.propertyBoundary import SearchPropertyBoundary
 
 @bp.route('/')
 def index():
