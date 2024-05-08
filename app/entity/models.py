@@ -191,3 +191,6 @@ class Property(Base):
         self.date_sold = date_sold
         self.image_url = image_url
         self.sold = sold
+    
+    def get_property_id(self):
+        return self.ID
