@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Update Property Listing</title>
+  <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/property.css')}}"> -->
+  <style>
+    h1 {
+      text-align: center;
+      padding-top: 20px;
+    }
+  
+    .form-container {
+      text-align: center;
+      max-width: 700px;
+      margin: 30px auto;
+      padding: 30px 0px 30px 0px;
+      border: solid 1px;
+      border-radius: 50px;
+      box-shadow: lightgray 10px 10px;
+    }
+    .form-group {
+      padding: 10px; 
+    }
+    
+    .form-control{
+      padding: 6px; 
+      border: solid 1px black;
+    }
+    
+    .form-control-image{
+      padding: 5px; 
+      border: solid 1px black;
+    }
+    
+    .btn{
+      font-weight: bold;
+      margin-top: 20px;
+      margin-bottom: 10px;
+      padding: 10px 30px 10px 30px;
+      border-radius: 50px;
+      background-color: white; 
+      color: black; 
+      border: 2px solid #49bd7d;
+      cursor: pointer;
+    }
+    
+    .btn:hover {
+      background-color: #49bd7d;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <h1> Update Property Listing </h1>
+  <div class="form-container">
+    <form id="propertyForm" enctype="multipart/form-data">
+      <div class="form-group">
+        <label for="propertyname">Property Name:</label>
+        <input type="text" id="propertyname" class="form-control"  value="{{ property.propertyname }}" required>
+      </div>
+      <div class="form-group">
+        <label for="propertytype">Property Type:</label>
+        <input type="text" id="propertytype" class="form-control" value="{{ property.propertytype }}" required>
+      </div>
+      <div class="form-group">
+        <label for="district">District:</label>
+        <input type="text" id="district" class="form-control" value="{{ property.district }}" required>
+      </div>
+      <div class="form-group">
+        <label for="bedroom_no">No. of bedrooms:</label>
+        <input type="text" id="bedroom_no" class="form-control" value="{{ property.bedroom_no }}" required>
+      </div>
+      <div class="form-group">
+        <label for="price">Price ($):</label>
+        <input type="text" id="price" class="form-control" value="{{ property.price }}" required>
+      </div>
+      <div class="form-group">
+        <label for="psf">Square Feet (m):</label>
+        <input type="text" id="psf" class="form-control" value="{{ property.psf }}" required>
+      </div>
+      <div class="form-group">
+        <label for="image_url">Image:</label>
+        <!-- <img src="{{ property.image_url }}" alt="Property Image" style="max-width: 300px;"> -->
+        <input type="file" id="image_url" class="form-control-image">
+      </div>
+      <button type="button" onclick="submitForm()" data-property-id="{{ property.ID }}" class="btn btn-primary">Update</button>
+    </form>
+  </div>
+
+  <script>
+    function submitForm() {
+      var propertyId = document.querySelector('.btn').dataset.propertyId; // Get property ID from button
+      console.log('Property ID:', propertyId);
+      var formData = new FormData();
+      formData.append('propertyname', document.getElementById('propertyname').value);
+      formData.append('propertytype', document.getElementById('propertytype').value);
+      formData.append('district', document.getElementById('district').value);
+      formData.append('bedroom_no', document.getElementById('bedroom_no').value);
+      formData.append('price', document.getElementById('price').value);
+      formData.append('psf', document.getElementById('psf').value);
+
+      var imageFile = document.getElementById('image_url').files[0];
+      formData.append('image_url', imageFile);
+
+      fetch(`/update_property/${propertyId}`, {
+        method: 'POST',
+        body: formData
+      })
+      .then(response => {
+        if (response.ok) {
+          window.location.href = '/REA_properties';
+        } else {
+          console.error('Form submission failed!');
+        }
+      });
+    }
+
+        
+  </script>
+</body>
+</html>
