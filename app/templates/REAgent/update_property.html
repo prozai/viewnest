@@ -91,7 +91,7 @@
 
   <script>
     function submitForm() {
-      var propertyId = document.querySelector('.btn').dataset.propertyId; // Get property ID from button
+      var propertyId = document.querySelector('.btn').dataset.propertyId;
       console.log('Property ID:', propertyId);
       var formData = new FormData();
       formData.append('propertyname', document.getElementById('propertyname').value);
