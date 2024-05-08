@@ -217,8 +217,7 @@
                 Listing Date: {{ property.listing_date }}<br>
                 {% if property.date_sold %}
                 <strong>Date Sold: {{ property.date_sold }}</strong><br>
-                {% endif %}
-
+                {% else %}
                 <a href="/update_property/{{ property.get_property_id() }}" class="update-btn">Update</a>
                 <button class="modal-btn"
                     onclick="document.getElementById('myModal_{{ property.get_property_id() }}').style.display='block'">Delete</button>
@@ -245,7 +244,7 @@
                         </div>
                     </div>
                 </div>
-
+                {% endif %}
             </li>
             {% endfor %}
         </ul>
