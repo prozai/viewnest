@@ -2,7 +2,6 @@ from flask import render_template, flash, redirect, url_for, request
 from flask_babel import _
 from werkzeug.security import generate_password_hash
 from app.control.adminController import RegisterProfile, RegisterAccount, showAllProfiles, showAllAccounts
-from app.control.propertyController import add_sample_properties, show_all_properties
 from app.entity.models import User, UserProfile, Property
 from app.control import bp
 from app import session
