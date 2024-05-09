@@ -49,7 +49,7 @@ def create_app(config_class=Config):
     # Register blueprint
     from app.control.adminController import adminBP
     from app.control.mainController import mainBP
-    from app.control.loginController import loginBP
+    from app.boundary.loginBoundary import loginBP
     app.register_blueprint(adminBP)
     app.register_blueprint(mainBP)
     app.register_blueprint(loginBP)
