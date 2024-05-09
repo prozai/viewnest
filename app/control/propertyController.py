@@ -6,7 +6,7 @@ from datetime import datetime
 
 # Create Property Listing
 class createPropertyController:
-    def REA_createProperty():
+    def REA_createProperty(self):
         try:
             if request.method == 'POST':
                 propertyname = request.form['propertyname']
@@ -52,7 +52,7 @@ class createPropertyController:
 
 # REA View Property Listings
 class viewPropertiesController:
-    def REA_viewProperties():
+    def REA_viewProperties(self):
         try:
             properties = session.query(Property).filter_by(user_id=1).all()  # session['user_id']
             return properties
@@ -62,7 +62,7 @@ class viewPropertiesController:
 
 # Update Property Listing
 class updatePropertyController:
-    def REA_updateProperty(id):
+    def REA_updateProperty(self, id):
         try:
             if request.method == 'POST':
                 propertyname = request.form['propertyname']
@@ -105,7 +105,7 @@ class updatePropertyController:
 
 # Delete Property Listing
 class deletePropertyController:
-    def REA_deleteProperty(id):
+    def REA_deleteProperty(self, id):
         try:
             property = session.query(Property).filter_by(ID=id).first()
             if property:
