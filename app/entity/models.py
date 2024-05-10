@@ -52,12 +52,14 @@ class UserProfile(Base):
             #with session.begin():
                 session.add(profile)
                 session.commit()
+                session.close()
+                return True
         except Exception as e:
             session.rollback()
             print(f"Error creating new profile: {e}")
-        finally:
             session.close()
-        
+            return False
+                    
     # Function to retrieve all profile records
     @classmethod
     def get_all_profiles(cls):

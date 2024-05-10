@@ -1,4 +1,4 @@
-from flask import render_template, flash, redirect, url_for
+'''from flask import render_template, flash, redirect, url_for
 from flask_babel import _
 from app.control import mainBP
 
@@ -9,3 +9,4 @@ def index():
 @mainBP.route('/adminIndex')
 def adminIndex():
     return render_template('systemAdmin/index.html', title="")
+'''

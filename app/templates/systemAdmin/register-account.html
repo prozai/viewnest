@@ -122,7 +122,7 @@
       // Check password validity 
       document.getElementById('password').addEventListener('input', function() {
         var password = this.value;
-        var passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$%*?&!])[A-Za-z\d@$%*?&]{8,}$/;
+        var passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$%*?&!])[A-Za-z\d@$%*?&!]{8,}$/;
         if (!passwordRegex.test(password)) {
             this.setCustomValidity('Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long.');
         } else {
