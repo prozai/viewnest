@@ -21,34 +21,15 @@ class ViewProfileController():
     
 # Update Profile Controller
 class UpdateProfileController():
-    @adminBP.route('/updateProfile', methods=['POST', 'GET'])
-    def updateProfile():
-        if request.method == "POST":
-            try:
-                role = request.form.get("profile_role")
-                role_name = request.form.get("role")
-                description = request.form.get("description")
-
-                UserProfile.update_profile(role, role_name, description)
-
-                return redirect(url_for('.viewProfiles'))
-            except Exception as e:
-                print(e)
-        return render_template('systemAdmin/update-profile.html')
+    def updateProfile(self, role, role_name, description):
+        status = UserProfile.update_profile(role, role_name, description)
+        return status
 
 # Suspend Profile Controller
 class SuspendProfileController():
-    @adminBP.route('/suspendProfile', methods=['POST', 'GET'])
-    def suspendProfile():
-        if request.method == "POST":
-            try:
-                role = request.form.get("role")
-                UserProfile.suspend_profile(role)
-
-                return redirect(url_for('.viewProfiles'))
-            except Exception as e:
-                print(e)
-        return render_template('systemAdmin/suspend-profile.html')
+    def suspendProfile(self, role):
+        status = UserProfile.suspend_profile(role)
+        return status
 
 # Search Profile Controller
 '''class SearchProfileController():
@@ -92,36 +73,15 @@ class ViewAccountController():
     
 # Update Account Controller
 class UpdateAccountController():
-    @adminBP.route('/updateAccount', methods=['POST', 'GET'])
-    def updateAccount():
-        if request.method == "POST":
-            try:
-                username = request.form.get("username") 
-                password_hash = generate_password_hash(password=request.form.get("password"))
-                fname=request.form.get("fname")
-                lname=request.form.get("lname") 
-                email=request.form.get("email") 
-                phonenum=request.form.get("phonenum")
-                
-                User.update_account(username, fname, lname, email, phonenum, password_hash)
-
-                return redirect(url_for('.viewUsers'))
-            except Exception as e:
-                print(e)
-        return render_template('systemAdmin/update-account.html')
+    def updateAccount(self, username, fname, lname, email, phonenum, password):
+        password_hash = generate_password_hash(password)
+        status = User.update_account(username, fname, lname, email, phonenum, password_hash)
+        return status
 
 # Suspend Account Controller
 class SuspendAccountController():
-    @adminBP.route('/suspendAccount', methods=['POST', 'GET'])
-    def suspendAccount():
-        if request.method == "POST":
-            try:
-                username = request.form.get("username")
-                User.suspend_account(username)
-
-                return redirect(url_for('.viewUsers'))
-            except Exception as e:
-                print(e)
-        return render_template('systemAdmin/suspend-account.html')
+    def suspendAccount(self, username):
+        status = User.suspend_account(username)
+        return status
     
 # Search Account Controller
