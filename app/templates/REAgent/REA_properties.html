@@ -214,6 +214,7 @@
                 Bedrooms: {{ property.bedroom_no }}<br>
                 Price: ${{ '%.2f' | format(property.price) }}<br>
                 PSF: {{ property.psf }}<br>
+                Seller's Email: {{ property.selleremail }}<br>
                 Listing Date: {{ property.listing_date }}<br>
                 {% if property.date_sold %}
                 <strong>Date Sold: {{ property.date_sold }}</strong><br>
