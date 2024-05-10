@@ -51,7 +51,6 @@ def REA_view_properties():
 def update_property(id):
     return update_property_boundary.updateProperty(id)
 
-# Delete Property Listing
 @bp.route('/delete_property/<int:id>/', methods=['POST'])
 def delete_property(id):
     return delete_property_boundary.deleteProperty(id)
