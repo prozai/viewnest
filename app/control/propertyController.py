@@ -16,6 +16,7 @@ class createPropertyController:
                 price = request.form['price']
                 psf = request.form['psf']
                 image_file = request.files['image_url']
+                selleremail = request.form['selleremail']
 
                 if image_file:
                     new_property = Property(user_id=1,  # session['user_id']
@@ -28,7 +29,8 @@ class createPropertyController:
                                             listing_date=datetime.now().date(),
                                             date_sold=None,
                                             image_url=None,
-                                            sold=False)
+                                            sold=False,
+                                            selleremail=selleremail)
                     session.add(new_property)
                     session.commit()
 
@@ -71,6 +73,7 @@ class updatePropertyController:
                 bedroom_no = request.form['bedroom_no']
                 price = request.form['price']
                 psf = request.form['psf']
+                selleremail = request.form['selleremail']
                 image_file = request.files.get('image_url')
 
                 updateProperty = session.query(Property).filter_by(ID=id).first()
@@ -82,7 +85,7 @@ class updatePropertyController:
                     updateProperty.bedroom_no = bedroom_no
                     updateProperty.price = price
                     updateProperty.psf = psf
-                    updateProperty.listing_date = datetime.now().date()
+                    updateProperty.selleremail = selleremail
 
                     if image_file:
                         filename = f"{updateProperty.ID}.{image_file.filename.split('.')[-1]}"
@@ -109,7 +112,6 @@ class deletePropertyController:
         try:
             property = session.query(Property).filter_by(ID=id).first()
             if property:
-                # Remove the associated image file if it exists
                 if property.image_url:
                     upload_folder = './app/static/uploads/properties/'
                     image_path = os.path.join(upload_folder, property.image_url.split("/")[-1])
