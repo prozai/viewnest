@@ -1,38 +1,31 @@
 from flask import render_template, request
-from app.control.propertyController import SearchController
-from app.control import bp
+from app.control.propertyController import viewCountController, viewPropertyController
+from app.boundary import propBP
 
-class SearchPropertyBoundary:
-    def __init__(self):
-        self.controller = SearchController()
-        
-    def search(self, search_query):
-        results = self.controller.search(search_query)
-        return render_template('property/search.html', results=results)
+class viewPropertyBoundary:
+    def view_properties(self):
+        viewPropertyController.add_sample_properties()
+        properties = viewPropertyController.view_properties()
+        return render_template('property/view_properties.html', properties=properties)
 
-    def searchSold(self, search_query):
-        results = self.controller.searchSold(search_query)
-        return render_template('property/search.html', results=results)
+    def view_calculation(self):
+        return render_template('property/view_calculation.html')
 
-    def searchAvailable(self, search_query):
-        results = self.controller.searchAvailable(search_query)
-        return render_template('property/search.html', results=results)
+    def view_property_detail(self, property_id):
+        property = viewPropertyController.view_property_detail(property_id)
+        viewCountController.add_viewCount(property_id)
+        return render_template('property/view_property_detail.html', property=property)
+    
+property_boundary = viewPropertyBoundary()
 
-search_boundary = SearchPropertyBoundary()
+@propBP.route('/view_properties')
+def view_properties():
+    return property_boundary.view_properties()
+    
+@propBP.route('/view_calculation')
+def view_calculation():
+    return property_boundary.view_calculation()
 
-
-@bp.route('/search', methods=['POST', 'GET'])
-def search():
-    search_query = request.form.get('query')
-    return search_boundary.search(search_query)
-
-
-@bp.route('/searchSold', methods=['POST', 'GET'])
-def searchSold():
-    search_query = request.form.get('query')
-    return search_boundary.searchSold(search_query)
-
-@bp.route('/searchAvailable', methods=['POST', 'GET'])
-def searchAvailable():
-    search_query = request.form.get('query')
-    return search_boundary.searchAvailable(search_query)
+@propBP.route('/view_property_detail/<int:property_id>')
+def view_property_detail(property_id):
+    return property_boundary.view_property_detail(property_id)

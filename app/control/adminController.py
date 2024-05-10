@@ -1,62 +1,158 @@
-from flask_wtf import FlaskForm
-from flask_babel import _, lazy_gettext as _l
-from wtforms import StringField, PasswordField, SubmitField, SelectField, TextAreaField
-from wtforms.validators import ValidationError, DataRequired, Email, EqualTo
-import sqlalchemy as sa
-from app import session
+from flask import render_template, redirect, url_for, request
+from werkzeug.security import generate_password_hash
+from flask_babel import _
 from app.entity.models import User, UserProfile
+from app.control import adminBP
 
-class RegisterProfile(FlaskForm):
-    role = StringField('Role', validators=[DataRequired()])
-    description = TextAreaField('Description')
-    submit = SubmitField('Register Profile')
+'''
+@adminBP.route('/')
+def index():
+    return render_template('index.html', title="")
 
-    # Check if role exists
-    def validateRole(self, role):
-        user_profile = sa.select(UserProfile).where(UserProfile.roles==role)
-        user_profile = session.execute(user_profile).scalar_one()
-        if user_profile is not None:
-            raise ValidationError('Please enter a different profile name.')
+@adminBP.route('/adminIndex')
+def adminIndex():
+    return render_template('systemAdmin/index.html', title="")
+'''
 
-class RegisterAccount(FlaskForm):
-    profile_list = [('buyer', 'buyer'), ('seller', 'seller'), ('real estate agent', 'real estate agent'), ('admin', 'admin')]
-    profile_role = SelectField('Roles', choices=profile_list, validators=[DataRequired()])
-    fname = StringField('First Name', validators=[DataRequired()])
-    lname = StringField('Last Name', validators=[DataRequired()])
-    email = StringField('Email', validators=[DataRequired(), Email()])
-    phonenum = StringField('Phone Number', validators=[DataRequired()])
-    username = StringField('Username', validators=[DataRequired()])
-    password = PasswordField('Password', validators=[DataRequired()])
-    password2 = PasswordField('Repeat Password', validators=[DataRequired(), EqualTo('password')])
-    submit = SubmitField('Register Account')
+# ---  User Profile --- 
 
-    # Check if username exists
-    def validateUsername(self, username):
-        user = sa.select(User).where(User.username==username)
-        user = session.execute(user).scalar_one()
-        if user is not None:
-            raise ValidationError('Please enter a different username.')
+# Create Profile Controller
+class CreateProfileController():
+    @adminBP.route('/registerProfile', methods=['GET', 'POST'])
+    def addProfile():
+        if request.method == "POST":
+            try:
+                role = request.form.get("role")
+                description = request.form.get("description")
+                user_profile = UserProfile(role, description)
+                                           #request.method.role.data, description=request.method.description.data)
+                UserProfile.create_new_profile(profile=user_profile)
+                #UserProfile.create_new_profile(user_profile)
+                return redirect(url_for('.viewProfiles'))
+            except Exception as e:
+                print(e)
+        return render_template('systemAdmin/register-profile.html')
+    
+# View Profile Controller
+class ViewProfileController():
+    @adminBP.route('/allProfiles', methods=['POST', 'GET'])
+    def viewProfiles():
+        profile_list = UserProfile.get_all_profiles()
+        return render_template('systemAdmin/view-profiles.html', title="All Profile", profiles=profile_list)
+    
+# Update Profile Controller
+class UpdateProfileController():
+    @adminBP.route('/updateProfile', methods=['POST', 'GET'])
+    def updateProfile():
+        if request.method == "POST":
+            try:
+                role = request.form.get("profile_role")
+                role_name = request.form.get("role")
+                description = request.form.get("description")
 
-        # Check if email exists
-    def validateEmail(self, email):
-        user = sa.select(User).where(User.email==email)
-        user = session.execute(user).scalar_one()
-        if user is not None:
-            raise ValidationError('Please enter a different email.')
+                UserProfile.update_profile(role, role_name, description)
 
-# Function to show all existing user records
-def showAllAccounts():
-    return User.get_all_accounts()
+                return redirect(url_for('.viewProfiles'))
+            except Exception as e:
+                print(e)
+        return render_template('systemAdmin/update-profile.html')
 
-# Function to show all existing user profiles
-def showAllProfiles():
-    return UserProfile.get_all_profiles()
+# Suspend Profile Controller
+class SuspendProfileController():
+    @adminBP.route('/suspendProfile', methods=['POST', 'GET'])
+    def suspendProfile():
+        if request.method == "POST":
+            try:
+                role = request.form.get("role")
+                UserProfile.suspend_profile(role)
 
-# Function to update user account info from form
+                return redirect(url_for('.viewProfiles'))
+            except Exception as e:
+                print(e)
+        return render_template('systemAdmin/suspend-profile.html')
 
-# Function to update user profile info from form
+# Search Profile Controller
+'''class SearchProfileController():
+    @adminBP.route('/searchProfile', methods=['POST', 'GET'])
+    def searchProfile():
+        if request.method == "GET":
+            try:
+                search_term = request.args.get('term')
+                attribute = request.args.get('attribute')
+                results = UserProfile.searchProfile(search_term, attribute)
 
-# Function to suspend user account info from form
+                return render_template('search_results.html', results=results)
+            except Exception as e:
+                print(e)
+        return render_template('systemAdmin/view-profiles.html)
+'''
+        
+# ---  User Account --- 
 
-# Function to suspend user profile info from form
+# Create Account Controller
+class CreateAccountController():
+    @adminBP.route('/registerAccount', methods=['GET', 'POST'])
+    def addAccount():
+        if request.method == 'POST':
+            try:
+                profile_name = request.form.get("profile_role")
+                print(profile_name)
+                profile=UserProfile.get_profile_by_name(name=profile_name)
+                profile_id = profile.profile_id
+                password_hash = generate_password_hash(password=request.form.get("password"))
+                user = User(profile_id=profile_id, 
+                            fname=request.form.get("fname"), 
+                            lname=request.form.get("lname"), 
+                            email=request.form.get("email"), 
+                            phonenum=request.form.get("phonenum"), 
+                            username=request.form.get("username"), 
+                            password_hash=password_hash)
+                print()
+                User.create_new_account(user)
+                return redirect(url_for('.viewUsers'))
+            except Exception as e:
+                print("Error:", e)
+        return render_template('systemAdmin/register-account.html')
 
+# View Account Controller
+class ViewAccountController():
+    @adminBP.route('/allUsers', methods=['POST', 'GET'])
+    def viewUsers():
+        user_list = User.get_all_accounts()
+        return render_template('systemAdmin/view-users.html', title="All Users", users=user_list)
+    
+# Update Account Controller
+class UpdateAccountController():
+    @adminBP.route('/updateAccount', methods=['POST', 'GET'])
+    def updateAccount():
+        if request.method == "POST":
+            try:
+                username = request.form.get("username") 
+                password_hash = generate_password_hash(password=request.form.get("password"))
+                fname=request.form.get("fname")
+                lname=request.form.get("lname") 
+                email=request.form.get("email") 
+                phonenum=request.form.get("phonenum")
+                
+                User.update_account(username, fname, lname, email, phonenum, password_hash)
+
+                return redirect(url_for('.viewUsers'))
+            except Exception as e:
+                print(e)
+        return render_template('systemAdmin/update-account.html')
+
+# Suspend Account Controller
+class SuspendAccountController():
+    @adminBP.route('/suspendAccount', methods=['POST', 'GET'])
+    def suspendAccount():
+        if request.method == "POST":
+            try:
+                username = request.form.get("username")
+                User.suspend_account(username)
+
+                return redirect(url_for('.viewUsers'))
+            except Exception as e:
+                print(e)
+        return render_template('systemAdmin/suspend-account.html')
+    
+# Search Account Controller

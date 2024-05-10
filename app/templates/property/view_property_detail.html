@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ViewNest Property Listings</title>
+    <style>
+        body {
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1, h2 {
+            text-align: center;
+        }
+        .property-display {
+            list-style-type: none;
+            padding: 0;
+        }
+        .property-item {
+            border: 1px solid #ccc; 
+            border-radius: 5px; 
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+        .property-image {
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 10px;
+        }
+        .property-name {
+            font-size: 1.5em; 
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .property-price {
+            font-size: 1.3em; 
+            font-weight: bold;
+        }
+        .button-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .button-container button {
+            background-color: rgba(51, 51, 51, 0.05);
+            border-radius: 8px;
+            border-width: 0;
+            color: #333333;
+            cursor: pointer;
+            display: inline-block;
+            font-family: "Haas Grot Text R Web", "Helvetica Neue", Helvetica, Arial, sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            line-height: 20px;
+            list-style: none;
+            margin: 0;
+            padding: 10px 12px;
+            text-align: center;
+            transition: all 200ms;
+            vertical-align: baseline;
+            white-space: nowrap;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>ViewNest Property Listings</h1>
+        <h2>Property Details</h2>
+        <ul class="property-display">
+            <li class="property-item">
+                <img src="{{ url_for('static', filename=property.image_url.replace('static/', '')) }}" alt="{{ property.propertyname }} image" class="property-image">
+                <div class="property-details">
+                    <div class="property-name">{{ property.propertyname }}</div>
+                    🏠 <b>Property Type: </b>{{ property.propertytype }}<br>
+                    📍 <b>District: </b>{{ property.district }}<br>
+                    🛏️ <b>Bedrooms: </b>{{ property.bedroom_no }}<br>
+                    📏 <b>PSF: </b>{{ property.psf }}<br>
+                    📅 <b>Listing Date: </b>{{ property.listing_date }}<br>
+                    {% if property.date_sold %}
+                    <br><b>Sold</b><br>
+                    <br><b>Date Sold: </b>{{ property.date_sold }}<br> 
+                    {% else %}
+                    <br><b>Currently Available</b><br> 
+                    {% endif %}<br>
+                    📈 <b>Views: </b>{{ property.view_count + 1 }}<br>
+                    <br><div class="property-price">S${{ "{:,.2f}".format(property.price) }}</div>
+                </div>
+                <div class="button-container">
+                    <button onclick="back()">Back to Property List</button>
+                </div>
+            </li>
+        </ul>
+    </div>
+    <script>
+            function back() {
+            window.location.href = '/view_properties'; // Redirect to view_properties.html
+        }
+    </script>
+</body>
+</html>
