@@ -174,12 +174,13 @@ class Property(Base):
     bedroom_no = Column(Integer)
     price = Column(Float)
     psf = Column(Integer)
+    selleremail = Column(String)
     listing_date = Column(Date)
     date_sold = Column(Date)
     image_url = Column(String) 
     sold = Column(Boolean)
 
-    def __init__(self, user_id, propertyname, propertytype, district, bedroom_no, price, psf, listing_date, date_sold, image_url, sold):
+    def __init__(self, user_id, propertyname, propertytype, district, bedroom_no, price, psf, selleremail, listing_date, date_sold, image_url, sold):
         self.user_id = user_id
         self.propertyname = propertyname
         self.propertytype = propertytype
@@ -187,10 +188,11 @@ class Property(Base):
         self.bedroom_no = bedroom_no
         self.price = price
         self.psf = psf
+        self.selleremail = selleremail
         self.listing_date = listing_date
         self.date_sold = date_sold
         self.image_url = image_url
         self.sold = sold
-    
+
     def get_property_id(self):
         return self.ID
