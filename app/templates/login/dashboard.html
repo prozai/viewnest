@@ -97,6 +97,28 @@
                 });
                 buttonsContainer.appendChild(buttonElement);
             });
+        } else if (rolesArray.includes("system admin")) {
+            var adminButtons = [
+                { text: "Create User Profiles", page: "/registerProfile"  },
+                { text: "Create User Accounts", page: "/registerAccount"  },
+                { text: "Retrieve User Profiles", page: "/displayProfiles"  },
+                { text: "Retrieve User Accounts", page: "/displayAccounts"  },
+                { text: "Update User Profiles", page: "/updateProfile"  },
+                { text: "Update User Accounts", page: "/updateAccount"  },
+                { text: "Suspend User Profiles", page: "/suspendProfile"  },
+                { text: "Suspend User Accounts", page: "/suspendAccount"  },
+                { text: "Search User Profiles", page: "/login"  },
+                { text: "Search User Accounts", page: "/login"  }
+            ];
+
+            adminButtons.forEach(function(buttonInfo) {
+                var buttonElement = document.createElement("button");
+                buttonElement.textContent = buttonInfo.text;
+                buttonElement.addEventListener("click", function() {
+                    window.location.href = buttonInfo.page;
+                });
+                buttonsContainer.appendChild(buttonElement);
+            });
         }
     </script>
 </body>

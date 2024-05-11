@@ -47,14 +47,13 @@ def create_app(config_class=Config):
     #session.commit()
 
     # Register blueprint
-    from app.control.adminController import adminBP
-    from app.control.mainController import mainBP
     from app.boundary.loginBoundary import loginBP
     from app.boundary.propertyBoundary import propBP    
-    app.register_blueprint(adminBP)
-    app.register_blueprint(mainBP)
+    from app.boundary.systemAdminBoundary import adminBP
+  
     app.register_blueprint(loginBP)
     app.register_blueprint(propBP)
+    app.register_blueprint(adminBP)
     # Close session on app teardown
     #@app.teardown_appcontext
     #def shutdown_session(exception=None):

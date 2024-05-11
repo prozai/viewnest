@@ -5,6 +5,7 @@ from datetime import date
 from sqlalchemy.ext.declarative import declarative_base
 
 
+
 # User Profile Class
 class UserProfile(Base):
     __tablename__ = "user_profile"
@@ -55,12 +56,14 @@ class UserProfile(Base):
             #with session.begin():
                 session.add(profile)
                 session.commit()
+                session.close()
+                return True
         except Exception as e:
             session.rollback()
             print(f"Error creating new profile: {e}")
-        finally:
             session.close()
-        
+            return False
+                    
     # Function to retrieve all profile records
     @classmethod
     def get_all_profiles(cls):
@@ -76,17 +79,34 @@ class UserProfile(Base):
     # Function to update profile information
     @classmethod
     def update_profile(cls, current_role, name, description):
-        profile = session.query(cls).filter(cls.roles==current_role).first()
-        profile.set_role(name)
-        profile.set_description(description)
-        session.commit()
+        try:
+            profile = session.query(cls).filter(cls.roles==current_role).first()
+            profile.set_role(name)
+            profile.set_description(description)
+            session.commit()
+            session.close()
+            return True
+        
+        except Exception as e:
+            session.rollback()
+            print(f"Error updating profile: {e}")
+            session.close()
+            return False
 
     # Function to suspend profile
     @classmethod
     def suspend_profile(cls, role):
-        profile = session.query(cls).filter(cls.roles==role).first()
-        profile.set_suspend_status(True) 
-        session.commit()
+        try:
+            profile = session.query(cls).filter(cls.roles==role).first()
+            profile.set_suspend_status(True) 
+            session.commit()
+            session.close()
+            return True
+        except Exception as e:
+            session.rollback()
+            print(f"Error suspending profile: {e}")
+            session.close()
+            return False
 
     # Function to search profile
     @classmethod
@@ -217,20 +237,33 @@ class User(Base):
             if new_password_hash != "":
                 account.set_password_hash(new_password_hash)
             session.commit()
+            return True
         except Exception as e:
             print(e)
+            return False
 
     # Function to suspend account record 
     @classmethod
     def suspend_account(cls, username):
-        account = session.query(cls).filter(cls.username==username).first()
-        account.set_suspend_status(True) 
-        session.commit()
+        try:
+            account = session.query(cls).filter(cls.username==username).first()
+            account.set_suspend_status(True) 
+            session.commit()
+            return True
+        except Exception as e:
+            print(e)
+            return False
 
     def __repr__(self):
         return f'User("{self.user_id}","{self.profile_id}""{self.fname}","{self.lname}","{self.email}","{self.username}","{self.phonenum}")'
 
-
+#added during integration
+    def is_system_admin(self):
+        # Assuming roles is a string containing comma-separated roles
+        roles = self.userprofile.roles.split(', ')
+        return 'system admin' in roles
+    
+    
 #Property Class
 class Property(Base):
     __tablename__ = "Property"
