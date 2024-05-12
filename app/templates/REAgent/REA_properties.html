@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Property Listings</title>
+    <style>
+        * {
+            text-align: center;
+        }
+
+        .flash-message {
+            position: fixed;
+            display: flex;
+            align-items: center;
+            width: 200px;
+            padding: 2px 0px 0px 0px;
+            background-color: #49bd7d;
+            border-radius: 15px;
+            color: white;
+            padding: auto ;
+            transition: opacity 0.5s;
+        }
+
+        .flash-close {
+            font-size: 25px;
+            font-weight: bold;
+            width: 25%;
+            cursor: pointer;
+        }
+        .flash-close:hover {
+            color: dimgray;
+            cursor: pointer;
+        }
+     
+        .message{
+            justify-content: center;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        .create-btn {
+            position: absolute; 
+            top: 10px; 
+            right: 10px; 
+            font-size: 12px;
+            font-family: sans-serif;
+            display: inline-block;
+            padding: 14px 20px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            background-color: #b46ddd;
+            color: white;
+            text-decoration: none;
+        }
+
+        .property-list {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .property-item {
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: #f9f9f9;
+        }
+
+        .property-image {
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 10px;
+        }
+
+        .container2 {
+            position: relative;
+            text-align: center;
+            color: white;
+        }
+
+        .sold {
+            font-size: 20px;
+            font-weight: bold;
+            width: 100%;
+            padding: 10px 0px 10px 0px;
+            background: rgba(0, 0, 0, 0.6);
+            color: whitesmoke;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .update-btn {
+            font-size: 12px;
+            font-family: sans-serif;
+            display: inline-block;
+            padding: 14px 20px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            background-color: #569adf;
+            color: white;
+            text-decoration: none;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            padding-top: 50px;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            border: 1px solid #888;
+            width: 450px;
+            margin: 200px auto;
+            padding: 10px 10px 80px 10px;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            margin-right: 12px;
+        }
+
+        .close:hover {
+            color: black;
+            cursor: pointer;
+        }
+
+        button {
+            padding: 14px 20px;
+            margin: 8px 0;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            background-color: #dd5454;
+            color: white;
+        }
+
+        .modal-footer {
+            width: 50%;
+            margin: auto;
+        }
+
+        .cancel-btn,
+        .delete-btn {
+            float: left;
+            width: 45%;
+            margin: 2.5%;
+            cursor: pointer;
+        }
+
+        .cancel-btn {
+            background-color: #aaa;
+        }
+    </style>
+</head>
+
+<body>
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <div class="flash-message">
+        <span class="flash-close" onclick="this.parentElement.style.opacity='0';">&times;</span>
+        {% for message in messages %}
+        <p class="message">{{ message }}</p>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+    </div>
+    <div class="container">
+        <a href="/create_property" class="create-btn">Add Property</a>
+        <br>
+        <h1>My Property Listings</h1>
+        <ul class="property-list">
+            {% for property in properties|sort(attribute='sold') %}
+            <li class="property-item">
+                {% if property.date_sold %}
+                <div class="container2">
+                    <img src="{{ property.image_url }}" alt="{{ property.propertyname }} image" class="property-image">
+                    <div class="sold">SOLD</div>
+                </div>
+                {% else %}
+                <img src="{{ property.image_url }}" alt="{{ property.propertyname }} image" class="property-image">
+                {% endif %}
+                <strong>{{ property.propertyname }}</strong><br>
+                District: {{ property.district }}<br>
+                Bedrooms: {{ property.bedroom_no }}<br>
+                Price: ${{ '%.2f' | format(property.price) }}<br>
+                PSF: {{ property.psf }}<br>
+                Listing Date: {{ property.listing_date }}<br>
+                {% if property.date_sold %}
+                <strong>Date Sold: {{ property.date_sold }}</strong><br>
+                {% else %}
+                <a href="/update_property/{{ property.get_property_id() }}" class="update-btn">Update</a>
+                <button class="modal-btn"
+                    onclick="document.getElementById('myModal_{{ property.get_property_id() }}').style.display='block'">Delete</button>
+                <!-- The Modal -->
+                <div id="myModal_{{ property.get_property_id() }}" class="modal">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <span class="close"
+                                onclick="document.getElementById('myModal_{{ property.get_property_id() }}').style.display='none'">&times;</span>
+                        </div>
+                        <div class="modal-body">
+                            <br>
+                            <h1 class="modal-title">Delete Property Listing</h1>
+                            <p>Are you sure you want to delete <strong>{{ property.propertyname }}</strong> listing?</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="cancel-btn"
+                                onclick="document.getElementById('myModal_{{ property.get_property_id() }}').style.display='none'">Cancel</button>
+                            <form action="{{ url_for('route.delete_property', id=property.get_property_id()) }}"
+                                method="POST">
+                                <button type="submit" class="delete-btn">Delete</button>
+                            </form>
+                            <br>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <script>
+        var modal = document.getElementsByClassName('modal');
+
+        window.onclick = function (event) {
+            for (var i = 0; i < modal.length; i++) {
+                if (event.target == modal[i]) {
+                    modal[i].style.display = "none";
+                }
+            }
+        }
+    </script>
+
+</body>
+
+</html>

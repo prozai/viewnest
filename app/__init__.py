@@ -23,28 +23,28 @@ def create_app(config_class=Config):
     # Database setup
     
     # Drop database (if exist)
-    #Base.metadata.drop_all(engine)
+    # Base.metadata.drop_all(engine)
 
-    # Create database tables
-    from app.entity.models import User, UserProfile
-    Base.metadata.create_all(engine)
+    # # Create database tables
+    # from app.entity.models import User, UserProfile
+    # Base.metadata.create_all(engine)
 
-    # Add known user types to UserProfile
-    buyer = UserProfile(roles='buyer')
-    #session.add(buyer)
-    #session.commit()
+    # # Add known user types to UserProfile
+    # buyer = UserProfile(roles='buyer')
+    # session.add(buyer)
+    # session.commit()
 
-    seller = UserProfile(roles='seller')
-    #session.add(seller)
-    #session.commit()
+    # seller = UserProfile(roles='seller')
+    # session.add(seller)
+    # session.commit()
 
-    realEstateAgent = UserProfile(roles='real estate agent')
-    #session.add(realEstateAgent)
-    #session.commit()
+    # realEstateAgent = UserProfile(roles='real estate agent')
+    # session.add(realEstateAgent)
+    # session.commit()
 
-    admin = UserProfile(roles='system admin')
-    #session.add(admin)
-    #session.commit()
+    # admin = UserProfile(roles='system admin')
+    # session.add(admin)
+    # session.commit()
 
     # Register blueprint
     from app.boundary.loginBoundary import loginBP

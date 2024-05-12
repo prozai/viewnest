@@ -40,7 +40,8 @@
 </head>
 <body>
     <div class="container">
-        <h1>Welcome, {{ user.fname }} {{ user.lname }} (User ID: {{ user.user_id}})</h1>
+        <h1>Welcome, {{ user.fname }} {{ user.lname }} (User ID: {{ 
+            user.user_id}})</h1>
         <h2>Your account type is: {{ user.userprofile.roles }}.</h2>
 
         <div id="buttonsContainer"></div>
@@ -64,18 +65,21 @@
 
         if (rolesArray.includes("real estate agent")) {
             var realEstateAgentButtons = [
-                { text: "Create Property Listings", page: "create_property_listings.html" },
-                { text: "Retrieve Property Listings", page: "retrieve_property_listings.html" },
+                { text: "Create Property Listings", page: "/create_property" },
+                { text: "Retrieve Property Listings", page: "/REA_properties" },
                 { text: "Retrieve Clientele Ratings", page: "retrieve_clientele_ratings.html" },
                 { text: "Retrieve Clientele Reviews", page: "retrieve_clientele_reviews.html" },
-                { text: "Update Property Listings", page: "update_property_listings.html" },
-                { text: "Delete Property Listings", page: "delete_property_listings.html" },
-                { text: "Search Property Listings", page: "search_property_listings.html" }
+                { text: "Update Property Listings", page: "/update_property/<int:id>" },
+                { text: "Delete Property Listings", page: "/delete_property/<int:id>" },
+                { text: "Search Property Listings", page: "search_property_listings" }
             ];
 
             realEstateAgentButtons.forEach(function(buttonInfo) {
                 var buttonElement = document.createElement("button");
                 buttonElement.textContent = buttonInfo.text;
+                buttonElement.dataset.page = buttonInfo.page; // Set data-page attribute
+                if (buttonInfo.action) {
+                }
                 buttonElement.addEventListener("click", function() {
                     window.location.href = buttonInfo.page;
                 });
@@ -110,6 +114,16 @@
                 { text: "Search User Profiles", page: "/login"  },
                 { text: "Search User Accounts", page: "/login"  }
             ];
+
+            adminButtons.forEach(function(buttonInfo) {
+                var buttonElement = document.createElement("button");
+                buttonElement.textContent = buttonInfo.text;
+                buttonElement.addEventListener("click", function() {
+                    window.location.href = buttonInfo.page;
+                });
+                buttonsContainer.appendChild(buttonElement);
+            });
+
 
             adminButtons.forEach(function(buttonInfo) {
                 var buttonElement = document.createElement("button");

@@ -264,31 +264,51 @@ class User(Base):
         return 'system admin' in roles
     
     
-#Property Class
+# Property Class
 class Property(Base):
     __tablename__ = "Property"
 
     ID = Column(Integer, primary_key=True)
+    user_id = Column(Integer)
     propertyname = Column(String)
     propertytype = Column(String)
     district = Column(String)
     bedroom_no = Column(Integer)
     price = Column(Float)
     psf = Column(Integer)
+    selleremail = Column(String)
     listing_date = Column(Date)
     date_sold = Column(Date)
     image_url = Column(String) 
     sold = Column(Boolean)
     view_count = Column(Integer, default=0)
+    saves = Column(Integer, default=0)
 
-    def __init__(self, propertyname, propertytype, district, bedroom_no, price, psf, listing_date, date_sold, image_url, sold):
+    def __init__(self, user_id, propertyname, propertytype, district, bedroom_no, price, psf, selleremail, listing_date, date_sold, image_url, sold):
+        self.user_id = user_id
         self.propertyname = propertyname
         self.propertytype = propertytype
         self.district = district
         self.bedroom_no = bedroom_no
         self.price = price
         self.psf = psf
+        self.selleremail = selleremail
         self.listing_date = listing_date
         self.date_sold = date_sold
         self.image_url = image_url
         self.sold = sold
+
+    def get_property_id(self):
+        return self.ID
+    
+ # Save Class   
+class Save(Base):
+    __tablename__ = "Save"
+
+    ID = Column(Integer, primary_key=True)
+    user_id = Column(Integer)
+    property_id = Column(Integer)
+
+    def __init__(self, user_id, property_id):
+        self.user_id = user_id
+        self.property_id = property_id
