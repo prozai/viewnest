@@ -224,5 +224,67 @@ class User(Base):
         account.set_suspend_status(True) 
         session.commit()
 
+
+class Review(Base):
+    __tablename__ = "review"
+    review_id = Column(Integer, primary_key=True, autoincrement=True, unique=True)
+    review = Column(String(255), nullable=False)
+    rating = Column(Integer, nullable=False)
+    user_id = Column(Integer, ForeignKey('users_info.user_id'))
+
+    def __init__(self, review, rating, user_id, review_id=None):
+        self.review = review
+        self.rating = rating
+        self.user_id = user_id
+        self.review_id = review_id
+
+    def get_review_id(self):
+        return self.review_id
+    
+    def get_review(self):
+        return self.review
+    
+    def get_rating(self):
+        return self.rating
+    
+    def get_user_id(self):
+        return self.user_id
+    
+    def set_review_id(self, id):
+        self.review_id = id
+
+    def set_review(self, review):
+        self.review = review
+
+    def set_rating(self, rating):
+        self.rating = rating
+
+    def set_user_id(self, id):
+        self.user_id = id
+
+    @classmethod
+    def create_new_review(cls, review):
+        try:
+            session.add(review)
+            session.commit()
+            return 200
+        except Exception as e:
+            session.rollback()
+            print(f"Error creating new review: {e}")
+            return 500
+        finally:
+            session.close()
+    
+    @classmethod
+    def get_all_reviews(cls):
+        reviews = session.query(cls).all()
+        return reviews
+    
+    @classmethod
+    def get_review_by_id(cls, id):
+        review = session.query(cls).filter(cls.review_id==id).first()
+        return review
+    
+
     def __repr__(self):
         return f'User("{self.user_id}","{self.profile_id}""{self.fname}","{self.lname}","{self.email}","{self.username}","{self.phonenum}")'

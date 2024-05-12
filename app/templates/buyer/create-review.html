@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container my-2">
+    <div class="row-12 d-flex align-items-center h-100 justify-content-center flex-column">
+        <h1>Create review</h1>
+        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12">
+            <div class="card">
+                <div class="card-body">
+                    <form method="post" class='needs-validation' id="createReview" novalidate>
+                       <!-- <hidden id = "user_id" name = "user_id" value = "{{user_id}}"/> -->
+                        <hidden id = "user_id" name = "user_id" value = "1"/>
+                        <!-- Ratings -->
+                        <div>
+                            <label for="rating" class="form-label">Rating</label>
+                            <div class="star-rating">
+                                <input id="star1" type="radio" name="rating" value="1"><label for="star1">★</label>
+                                <input id="star2" type="radio" name="rating" value="2"><label for="star2">★</label>
+                                <input id="star3" type="radio" name="rating" value="3"><label for="star3">★</label>
+                                <input id="star4" type="radio" name="rating" value="4"><label for="star4">★</label>
+                                <input id="star5" type="radio" name="rating" value="5"><label for="star5">★</label>
+                            </div>
+                        </div>
+                        <br>
+
+                        <!-- Review -->
+                        <div>
+                            <label for="review" class="form-label">Review:</label>
+                            <input type="text"  class="form-control" id="review" name="review" size="50" required>
+                            <div class="invalid-feedback">
+                                Please write something.
+                            </div>
+                        </div>
+                        <br>
+
+                        <!-- Submit Button -->
+                        <div>
+                            <button type="submit" class="btn btn-outline-success">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+(function () {
+    'use strict'
+
+    var forms = document.querySelectorAll('.needs-validation')
+
+    Array.prototype.slice.call(forms)
+    .forEach(function (form) {
+      form.addEventListener('submit', function (event) {
+        if (!form.checkValidity()) {
+            event.preventDefault()
+            event.stopPropagation()
+        }
+
+        form.classList.add('was-validated')
+      }, false)
+
+      document.getElementById('review').addEventListener('input', function() {
+        var review = this.value;
+        if (review.length > 0) {
+            this.setCustomValidity('');
+        } else {
+            this.setCustomValidity('Please write something.');
+        }
+      });
+
+
+    });
+})();
+
+</script>
+{% endblock %}
