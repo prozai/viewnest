@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Property Listings</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         * {
             font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -55,17 +56,22 @@
             position: absolute;
             top: 10px;
             right: 10px;
-            font-size: 12px;
+            font-size: 18px;
             font-family: sans-serif;
             display: inline-block;
-            padding: 14px 20px;
+            padding: 11px 14px;
             border: none;
-            border-radius: 10px;
+            border-radius: 50%;
             cursor: pointer;
             background-color: #b46ddd;
             color: white;
             text-decoration: none;
         }
+
+        .create-btn:hover {
+            background-color: #d29ff0;
+        }
+
 
         .property-list {
             list-style-type: none;
@@ -90,6 +96,12 @@
             position: relative;
             text-align: center;
             color: white;
+        }
+
+        .views-saves {
+            position: absolute; 
+            right: 30px;
+            text-align: right;
         }
 
         .sold {
@@ -193,12 +205,13 @@
     {% endwith %}
     </div>
     <div class="container">
-        <a href="/create_property" class="create-btn">Add Property</a>
+        <a href="/create_property" class="create-btn"><i class="fa-solid fa-plus"></i></a>
         <br>
         <h1>My Property Listings</h1>
         <ul class="property-list">
             {% for property in properties|sort(attribute='sold') %}
             <li class="property-item">
+                <h2>{{ property.propertyname }}</h2>
                 {% if property.date_sold %}
                 <div class="container2">
                     <img src="{{ property.image_url }}" alt="{{ property.propertyname }} image" class="property-image">
@@ -207,7 +220,10 @@
                 {% else %}
                 <img src="{{ property.image_url }}" alt="{{ property.propertyname }} image" class="property-image">
                 {% endif %}
-                <strong>{{ property.propertyname }}</strong><br>
+                <div class="views-saves">
+                    📈 {{ property.view_count }}<br>
+                    ⭐️ {{ property.saves }}
+                </div>
                 District: {{ property.district }}<br>
                 Bedrooms: {{ property.bedroom_no }}<br>
                 Price: ${{ '%.2f' | format(property.price) }}<br>
@@ -217,9 +233,11 @@
                 {% if property.date_sold %}
                 <strong>Date Sold: {{ property.date_sold }}</strong><br>
                 {% else %}
-                <a href="/update_property/{{ property.get_property_id() }}" class="update-btn">Update</a>
+                <a href="/update_property/{{ property.get_property_id() }}" class="update-btn"><i
+                        class="fa-solid fa-pencil"></i></a>
                 <button class="modal-btn"
-                    onclick="document.getElementById('myModal_{{ property.get_property_id() }}').style.display='block'">Delete</button>
+                    onclick="document.getElementById('myModal_{{ property.get_property_id() }}').style.display='block'"><i
+                        class="fa-solid fa-trash-can"></i></button>
                 <!-- The Modal -->
                 <div id="myModal_{{ property.get_property_id() }}" class="modal">
                     <div class="modal-content">
