@@ -179,6 +179,8 @@ class Property(Base):
     date_sold = Column(Date)
     image_url = Column(String) 
     sold = Column(Boolean)
+    view_count = Column(Integer, default=0)
+    saves = Column(Integer, default=0)
 
     def __init__(self, user_id, propertyname, propertytype, district, bedroom_no, price, psf, selleremail, listing_date, date_sold, image_url, sold):
         self.user_id = user_id
@@ -196,3 +198,15 @@ class Property(Base):
 
     def get_property_id(self):
         return self.ID
+    
+ # Save Class   
+class Save(Base):
+    __tablename__ = "Save"
+
+    ID = Column(Integer, primary_key=True)
+    user_id = Column(Integer)
+    property_id = Column(Integer)
+
+    def __init__(self, user_id, property_id):
+        self.user_id = user_id
+        self.property_id = property_id
