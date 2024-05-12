@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ViewNest Property Listings</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1, h2 {
+            text-align: center;
+        }
+        .property-display {
+            list-style-type: none;
+            padding: 0;
+        }
+        .property-item {
+            border: 1px solid #ccc; 
+            border-radius: 5px; 
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+        .property-image {
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 10px;
+        }
+        .property-name {
+            font-size: 1.5em; 
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .property-price {
+            font-size: 1.3em; 
+            font-weight: bold;
+        }
+        .button-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .button-container button {
+            background-color: rgba(51, 51, 51, 0.05);
+            border-radius: 8px;
+            border-width: 0;
+            color: #333333;
+            cursor: pointer;
+            display: inline-block;
+            font-family: "Haas Grot Text R Web", "Helvetica Neue", Helvetica, Arial, sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            line-height: 20px;
+            list-style: none;
+            margin: 0;
+            padding: 10px 12px;
+            text-align: center;
+            transition: all 200ms;
+            vertical-align: baseline;
+            white-space: nowrap;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+        }
+
+        /* Save css */
+        .save-button {
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
+            position: relative;
+            float: right;
+            padding-right: 2.5%;
+        }
+        
+        .fas, .far {
+            position: absolute;
+            top: 0;
+            left: 0;
+            font-size: 22px;
+            color: #ffcc00;
+            transition: opacity 0.2s ease-in-out;
+        }
+
+        .unsaved.far, .saved.fas {
+            opacity: 1;
+        }
+
+        .unsaved.fas, .saved.far {
+            opacity: 0;
+        }
+
+        .save-button.saved .unsaved.far, .save-button.saved .saved.fas{
+            opacity: 0; 
+        }
+
+        .save-button.saved .unsaved.fas, .save-button.saved .saved.far{
+            opacity: 1; 
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>ViewNest Property Listings</h1>
+        <h2>Property Details</h2>
+        <ul class="property-display">
+            <li class="property-item">
+                <img src="{{ url_for('static', filename=property.image_url.replace('static/', '')) }}" alt="{{ property.propertyname }} image" class="property-image">
+                <div class="property-details">
+                    <div class="property-name">{{ property.propertyname }}
+                        {% if property.is_saved %}
+                        <button type="button" class="save-button" id="add-to-saves" data-property-id="{{ property.ID }}">
+                            <i class="saved far fa-star"></i>
+                            <i class="saved fas fa-star"></i>
+                        </button>
+                        {% else %}
+                        <button type="button" class="save-button" id="add-to-saves" data-property-id="{{ property.ID }}">
+                            <i class="unsaved far fa-star"></i>
+                            <i class="unsaved fas fa-star"></i>
+                        </button>
+                        {% endif %}
+                    </div>
+                    
+                    🏠 <b>Property Type: </b>{{ property.propertytype }}<br>
+                    📍 <b>District: </b>{{ property.district }}<br>
+                    🛏️ <b>Bedrooms: </b>{{ property.bedroom_no }}<br>
+                    📏 <b>PSF: </b>{{ property.psf }}<br>
+                    📅 <b>Listing Date: </b>{{ property.listing_date }}<br>
+                    {% if property.date_sold %}
+                    <br><b>Sold</b><br>
+                    <br><b>Date Sold: </b>{{ property.date_sold }}<br> 
+                    {% else %}
+                    <br><b>Currently Available</b><br> 
+                    {% endif %}<br>
+                    📈 <b>Views: </b>{{ property.view_count + 1 }}<br>
+                    ⭐️ <b>Saves: </b><span class="property-saves">{{ property.saves }}</span><br>
+                    <br><div class="property-price">S${{ "{:,.2f}".format(property.price) }}</div>
+                </div>
+                <div class="button-container">
+                    <button onclick="back()">Back to Property List</button>
+                </div>
+            </li>
+        </ul>
+    </div>
+    <script>
+            function back() {
+            window.location.href = '/view_properties'; // Redirect to view_properties.html
+        }
+
+        // Save button
+        document.addEventListener('DOMContentLoaded', function() {
+            const saveButton = document.getElementById('add-to-saves');
+            const savesCount = document.querySelector('.property-saves');
+        
+            saveButton.addEventListener('click', function() {
+                const propertyId = this.dataset.propertyId;
+                const formData = new FormData();
+                formData.append('property_id', propertyId);
+        
+                fetch('/save_property', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => {
+                    if (response.ok) {
+                        this.classList.toggle('saved');
+                        if (this.classList.contains('saved')) {
+                            savesCount.innerText = parseInt(savesCount.innerText) - 1;
+                        } else {
+                            savesCount.innerText = parseInt(savesCount.innerText) + 1;
+                        }
+                    } else {
+                        console.error('Failed to save favorite');
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+            });
+        });
+        
+        
+    </script>
+</body>
+</html>
