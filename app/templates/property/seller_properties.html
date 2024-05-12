@@ -20,7 +20,7 @@
             background-color: #49bd7d;
             border-radius: 15px;
             color: white;
-            padding: auto ;
+            padding: auto;
             transition: opacity 0.5s;
         }
 
@@ -30,12 +30,13 @@
             width: 25%;
             cursor: pointer;
         }
+
         .flash-close:hover {
             color: dimgray;
             cursor: pointer;
         }
-     
-        .message{
+
+        .message {
             justify-content: center;
             text-align: center;
         }
@@ -55,6 +56,25 @@
 
         h1 {
             margin-bottom: 20px;
+        }
+
+        .container2 {
+            position: relative;
+            text-align: center;
+            color: white;
+        }
+
+        .sold {
+            font-size: 20px;
+            font-weight: bold;
+            width: 100%;
+            padding: 10px 0px 10px 0px;
+            background: rgba(0, 0, 0, 0.6);
+            color: whitesmoke;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
         }
 
         .property-list {
@@ -93,10 +113,16 @@
         <ul class="property-list">
             {% for property in properties|sort(attribute='sold') %}
             <li class="property-item">
-                <h2>
-                    {{ property.propertyname }}</h2>
-                <img src="{{ property.image_url }}" alt="{{ property.propertyname }} image" class="property-image"><br>
-
+                <h2>{{ property.propertyname }}</h2>
+                {% if property.date_sold %}
+                <div class="container2">
+                    <img src="{{ property.image_url }}" alt="{{ property.propertyname }} image" class="property-image">
+                    <div class="sold">SOLD</div>
+                </div>
+                {% else %}
+                <img src="{{ property.image_url }}" alt="{{ property.propertyname }} image" class="property-image">
+                {% endif %}
+                <br>
                 <div style="float: right; text-align: right">
                     {% if property.date_sold %}
                     <strong>SOLD</strong><br>
