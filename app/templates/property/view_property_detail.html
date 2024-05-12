@@ -115,13 +115,13 @@
                     <div class="property-name">{{ property.propertyname }}
                         {% if property.is_saved %}
                         <button type="button" class="save-button" id="add-to-saves" data-property-id="{{ property.ID }}">
-                            <i class="saved far fa-star" is-saved="true">s</i>
-                            <i class="saved fas fa-star" is-saved="false">sf</i>
+                            <i class="saved far fa-star" is-saved="true"></i>
+                            <i class="saved fas fa-star" is-saved="false"></i>
                         </button>
                         {% else %}
                         <button type="button" class="save-button" id="add-to-saves" data-property-id="{{ property.ID }}">
-                            <i class="unsaved far fa-star" is-saved="false">u</i>
-                            <i class="unsaved fas fa-star" is-saved="true">uf</i>
+                            <i class="unsaved far fa-star" is-saved="false"></i>
+                            <i class="unsaved fas fa-star" is-saved="true"></i>
                         </button>
                         {% endif %}
                     </div>
