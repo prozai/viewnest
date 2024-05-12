@@ -7,6 +7,7 @@
     <title>My Property Listings</title>
     <style>
         * {
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
             text-align: center;
         }
 
@@ -15,12 +16,13 @@
             display: flex;
             align-items: center;
             width: 200px;
-            padding: 2px 0px 0px 0px;
+            padding: 2px 10px 0px 0px;
             background-color: #49bd7d;
             border-radius: 15px;
             color: white;
-            padding: auto ;
+            padding: auto;
             transition: opacity 0.5s;
+            z-index: 2;
         }
 
         .flash-close {
@@ -29,14 +31,10 @@
             width: 25%;
             cursor: pointer;
         }
+
         .flash-close:hover {
             color: dimgray;
             cursor: pointer;
-        }
-     
-        .message{
-            justify-content: center;
-            text-align: center;
         }
 
         .container {
@@ -54,9 +52,9 @@
         }
 
         .create-btn {
-            position: absolute; 
-            top: 10px; 
-            right: 10px; 
+            position: absolute;
+            top: 10px;
+            right: 10px;
             font-size: 12px;
             font-family: sans-serif;
             display: inline-block;
