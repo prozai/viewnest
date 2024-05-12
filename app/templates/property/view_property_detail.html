@@ -115,13 +115,13 @@
                     <div class="property-name">{{ property.propertyname }}
                         {% if property.is_saved %}
                         <button type="button" class="save-button" id="add-to-saves" data-property-id="{{ property.ID }}">
-                            <i class="saved far fa-star"></i>
-                            <i class="saved fas fa-star"></i>
+                            <i class="saved far fa-star" is-saved="true">s</i>
+                            <i class="saved fas fa-star" is-saved="false">sf</i>
                         </button>
                         {% else %}
                         <button type="button" class="save-button" id="add-to-saves" data-property-id="{{ property.ID }}">
-                            <i class="unsaved far fa-star"></i>
-                            <i class="unsaved fas fa-star"></i>
+                            <i class="unsaved far fa-star" is-saved="false">u</i>
+                            <i class="unsaved fas fa-star" is-saved="true">uf</i>
                         </button>
                         {% endif %}
                     </div>
@@ -159,6 +159,8 @@
         
             saveButton.addEventListener('click', function() {
                 const propertyId = this.dataset.propertyId;
+                const starIcon = this.querySelector('i');
+                let isSaved = starIcon.getAttribute('is-saved');
                 const formData = new FormData();
                 formData.append('property_id', propertyId);
         
@@ -168,11 +170,17 @@
                 })
                 .then(response => {
                     if (response.ok) {
-                        this.classList.toggle('saved');
-                        if (this.classList.contains('saved')) {
-                            savesCount.innerText = parseInt(savesCount.innerText) - 1;
+                        if (isSaved === 'true') {
+                            isSaved = 'false';
                         } else {
+                            isSaved = 'true';
+                        }
+                        starIcon.setAttribute('is-saved', isSaved);
+                        this.classList.toggle('saved');
+                        if (isSaved === 'true') {
                             savesCount.innerText = parseInt(savesCount.innerText) + 1;
+                        } else {
+                            savesCount.innerText = parseInt(savesCount.innerText) - 1;
                         }
                     } else {
                         console.error('Failed to save favorite');
