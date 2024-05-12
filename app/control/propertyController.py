@@ -1,12 +1,86 @@
 from flask import request, session, flash
 from app import session
-from app.entity.models import Property
+from app.entity.models import *
 import os
-from datetime import datetime
+from datetime import datetime, date
+
+class viewPropertyController:
+    
+    # Function to add sample properties.
+    def add_sample_properties():
+        try:
+            # Sample property creation
+            listing_date1 = date(2024, 4, 4)
+            property1 = Property("12 Woodlands Street 12", "HDB", "Woodlands", 3, 800000.00, 2938, "seller1@gmail.com", listing_date1, None, "./static/uploads/properties/property1.jpg", False)
+            listing_date2 = date(2024, 2, 13)
+            date_sold2 = date(2024, 4, 3)
+            property2 = Property("29 Tampines Street 41", "Condo", "Tampines", 3, 1200000.00, 1382, "seller2@gmail.com", listing_date2, date_sold2, "./static/uploads/properties/property2.jpg", True)
+            
+            # Check if properties already exist before adding them
+            existing_properties = session.query(Property).filter(Property.propertyname.in_(["12 Woodlands Street 12", "29 Tampines Street 41"])).all()
+
+            if not existing_properties:
+                session.add_all([property1, property2])
+                session.commit()
+                print("Sample properties added successfully.")
+            else:
+                print("Sample properties already exist.")
+        except Exception as e:
+            session.rollback()
+            print(f"Error adding sample properties: {e}")
+        finally:
+            session.close()
+
+    # Function to show all properties.
+    def view_properties():
+        try:
+            properties = session.query(Property).all()
+            return properties
+        except Exception as e:
+            print(f"Error fetching properties: {e}")
+            return None
+        finally:
+            session.close()
+
+    # Function to show selected property.
+    def view_property_detail(property_id):
+        try:
+            property = session.query(Property).filter_by(ID=property_id).first()
+
+            # Check if property is saved
+            user_id = 2 # session['user_id']
+            saved = session.query(Save).filter_by(user_id=user_id, property_id=property_id).first()
+            if saved:
+                property.is_saved = True
+            else:
+                property.is_saved = False
+
+            return property
+        except Exception as e:
+            print(f"Error fetching property: {e}")
+            return None
+        finally:
+            session.close()
+
+class viewCountController:
+    # Function to add view count to property when viewed.
+    def add_viewCount(property_id):
+        try:
+            property = session.query(Property).filter_by(ID=property_id).first()
+            if property:
+                property.view_count += 1
+                session.commit()
+                return property
+        except Exception as e:
+                session.rollback()
+                print(f"Error fetching property: {e}")
+                return None
+        finally:
+            session.close()
 
 # Create Property Listing
 class createPropertyController:
-    def REA_createProperty(self):
+    def REA_createProperty():
         try:
             if request.method == 'POST':
                 propertyname = request.form['propertyname']
@@ -26,11 +100,11 @@ class createPropertyController:
                                             bedroom_no=bedroom_no,
                                             price=price,
                                             psf=psf,
+                                            selleremail=selleremail,
                                             listing_date=datetime.now().date(),
                                             date_sold=None,
                                             image_url=None,
-                                            sold=False,
-                                            selleremail=selleremail)
+                                            sold=False)
                     session.add(new_property)
                     session.commit()
 
@@ -53,8 +127,8 @@ class createPropertyController:
             print("Error creating property:", str(e))
 
 # REA View Property Listings
-class viewPropertiesController:
-    def REA_viewProperties(self):
+class REAPropertiesController:
+    def REA_viewProperties():
         try:
             properties = session.query(Property).filter_by(user_id=1).all()  # session['user_id']
             return properties
@@ -64,7 +138,7 @@ class viewPropertiesController:
 
 # Update Property Listing
 class updatePropertyController:
-    def REA_updateProperty(self, id):
+    def REA_updateProperty(id):
         try:
             if request.method == 'POST':
                 propertyname = request.form['propertyname']
@@ -108,7 +182,7 @@ class updatePropertyController:
 
 # Delete Property Listing
 class deletePropertyController:
-    def REA_deleteProperty(self, id):
+    def REA_deleteProperty(id):
         try:
             property = session.query(Property).filter_by(ID=id).first()
             if property:
@@ -126,3 +200,38 @@ class deletePropertyController:
 
         except Exception as e:
             print("Error deleting property:", str(e))
+
+# Save property
+class savePropertyController:
+    def buyer_saveProperty():
+        try:
+            property_id = request.form['property_id']
+            user_id = 2  # session['user_id']
+            saved = session.query(Save).filter_by(user_id=user_id, property_id=property_id).first()
+            property = session.query(Property).filter_by(ID=property_id).first()
+
+            if saved:
+                session.delete(saved)
+                property.saves -= 1
+                session.commit()
+                return 'Save deleted'
+            else:
+                new_favorite = Save(user_id=user_id, property_id=property_id)
+                session.add(new_favorite)
+                property.saves += 1 
+                session.commit()
+                return 'Save added'
+        except Exception as e:
+            print("Error adding saved property:", str(e))
+
+# Seller View Property Listings + Saves
+class sellerPropertiesController:
+    def seller_viewProperties():
+        # user_id = 3 # session['user_id']
+        # user = session.query(User).filter_by(user_id=user_id).first()
+        try:
+            properties = session.query(Property).filter_by(selleremail="seller1@gmail.com").all()  # user.email
+            return properties
+
+        except Exception as e:
+            print("Error retrieving property listings:", str(e))
