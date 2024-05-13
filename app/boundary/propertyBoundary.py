@@ -115,3 +115,40 @@ def save_property():
 @propBP.route('/seller_properties')
 def seller_view_properties():
     return seller_properties_boundary.sellerViewProperties()
+
+#search
+
+class SearchPropertyBoundary:
+    def __init__(self):
+        self.controller = SearchController()
+        
+    def search(self, search_query):
+        results = self.controller.search(search_query)
+        return render_template('property/search.html', results=results)
+
+    def searchSold(self, search_query):
+        results = self.controller.searchSold(search_query)
+        return render_template('property/search.html', results=results)
+
+    def searchAvailable(self, search_query):
+        results = self.controller.searchAvailable(search_query)
+        return render_template('property/search.html', results=results)
+
+search_boundary = SearchPropertyBoundary()
+
+
+@propBP.route('/search', methods=['POST', 'GET'])
+def search():
+    search_query = request.form.get('query')
+    return search_boundary.search(search_query)
+
+
+@propBP.route('/searchSold', methods=['POST', 'GET'])
+def searchSold():
+    search_query = request.form.get('query')
+    return search_boundary.searchSold(search_query)
+
+@propBP.route('/searchAvailable', methods=['POST', 'GET'])
+def searchAvailable():
+    search_query = request.form.get('query')
+    return search_boundary.searchAvailable(search_query)

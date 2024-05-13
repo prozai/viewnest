@@ -1,7 +1,7 @@
 from flask import render_template, redirect, url_for, request
 from flask_babel import _
 from app.boundary import adminBP
-from app.control.adminController import ViewProfileController, ViewAccountController, CreateProfileController, CreateAccountController, UpdateProfileController, UpdateAccountController, SuspendProfileController, SuspendAccountController
+from app.control.adminController import *
 
 @adminBP.route('/')
 def index():
@@ -16,7 +16,6 @@ def adminIndex():
 class CreateProfilePage():
     @adminBP.route('/registerProfile', methods=['GET', 'POST'])
     def createProfile():
-        
         if request.method == "POST":
             try:
                 role = request.form.get("role")
@@ -72,6 +71,25 @@ class SuspendProfilePage():
             except Exception as e:
                 print(e)
         return render_template('systemAdmin/suspend-profile.html')
+
+class SearchProfilePage():
+    @adminBP.route('/searchProfile', methods=['POST', 'GET'])
+    def displaySearchProfile():
+        try:
+            search_term = request.form.get('query')
+            search_profile = SearchProfileController()
+
+            results = search_profile.searchProfile(search_term)
+
+            if results :
+                return render_template('systemAdmin/search_profile.html', results=results)
+            else:
+                print('None found!')
+    
+        except Exception as e:
+            print(e)
+
+        return render_template('systemAdmin/view-profiles.html')
 
 
 # === User Account ===
@@ -145,3 +163,23 @@ class SuspendAccountPage():
             except Exception as e:
                 print(e)
         return render_template('systemAdmin/suspend-account.html')
+    
+class SearchProfilePage():
+    @adminBP.route('/searchAccount', methods=['POST', 'GET'])
+    def displaySearchAccount():
+        try:
+            search_term = request.form.get('query')
+
+            search_account = SearchAccountController()
+            results = search_account.searchAccount(search_term)
+
+            if results :
+                return render_template('systemAdmin/search_account.html', results=results)
+            else:
+                print('None found!')
+    
+        except Exception as e:
+            print(e)
+
+        return render_template('systemAdmin/view-users.html')
+

@@ -84,9 +84,29 @@
             <button onclick="showSold()">Sold</button>
             <button onclick="showAll()">Show All</button>
         </div>
+        <!-- Search Form -->
         <div class="button-container">
-            <button onclick="viewSearchProperties()">Search Properties</button>
-            <button onclick="viewCalculateProperty()">Mortgage Calculator</button>
+
+        <form action="/search" method="POST">
+            <input type="text" name="query" placeholder="Search all properties">
+            <button type="submit">Search</button>
+        </form>
+        <form action="/searchSold" method="POST">
+            <input type="text" name="query" placeholder="Search for sold properties">
+            <button type="submit">Search</button>
+        </form>
+        <form action="/searchAvailable" method="POST">
+            <input type="text" name="query" placeholder="Search for available properties">
+            <button type="submit">Search</button>
+        </form>
+        </div>
+        <div class="button-container">
+            <div class="search-bar">
+                <input type="text" id="search" placeholder="Search Property...">
+                <button onclick="searchProperties()">Search</button>
+                <button onclick="clearSearch()">Clear Search</button>
+            </div>
+                        <button onclick="viewCalculateProperty()">Mortgage Calculator</button>
         </div>
 
         <ul class="property-list">

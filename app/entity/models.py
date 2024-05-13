@@ -4,8 +4,6 @@ from app import Base, session
 from datetime import date
 from sqlalchemy.ext.declarative import declarative_base
 
-
-
 # User Profile Class
 class UserProfile(Base):
     __tablename__ = "user_profile"
@@ -110,16 +108,14 @@ class UserProfile(Base):
 
     # Function to search profile
     @classmethod
-    def searchProfile(cls, search_term, attribute):
-        if attribute == 'profile_id':
-            profiles = session.query(cls).filter(cls.profile_id==search_term).all()
-        elif attribute == 'roles':
-            profiles = session.query(cls).filter(cls.roles==search_term).all()
-        elif attribute == 'description':
-            profiles = session.query(cls).filter(cls.description.contains(search_term)).all()
-        
-        return profiles
-            
+    def searchProfile(cls, search_term):
+        profiles = session.query(cls) \
+                    .filter(cls.suspend_status == False) \
+                    .filter((cls.profile_id.contains(search_term)) |  cls.roles.contains(search_term) | cls.description.contains(search_term)) \
+                    .all()
+
+        return profiles 
+                    
 
 # User Class
 class User(Base):
@@ -218,8 +214,6 @@ class User(Base):
     def get_all_accounts(cls):
         users=session.query(cls).filter(cls.suspend_status==False).all()
         return users
-    
-    # Function to search account record in DB
 
     # Function to update account record in DB
     @classmethod
@@ -254,16 +248,28 @@ class User(Base):
             print(e)
             return False
 
+    # Function to search account
+    @classmethod
+    def searchAccount(cls, search_term):
+        subquery = session.query(UserProfile.profile_id).filter(UserProfile.roles.contains(search_term)).subquery()
+
+        users = session.query(cls) \
+                    .filter(cls.suspend_status == False) \
+                    .filter(cls.user_id.contains(search_term) |  
+                             cls.fname.contains(search_term) | 
+                             cls.lname.contains(search_term) | 
+                             cls.email.contains(search_term) | 
+                             cls.phonenum.contains(search_term) | 
+                             cls.username.contains(search_term) | 
+                             cls.profile_id.in_(subquery)) \
+                    .all()
+
+        return users 
+                    
+
     def __repr__(self):
         return f'User("{self.user_id}","{self.profile_id}""{self.fname}","{self.lname}","{self.email}","{self.username}","{self.phonenum}")'
 
-#added during integration
-    def is_system_admin(self):
-        # Assuming roles is a string containing comma-separated roles
-        roles = self.userprofile.roles.split(', ')
-        return 'system admin' in roles
-    
-    
 # Property Class
 class Property(Base):
     __tablename__ = "Property"
@@ -301,6 +307,34 @@ class Property(Base):
     def get_property_id(self):
         return self.ID
     
+    def search_by_name(search_query):
+            # Split the search query into individual keywords
+        keywords = search_query.split()
+
+        return session.query(Property).filter(
+        *[Property.propertyname.like(f'%{keyword}%') for keyword in keywords]
+    ).all()
+
+
+    def search_by_sold(search_query):
+    # Split the search query into individual keywords
+         keywords = search_query.split()
+
+         return session.query(Property).filter(
+        *[Property.propertyname.like(f'%{keyword}%') for keyword in keywords],
+        Property.sold == 1  # Add this condition to filter sold properties
+    ).all()
+         
+    def search_by_avail(search_query):
+    # Split the search query into individual keywords
+         keywords = search_query.split()
+
+         return session.query(Property).filter(
+        *[Property.propertyname.like(f'%{keyword}%') for keyword in keywords],
+        Property.sold == 0  # Add this condition to filter sold properties
+    ).all()
+
+
  # Save Class   
 class Save(Base):
     __tablename__ = "Save"

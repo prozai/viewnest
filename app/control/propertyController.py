@@ -2,7 +2,7 @@ from datetime import date
 from app import session 
 from flask import session as flask_session
 from app.entity.models import Property 
-from flask import render_template, request, redirect, url_for, flash
+from flask import render_template, request, redirect, url_for, flash, jsonify
 import os
 from datetime import datetime
 from app.entity.models import *
@@ -212,6 +212,37 @@ class deletePropertyController:
         except Exception as e:
             print("Error deleting property:", str(e))
 
+#Search
+class SearchController:
+    def search(self, search_query):
+        if not search_query:
+            return jsonify({'error': 'No query provided'}), 400
+
+        results = Property.search_by_name(search_query)
+        return results
+    
+
+    def searchSold(self, search_query):
+        search_query = request.form.get('query')
+        if not search_query:
+            return jsonify({'error': 'No query provided'}), 400
+
+        results = Property.search_by_sold(search_query)
+        return results
+    
+    def searchAvailable(self, search_query):
+        search_query = request.form.get('query')
+        if not search_query:
+            return jsonify({'error': 'No query provided'}), 400
+
+        results = Property.search_by_avail(search_query)
+        return results
+    
+search_controller = SearchController()
+
+    
+
+
 
 
 # Save property
@@ -219,7 +250,7 @@ class savePropertyController:
     def buyer_saveProperty():
         try:
             property_id = request.form['property_id']
-            user_id = 2  # session['user_id']
+            user_id = flask_session['user_id']
             saved = session.query(Save).filter_by(user_id=user_id, property_id=property_id).first()
             property = session.query(Property).filter_by(ID=property_id).first()
 

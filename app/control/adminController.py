@@ -2,7 +2,6 @@ from flask import render_template, redirect, url_for, request
 from werkzeug.security import generate_password_hash
 from flask_babel import _
 from app.entity.models import User, UserProfile
-#from app.control import adminBP
 
 # ---  User Profile --- 
 
@@ -32,20 +31,11 @@ class SuspendProfileController():
         return status
 
 # Search Profile Controller
-'''class SearchProfileController():
-    @adminBP.route('/searchProfile', methods=['POST', 'GET'])
-    def searchProfile():
-        if request.method == "GET":
-            try:
-                search_term = request.args.get('term')
-                attribute = request.args.get('attribute')
-                results = UserProfile.searchProfile(search_term, attribute)
+class SearchProfileController():
+    def searchProfile(self, search_term):
+        results = UserProfile.searchProfile(search_term)
+        return results
 
-                return render_template('search_results.html', results=results)
-            except Exception as e:
-                print(e)
-        return render_template('systemAdmin/view-profiles.html)
-'''
         
 # ---  User Account --- 
 
@@ -85,3 +75,7 @@ class SuspendAccountController():
         return status
     
 # Search Account Controller
+class SearchAccountController():
+    def searchAccount(self, search_term):
+        results = User.searchAccount(search_term)
+        return results

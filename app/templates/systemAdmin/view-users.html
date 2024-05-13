@@ -5,6 +5,12 @@
 {% block body %} 
 <div class="container">
     <div class="my-2">
+        <div>
+            <form action="/searchAccount" method="POST">
+                <input type="text" id="query" name="query" placeholder="Search...">
+                <button type="submit">Search</button>
+            </form>
+        </div>
         <div class="table-responsive">
             <table class="table table-bordered">
                 <thead>

@@ -51,26 +51,23 @@
 <body>
     <div class="container">
     <h2>Search Results</h2>
-        {% for result in results %}
-        <li class="property-item {% if result.sold %}sold{% endif %}">
-            <img src="{{ result.image_url }}" alt="{{ result.propertyname }} image" class="property-image"> 
-            <div>
-                <br><strong>{{ result.propertyname }}</strong><br>
-                Property Type: {{ result.propertytype }}<br>
-                District: {{ result.district }}<br>
-                Bedrooms: {{ result.bedroom_no }}<br>
-                PSF: {{ result.psf }}<br>
-                Listing Date: {{ result.listing_date }}<br>
-                {% if result.date_sold %}
-                Sold Date: {{ result.date_sold }}<br> 
-                {% else %}
-                Not Sold Yet<br> 
-                {% endif %}
-                <br><strong>S${{ "{:,.2f}".format(result.price) }}</strong><br>
-                <br>
-            </div>
-        </li>
-    {% endfor %}
+    {% for result in results %}
+    <li onclick="viewPropertyDetail('{{ result.ID }}')" style="cursor: pointer;" class="property-item {% if result.sold %}sold{% endif %}">
+        <img src="{{ result.image_url }}" alt="{{ result.propertyname }} image" class="property-image"> 
+        <div>
+            <strong>{{ result.propertyname }}</strong>
+            <strong style="float: right;">S${{ "{:,.2f}".format(result.price) }}</strong><br>
+            <span>{{ result.propertytype }} ({{ result.bedroom_no }} Bedroom)</span>
+            {% if result.sold %}
+            <span style="float: right;">Sold</span>
+        {% else %}
+            <span style="float: right;">Available</span>
+        {% endif %}
+            <div style="clear: both;"></div>
+
+        </div>
+    </li>
+{% endfor %}
     </div>
 </body>
 </html>
