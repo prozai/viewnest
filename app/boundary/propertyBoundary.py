@@ -1,11 +1,11 @@
 from flask import render_template, request, redirect, url_for
-from app.control.propertyController import viewCountController, viewPropertyController, createPropertyController, viewPropertiesController, updatePropertyController, deletePropertyController
+from app.control.propertyController import *
 from app.control.loginController import loginController
 from app.boundary import propBP
 
 class viewPropertyBoundary:
     def view_properties(self):
-        viewPropertyController.add_sample_properties()
+     #  viewPropertyController.add_sample_properties()
         properties = viewPropertyController.view_properties()
         return render_template('property/view_properties.html', properties=properties)
 
@@ -70,12 +70,26 @@ class deletePropertyBoundary:
         
     def deleteProperty(self, id):
         self.controller.REA_deleteProperty(id)
-        return redirect(url_for('route.REA_view_properties'))
+        return redirect(url_for('propRoutes.REA_view_properties'))
+
+class savePropertyBoundary:
+    def saveProperty(self):
+        savePropertyController.buyer_saveProperty()
+        return redirect(url_for('propRoutes.view_properties'))
+
+class sellerPropertiesBoundary:
+    def sellerViewProperties(self):
+        properties = sellerPropertiesController.seller_viewProperties()
+        return render_template('property/seller_properties.html', properties=properties)
     
+
+
 create_property_boundary = createPropertyBoundary()
 REA_properties_boundary = REAPropertiesBoundary()
 update_property_boundary = updatePropertyBoundary()
 delete_property_boundary = deletePropertyBoundary()
+save_property_boundary = savePropertyBoundary()
+seller_properties_boundary = sellerPropertiesBoundary()
 
 @propBP.route('/create_property', methods=['GET', 'POST'])
 def create_property():
@@ -93,3 +107,11 @@ def update_property(id):
 @propBP.route('/delete_property/<int:id>/', methods=['POST'])
 def delete_property(id):
     return delete_property_boundary.deleteProperty(id)
+
+@propBP.route('/save_property', methods=['POST'])
+def save_property():
+    return save_property_boundary.saveProperty()
+
+@propBP.route('/seller_properties')
+def seller_view_properties():
+    return seller_properties_boundary.sellerViewProperties()

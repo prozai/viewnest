@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Property Listings</title>
+    <style>
+        * {
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            text-align: center;
+        }
+
+        .flash-message {
+            position: fixed;
+            display: flex;
+            align-items: center;
+            width: 200px;
+            padding: 2px 0px 0px 0px;
+            background-color: #49bd7d;
+            border-radius: 15px;
+            color: white;
+            padding: auto ;
+            transition: opacity 0.5s;
+        }
+
+        .flash-close {
+            font-size: 25px;
+            font-weight: bold;
+            width: 25%;
+            cursor: pointer;
+        }
+        .flash-close:hover {
+            color: dimgray;
+            cursor: pointer;
+        }
+     
+        .message{
+            justify-content: center;
+            text-align: center;
+        }
+
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        .property-list {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .property-item {
+            float: left;
+            width: 358px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            padding: 10px;
+            margin: 10px;
+            margin-bottom: 10px;
+            background-color: #f9f9f9;
+        }
+
+        .property-image {
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 10px;
+        }
+
+        .container2 {
+            position: relative;
+            text-align: center;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>My Property Listings</h1>
+        <ul class="property-list">
+            {% for property in properties|sort(attribute='sold') %}
+            <li class="property-item">
+                <h2>
+                    {{ property.propertyname }}</h2>
+                <img src="{{ property.image_url }}" alt="{{ property.propertyname }} image" class="property-image"><br>
+
+                <div style="float: right; text-align: right">
+                    {% if property.date_sold %}
+                    <strong>SOLD</strong><br>
+                    {% else %}
+                    <strong>AVAILABLE</strong><br>
+                    {% endif %}
+                    📈 {{ property.view_count }}<br>
+                    ⭐️ {{ property.saves }}
+                </div>
+                <div style="float: left; text-align: left">
+                    Property Type: {{ property.propertytype }}<br>
+                    Bedrooms: {{ property.bedroom_no }}<br>
+                    Price: ${{ '%.2f' | format(property.price) }}<br>
+                    PSF: {{ property.psf }}<br>
+                    Listing Date: {{ property.listing_date }}<br>
+                    {% if property.date_sold %}
+                    Date Sold: {{ property.date_sold }}<br>
+                    {% endif %}
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <script>
+        var modal = document.getElementsByClassName('modal');
+
+        window.onclick = function (event) {
+            for (var i = 0; i < modal.length; i++) {
+                if (event.target == modal[i]) {
+                    modal[i].style.display = "none";
+                }
+            }
+        }
+    </script>
+
+</body>
+
+</html>

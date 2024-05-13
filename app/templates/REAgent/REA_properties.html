@@ -236,7 +236,7 @@
                         <div class="modal-footer">
                             <button type="button" class="cancel-btn"
                                 onclick="document.getElementById('myModal_{{ property.get_property_id() }}').style.display='none'">Cancel</button>
-                            <form action="{{ url_for('route.delete_property', id=property.get_property_id()) }}"
+                            <form action="{{ url_for('propRoutes.delete_property', id=property.get_property_id()) }}"
                                 method="POST">
                                 <button type="submit" class="delete-btn">Delete</button>
                             </form>

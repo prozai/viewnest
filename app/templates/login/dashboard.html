@@ -66,11 +66,9 @@
         if (rolesArray.includes("real estate agent")) {
             var realEstateAgentButtons = [
                 { text: "Create Property Listings", page: "/create_property" },
-                { text: "Retrieve Property Listings", page: "/REA_properties" },
+                { text: "View my Property Listings", page: "/REA_properties" },
                 { text: "Retrieve Clientele Ratings", page: "retrieve_clientele_ratings.html" },
                 { text: "Retrieve Clientele Reviews", page: "retrieve_clientele_reviews.html" },
-                { text: "Update Property Listings", page: "/update_property/<int:id>" },
-                { text: "Delete Property Listings", page: "/delete_property/<int:id>" },
                 { text: "Search Property Listings", page: "search_property_listings" }
             ];
 
@@ -123,9 +121,15 @@
                 });
                 buttonsContainer.appendChild(buttonElement);
             });
+        } else if (rolesArray.includes("seller")) {
+            var sellerButtons = [
+                { text: "View Seller Properties", page: "/seller_properties"  },
+                { text: "Create Ratings for Real Estate agents", page: "create_ratings.html" },
+                { text: "Create Reviews for Real Estate agents", page: "create_reviews.html" }
 
+            ];
 
-            adminButtons.forEach(function(buttonInfo) {
+            sellerButtons.forEach(function(buttonInfo) {
                 var buttonElement = document.createElement("button");
                 buttonElement.textContent = buttonInfo.text;
                 buttonElement.addEventListener("click", function() {
@@ -133,6 +137,8 @@
                 });
                 buttonsContainer.appendChild(buttonElement);
             });
+
+
         }
     </script>
 </body>
