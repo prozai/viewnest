@@ -1,4 +1,5 @@
-from flask import session
+from flask import session, redirect
+from functools import wraps
 from werkzeug.security import check_password_hash
 from app.entity.models import User
 from app import session as sqlalchemy_session
@@ -32,3 +33,10 @@ class loginController:
         session.pop('email', None)
         return {'redirect': 'login'}
     
+    def login_required(func):
+        @wraps(func)
+        def decorated_function(*args, **kwargs):
+            if 'user_id' not in session:
+                return redirect('/login')
+            return func(*args, **kwargs)
+        return decorated_function

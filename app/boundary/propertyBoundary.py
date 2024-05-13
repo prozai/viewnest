@@ -20,14 +20,17 @@ class viewPropertyBoundary:
 property_boundary = viewPropertyBoundary()
 
 @propBP.route('/view_properties')
+@loginController.login_required
 def view_properties():
     return property_boundary.view_properties()
     
 @propBP.route('/view_calculation')
+@loginController.login_required
 def view_calculation():
     return property_boundary.view_calculation()
 
 @propBP.route('/view_property_detail/<int:property_id>')
+@loginController.login_required
 def view_property_detail(property_id):
     return property_boundary.view_property_detail(property_id)
 
@@ -92,27 +95,33 @@ save_property_boundary = savePropertyBoundary()
 seller_properties_boundary = sellerPropertiesBoundary()
 
 @propBP.route('/create_property', methods=['GET', 'POST'])
+@loginController.login_required
 def create_property():
     return create_property_boundary.createProperty()
 
 @propBP.route('/REA_properties')
+@loginController.login_required
 def REA_view_properties():
     return REA_properties_boundary.REAViewProperties()
 
 @propBP.route('/update_property/<int:id>/', methods=['GET', 'POST'])
+@loginController.login_required
 def update_property(id):
     return update_property_boundary.updateProperty(id)
 
 # Delete Property Listing
 @propBP.route('/delete_property/<int:id>/', methods=['POST'])
+@loginController.login_required
 def delete_property(id):
     return delete_property_boundary.deleteProperty(id)
 
 @propBP.route('/save_property', methods=['POST'])
+@loginController.login_required
 def save_property():
     return save_property_boundary.saveProperty()
 
 @propBP.route('/seller_properties')
+@loginController.login_required
 def seller_view_properties():
     return seller_properties_boundary.sellerViewProperties()
 
@@ -138,17 +147,20 @@ search_boundary = SearchPropertyBoundary()
 
 
 @propBP.route('/search', methods=['POST', 'GET'])
+@loginController.login_required
 def search():
     search_query = request.form.get('query')
     return search_boundary.search(search_query)
 
 
 @propBP.route('/searchSold', methods=['POST', 'GET'])
+@loginController.login_required
 def searchSold():
     search_query = request.form.get('query')
     return search_boundary.searchSold(search_query)
 
 @propBP.route('/searchAvailable', methods=['POST', 'GET'])
+@loginController.login_required
 def searchAvailable():
     search_query = request.form.get('query')
     return search_boundary.searchAvailable(search_query)
