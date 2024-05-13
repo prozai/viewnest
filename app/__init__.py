@@ -3,6 +3,7 @@ from flask import Flask
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
+from werkzeug.security import generate_password_hash
 from config import Config
 
 # Create SQLAlchemy engine and session
@@ -26,7 +27,7 @@ def create_app(config_class=Config):
     # Base.metadata.drop_all(engine)
 
     # # Create database tables
-    # from app.entity.models import User, UserProfile
+    from app.entity.models import User
     # Base.metadata.create_all(engine)
 
     # # Add known user types to UserProfile
