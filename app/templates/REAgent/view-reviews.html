@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block title %} View Reviews {% endblock %}
+
+{% block body %} 
+<div class="container">
+    <div class="my-2">
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Description</th>
+                        <th>Ratings</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for review in reviews %}
+                    <tr>
+                        <td>{{review.review_id}}</td>
+                        <td>{{review.description}}</td>
+                        <td>{{review.rating}}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

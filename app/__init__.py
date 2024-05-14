@@ -27,7 +27,7 @@ def create_app(config_class=Config):
     # Base.metadata.drop_all(engine)
 
     # # Create database tables
-    from app.entity.models import User
+    # from app.entity.models import User
     # Base.metadata.create_all(engine)
 
     # # Add known user types to UserProfile
@@ -51,10 +51,12 @@ def create_app(config_class=Config):
     from app.boundary.loginBoundary import loginBP
     from app.boundary.propertyBoundary import propBP    
     from app.boundary.systemAdminBoundary import adminBP
+    from app.control import buyerBP
   
     app.register_blueprint(loginBP)
     app.register_blueprint(propBP)
     app.register_blueprint(adminBP)
+    app.register_blueprint(buyerBP)
     # Close session on app teardown
     #@app.teardown_appcontext
     #def shutdown_session(exception=None):
