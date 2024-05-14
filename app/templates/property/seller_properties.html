@@ -95,7 +95,7 @@
 
         .property-image {
             max-width: 100%;
-            height: auto;
+            height: 250px;
             margin-bottom: 10px;
         }
 
@@ -146,18 +146,6 @@
             {% endfor %}
         </ul>
     </div>
-    <script>
-        var modal = document.getElementsByClassName('modal');
-
-        window.onclick = function (event) {
-            for (var i = 0; i < modal.length; i++) {
-                if (event.target == modal[i]) {
-                    modal[i].style.display = "none";
-                }
-            }
-        }
-    </script>
-
 </body>
 
 </html>
