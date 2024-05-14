@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ViewNest Dashboard</title>
+    <style>
+        body {
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1, h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        button {
+            background-color: #808080;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        button:hover {
+            background-color: #6c6c6c;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome, {{ user.fname }} {{ user.lname }} (User ID: {{ 
+            user.user_id}})</h1>
+        <h2>Your account type is: {{ user.userprofile.roles }}.</h2>
+
+        <div id="buttonsContainer"></div>
+
+        <form id="logoutForm" action="/logout" method="post">
+            <button type="button" onclick="confirmLogout()">Logout</button>
+        </form>
+    </div>
+    <script>
+        function confirmLogout() {
+            var confirmLogout = confirm("Are you sure you want to logout?");
+            if (confirmLogout) {
+                document.getElementById("logoutForm").submit();
+            }
+        }
+
+        // Add this script to dynamically generate buttons based on user roles
+        var roles = "{{ user.userprofile.roles }}"; // Assuming roles is a comma-separated string
+        var buttonsContainer = document.getElementById("buttonsContainer");
+        var rolesArray = roles.split(", ");
+
+        if (rolesArray.includes("real estate agent")) {
+            var realEstateAgentButtons = [
+                { text: "Create Property Listings", page: "/create_property" },
+                { text: "View my Property Listings", page: "/REA_properties" },
+                { text: "Retrieve Clientele Ratings", page: "retrieve_clientele_ratings.html" },
+                { text: "Retrieve Clientele Reviews", page: "retrieve_clientele_reviews.html" },
+                { text: "Search Property Listings", page: "search_property_listings" }
+            ];
+
+            realEstateAgentButtons.forEach(function(buttonInfo) {
+                var buttonElement = document.createElement("button");
+                buttonElement.textContent = buttonInfo.text;
+                buttonElement.dataset.page = buttonInfo.page; // Set data-page attribute
+                if (buttonInfo.action) {
+                }
+                buttonElement.addEventListener("click", function() {
+                    window.location.href = buttonInfo.page;
+                });
+                buttonsContainer.appendChild(buttonElement);
+            });
+        } else if (rolesArray.includes("buyer")) {
+            var buyerButtons = [
+                { text: "View Property Listings", page: "/view_properties" },
+                { text: "Calculate Property Mortgages", page: "calculate_property_mortgages.html" },
+                { text: "Create Ratings for Real Estate agents", page: "create_ratings.html" },
+                { text: "Create Reviews for Real Estate agents", page: "create_reviews.html" }
+            ];
+
+            buyerButtons.forEach(function(buttonInfo) {
+                var buttonElement = document.createElement("button");
+                buttonElement.textContent =  buttonInfo.text;
+                buttonElement.addEventListener("click", function() {
+                    window.location.href = buttonInfo.page;
+                });
+                buttonsContainer.appendChild(buttonElement);
+            });
+        } else if (rolesArray.includes("system admin")) {
+            var adminButtons = [
+                { text: "Create User Profiles", page: "/registerProfile"  },
+                { text: "Create User Accounts", page: "/registerAccount"  },
+                { text: "Retrieve User Profiles", page: "/displayProfiles"  },
+                { text: "Retrieve User Accounts", page: "/displayAccounts"  },
+                { text: "Update User Profiles", page: "/updateProfile"  },
+                { text: "Update User Accounts", page: "/updateAccount"  },
+                { text: "Suspend User Profiles", page: "/suspendProfile"  },
+                { text: "Suspend User Accounts", page: "/suspendAccount"  },
+                { text: "Search User Profiles", page: "/searchProfile"  },
+                { text: "Search User Accounts", page: "/searchAccount"  }
+            ];
+
+            adminButtons.forEach(function(buttonInfo) {
+                var buttonElement = document.createElement("button");
+                buttonElement.textContent = buttonInfo.text;
+                buttonElement.addEventListener("click", function() {
+                    window.location.href = buttonInfo.page;
+                });
+                buttonsContainer.appendChild(buttonElement);
+            });
+        } else if (rolesArray.includes("seller")) {
+            var sellerButtons = [
+                { text: "View Seller Properties", page: "/seller_properties"  },
+                { text: "Create Ratings for Real Estate agents", page: "create_ratings.html" },
+                { text: "Create Reviews for Real Estate agents", page: "create_reviews.html" }
+
+            ];
+
+            sellerButtons.forEach(function(buttonInfo) {
+                var buttonElement = document.createElement("button");
+                buttonElement.textContent = buttonInfo.text;
+                buttonElement.addEventListener("click", function() {
+                    window.location.href = buttonInfo.page;
+                });
+                buttonsContainer.appendChild(buttonElement);
+            });
+
+
+        }
+    </script>
+</body>
+</html>

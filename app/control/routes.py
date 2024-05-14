@@ -1,10 +1,12 @@
-from flask import render_template, flash, redirect, url_for, request
+from flask import render_template, flash, redirect, url_for, request, jsonify
 from flask_babel import _
 from werkzeug.security import generate_password_hash
 from app.control.adminController import RegisterProfile, RegisterAccount, showAllProfiles, showAllAccounts
+from app.control.propertyController import ViewProperties,SearchController
 from app.entity.models import User, UserProfile, Property
 from app.control import bp
 from app import session
+from app.boundary.propertyBoundary import SearchPropertyBoundary
 
 @bp.route('/')
 def index():
@@ -18,6 +20,7 @@ def adminIndex():
 def viewUsers():
     user_list = showAllAccounts()
     return render_template('systemAdmin/view-users.html', title="All Users", users=user_list)
+
 
 @bp.route('/allProfiles', methods=["POST", "GET"])
 def viewProfiles():
@@ -56,3 +59,4 @@ def addAccount():
         except Exception as e:
             print(e)
     return render_template('systemAdmin/register-account.html', title='Register Account', form=form)
+

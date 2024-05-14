@@ -1,5 +1,5 @@
 import os
-from flask import Flask, request
+from flask import Flask
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
@@ -23,33 +23,37 @@ def create_app(config_class=Config):
     # Database setup
     
     # Drop database (if exist)
-    Base.metadata.drop_all(engine)
+    # Base.metadata.drop_all(engine)
 
-    # Create database tables
-    from app.entity.models import User, UserProfile
-    Base.metadata.create_all(engine)
+    # # Create database tables
+    # from app.entity.models import User, UserProfile
+    # Base.metadata.create_all(engine)
 
-    # Add known user types to UserProfile
-    buyer = UserProfile(roles='buyer')
-    session.add(buyer)
-    session.commit()
+    # # Add known user types to UserProfile
+    # buyer = UserProfile(roles='buyer')
+    # session.add(buyer)
+    # session.commit()
 
-    seller = UserProfile('seller')
-    session.add(seller)
-    session.commit()
+    # seller = UserProfile(roles='seller')
+    # session.add(seller)
+    # session.commit()
 
-    realEstateAgent = UserProfile('real estate agent')
-    session.add(realEstateAgent)
-    session.commit()
+    # realEstateAgent = UserProfile(roles='real estate agent')
+    # session.add(realEstateAgent)
+    # session.commit()
 
-    admin = UserProfile('system admin')
-    session.add(admin)
-    session.commit()
+    # admin = UserProfile(roles='system admin')
+    # session.add(admin)
+    # session.commit()
 
     # Register blueprint
-    from app.control.routes import bp 
-    app.register_blueprint(bp)
-
+    from app.boundary.loginBoundary import loginBP
+    from app.boundary.propertyBoundary import propBP    
+    from app.boundary.systemAdminBoundary import adminBP
+  
+    app.register_blueprint(loginBP)
+    app.register_blueprint(propBP)
+    app.register_blueprint(adminBP)
     # Close session on app teardown
     #@app.teardown_appcontext
     #def shutdown_session(exception=None):
@@ -58,4 +62,3 @@ def create_app(config_class=Config):
     return app
 
 from app.entity import models
-

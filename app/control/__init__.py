@@ -1,6 +1,6 @@
 from flask import Blueprint
 
-bp = Blueprint('route', __name__)
+adminBP = Blueprint('adminroutes', __name__)
+mainBP = Blueprint('routes', __name__)
 
-from app.control import routes
-from app.boundary import propertyBoundary
+from app.control import adminController, mainController, loginController
