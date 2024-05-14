@@ -3,7 +3,7 @@ from app import session
 from app.entity.models import *
 import os
 from datetime import datetime, date
-from sqalchemy import desc
+from sqlalchemy import desc
 
 class viewPropertyController:
     
