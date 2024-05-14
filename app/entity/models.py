@@ -162,7 +162,6 @@ class User(Base):
     def __repr__(self):
         return f'User("{self.user_id}","{self.profile_id}""{self.fname}","{self.lname}","{self.email}","{self.username}","{self.phonenum}")'
 
-# Property Class
 class Property(Base):
     __tablename__ = "Property"
 
@@ -199,6 +198,54 @@ class Property(Base):
     def get_property_id(self):
         return self.ID
     
+    def create_property(new_property):
+        try:
+            session.add(new_property)
+            session.commit()
+        except Exception as e:
+            print("Error creating property:", str(e))
+        finally:
+            session.close()
+    
+    def get_REAproperties(user_id):
+        properties = session.query(Property).filter_by(user_id=user_id).all()
+        return properties
+
+    def update_property():
+        try:
+            session.commit()
+        except Exception as e:
+            print("Error creating property:", str(e))
+        finally:
+            session.close()
+
+    def delete_property(property):
+        try:
+            session.delete(property)
+            session.commit()
+        except Exception as e:
+            print("Error creating property:", str(e))
+        finally:
+            session.close()
+
+    def add_save(property):
+        try:
+            property.saves += 1
+            session.commit()
+        except Exception as e:
+            print("Error creating property:", str(e))
+        finally:
+            session.close()
+
+    def minus_save(property):
+        try:
+            property.saves -= 1
+            session.commit()
+        except Exception as e:
+            print("Error creating property:", str(e))
+        finally:
+            session.close()
+        
  # Save Class   
 class Save(Base):
     __tablename__ = "Save"
@@ -210,3 +257,15 @@ class Save(Base):
     def __init__(self, user_id, property_id):
         self.user_id = user_id
         self.property_id = property_id
+
+    def delete_save(saved):
+        try:
+            session.delete(saved)
+        except Exception as e:
+            print("Error deleting save:", str(e))
+
+    def create_save(new_save):
+        try:
+            session.add(new_save)
+        except Exception as e:
+            print("Error deleting save:", str(e))
