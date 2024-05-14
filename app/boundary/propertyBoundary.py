@@ -95,23 +95,23 @@ save_property_boundary = savePropertyBoundary()
 seller_properties_boundary = sellerPropertiesBoundary()
 
 @propBP.route('/create_property', methods=['GET', 'POST'])
-@loginController.login_required
+@loginController.rea_authentication
 def create_property():
     return create_property_boundary.createProperty()
 
 @propBP.route('/REA_properties')
-@loginController.login_required
+@loginController.rea_authentication
 def REA_view_properties():
     return REA_properties_boundary.REAViewProperties()
 
 @propBP.route('/update_property/<int:id>/', methods=['GET', 'POST'])
-@loginController.login_required
+@loginController.rea_authentication
 def update_property(id):
     return update_property_boundary.updateProperty(id)
 
 # Delete Property Listing
 @propBP.route('/delete_property/<int:id>/', methods=['POST'])
-@loginController.login_required
+@loginController.rea_authentication
 def delete_property(id):
     return delete_property_boundary.deleteProperty(id)
 

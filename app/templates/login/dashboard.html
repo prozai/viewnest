@@ -59,11 +59,11 @@
         }
 
         // Add this script to dynamically generate buttons based on user roles
-        var roles = "{{ user.userprofile.roles }}"; // Assuming roles is a comma-separated string
+        var roles = "{{ user.userprofile.profile_id }}"; // Assuming roles is a comma-separated string
         var buttonsContainer = document.getElementById("buttonsContainer");
         var rolesArray = roles.split(", ");
 
-        if (rolesArray.includes("real estate agent")) {
+        if (rolesArray.includes("3")) {
             var realEstateAgentButtons = [
                 { text: "Create Property Listings", page: "/create_property" },
                 { text: "View my Property Listings", page: "/REA_properties" },
@@ -83,7 +83,7 @@
                 });
                 buttonsContainer.appendChild(buttonElement);
             });
-        } else if (rolesArray.includes("buyer")) {
+        } else if (rolesArray.includes("1")) {
             var buyerButtons = [
                 { text: "View Property Listings", page: "/view_properties" },
                 { text: "Calculate Property Mortgages", page: "calculate_property_mortgages.html" },
@@ -99,7 +99,7 @@
                 });
                 buttonsContainer.appendChild(buttonElement);
             });
-        } else if (rolesArray.includes("system admin")) {
+        } else if (rolesArray.includes("4")) {
             var adminButtons = [
                 { text: "Create User Profiles", page: "/registerProfile"  },
                 { text: "Create User Accounts", page: "/registerAccount"  },
@@ -121,7 +121,7 @@
                 });
                 buttonsContainer.appendChild(buttonElement);
             });
-        } else if (rolesArray.includes("seller")) {
+        } else if (rolesArray.includes("2")) {
             var sellerButtons = [
                 { text: "View Seller Properties", page: "/seller_properties"  },
                 { text: "Create Ratings for Real Estate agents", page: "create_ratings.html" },

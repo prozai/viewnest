@@ -2,12 +2,14 @@ from flask import render_template, redirect, url_for, request
 from flask_babel import _
 from app.boundary import adminBP
 from app.control.adminController import *
+from app.control.loginController import loginController
 
 @adminBP.route('/')
 def index():
     return render_template('index.html', title="")
 
 @adminBP.route('/adminIndex')
+@loginController.sysadmin_authentication
 def adminIndex():
     return render_template('systemAdmin/index.html', title="")
 
@@ -15,6 +17,7 @@ def adminIndex():
 
 class CreateProfilePage():
     @adminBP.route('/registerProfile', methods=['GET', 'POST'])
+    @loginController.sysadmin_authentication
     def createProfile():
         if request.method == "POST":
             try:
@@ -33,6 +36,7 @@ class CreateProfilePage():
 
 class DisplayProfilesPage():
     @adminBP.route('/displayProfiles', methods=['POST', 'GET'])
+    @loginController.sysadmin_authentication
     def displayProfile():
         view_profile = ViewProfileController()
         profile_list = view_profile.viewProfiles()
@@ -40,6 +44,7 @@ class DisplayProfilesPage():
 
 class UpdateProfilePage():
     @adminBP.route('/updateProfile', methods=['POST', 'GET'])
+    @loginController.sysadmin_authentication
     def updateUserProfile():
         if request.method == "POST":
             try:
@@ -58,6 +63,7 @@ class UpdateProfilePage():
 
 class SuspendProfilePage():
     @adminBP.route('/suspendProfile', methods=['POST', 'GET'])
+    @loginController.sysadmin_authentication
     def suspendUserProfile():
         if request.method == "POST":
             try:
@@ -74,6 +80,7 @@ class SuspendProfilePage():
 
 class SearchProfilePage():
     @adminBP.route('/searchProfile', methods=['POST', 'GET'])
+    @loginController.sysadmin_authentication
     def displaySearchProfile():
         try:
             search_term = request.form.get('query')
@@ -96,6 +103,7 @@ class SearchProfilePage():
 
 class CreateAccountsPage():
     @adminBP.route('/registerAccount', methods=['GET', 'POST'])
+    @loginController.sysadmin_authentication
     def createAccount():
         if request.method == 'POST':
             try:
@@ -120,6 +128,7 @@ class CreateAccountsPage():
     
 class DisplayAccountsPage():
     @adminBP.route('/displayAccounts', methods=['POST', 'GET'])
+    @loginController.sysadmin_authentication
     def displayAccounts():
         view_accounts = ViewAccountController()
         user_list = view_accounts.viewUsers()
@@ -127,6 +136,7 @@ class DisplayAccountsPage():
     
 class UpdateAccountPage():
     @adminBP.route('/updateAccount', methods=['POST', 'GET'])
+    @loginController.sysadmin_authentication
     def updateUserAccount():
         if request.method == "POST":
             try:
@@ -150,6 +160,7 @@ class UpdateAccountPage():
 
 class SuspendAccountPage():
     @adminBP.route('/suspendAccount', methods=['POST', 'GET'])
+    @loginController.sysadmin_authentication
     def suspendAccount():
         if request.method == "POST":
             try:
@@ -166,6 +177,7 @@ class SuspendAccountPage():
     
 class SearchProfilePage():
     @adminBP.route('/searchAccount', methods=['POST', 'GET'])
+    @loginController.sysadmin_authentication
     def displaySearchAccount():
         try:
             search_term = request.form.get('query')
