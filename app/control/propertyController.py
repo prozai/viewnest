@@ -3,6 +3,7 @@ from app import session
 from app.entity.models import *
 import os
 from datetime import datetime, date
+from sqalchemy import desc
 
 class viewPropertyController:
     
@@ -80,49 +81,36 @@ class viewCountController:
 
 # Create Property Listing
 class createPropertyController:
-    def REA_createProperty():
+    def REA_createProperty(self, propertyname, propertytype, district, bedroom_no, price, psf, image_file, selleremail):
         try:
-            if request.method == 'POST':
-                propertyname = request.form['propertyname']
-                propertytype = request.form['propertytype']
-                district = request.form['district']
-                bedroom_no = request.form['bedroom_no']
-                price = request.form['price']
-                psf = request.form['psf']
-                image_file = request.files['image_url']
-                selleremail = request.form['selleremail']
+            user_id = 1
+            max_id = session.query(Property).order_by(desc(Property.ID)).first()
+            highest_id = max_id.ID if max_id else None
 
-                if image_file:
-                    new_property = Property(user_id=1,  # session['user_id']
-                                            propertyname=propertyname,
-                                            propertytype=propertytype,
-                                            district=district,
-                                            bedroom_no=bedroom_no,
-                                            price=price,
-                                            psf=psf,
-                                            selleremail=selleremail,
-                                            listing_date=datetime.now().date(),
-                                            date_sold=None,
-                                            image_url=None,
-                                            sold=False)
-                    session.add(new_property)
-                    session.commit()
+            propertyid = highest_id + 1
+            filename = f"{propertyid}.{image_file.filename.split('.')[-1]}"
+            upload_folder = './app/static/uploads/properties/'
+            path = './static/uploads/properties/'
+            image_file.save(os.path.join(upload_folder, filename))
+            image_path = os.path.join(path, filename)
 
-                    propertyid = new_property.ID
-                    filename = f"{propertyid}.{image_file.filename.split('.')[-1]}"
-                    upload_folder = './app/static/uploads/properties/'
-                    path = './static/uploads/properties/'
-                    image_file.save(os.path.join(upload_folder, filename))
-                    image_path = os.path.join(path, filename)
+            new_property = Property(user_id=user_id,  # session['user_id']
+                                    propertyname=propertyname,
+                                    propertytype=propertytype,
+                                    district=district,
+                                    bedroom_no=bedroom_no,
+                                    price=price,
+                                    psf=psf,
+                                    selleremail=selleremail,
+                                    listing_date=datetime.now().date(),
+                                    date_sold=None,
+                                    image_url= image_path,
+                                    sold=False)
+            
+            Property.create_property(new_property)
 
-                    new_property.image_url = image_path
-                    session.commit()
-
-                    flash("Added successfully!")
-
-                else:
-                    image_path = None
-
+            flash("Added successfully!")
+            
         except Exception as e:
             print("Error creating property:", str(e))
 
@@ -130,7 +118,8 @@ class createPropertyController:
 class REAPropertiesController:
     def REA_viewProperties():
         try:
-            properties = session.query(Property).filter_by(user_id=1).all()  # session['user_id']
+            user_id = 1 # flask_session['user_id']
+            properties = Property.get_REAproperties(user_id)
             return properties
 
         except Exception as e:
@@ -138,47 +127,41 @@ class REAPropertiesController:
 
 # Update Property Listing
 class updatePropertyController:
-    def REA_updateProperty(id):
+    def REA_updateProperty(self, id, propertyname, propertytype, district, bedroom_no, price, psf, selleremail, image_file):
         try:
-            if request.method == 'POST':
-                propertyname = request.form['propertyname']
-                propertytype = request.form['propertytype']
-                district = request.form['district']
-                bedroom_no = request.form['bedroom_no']
-                price = request.form['price']
-                psf = request.form['psf']
-                selleremail = request.form['selleremail']
-                image_file = request.files.get('image_url')
+            updateProperty = session.query(Property).filter_by(ID=id).first()
 
-                updateProperty = session.query(Property).filter_by(ID=id).first()
+            if updateProperty:
+                updateProperty.propertyname = propertyname
+                updateProperty.propertytype = propertytype
+                updateProperty.district = district
+                updateProperty.bedroom_no = bedroom_no
+                updateProperty.price = price
+                updateProperty.psf = psf
+                updateProperty.selleremail = selleremail
 
-                if updateProperty:
-                    updateProperty.propertyname = propertyname
-                    updateProperty.propertytype = propertytype
-                    updateProperty.district = district
-                    updateProperty.bedroom_no = bedroom_no
-                    updateProperty.price = price
-                    updateProperty.psf = psf
-                    updateProperty.selleremail = selleremail
+                if image_file:
+                    filename = f"{updateProperty.ID}.{image_file.filename.split('.')[-1]}"
+                    upload_folder = './app/static/uploads/properties/'
+                    path = './static/uploads/properties/'
+                    image_file.save(os.path.join(upload_folder, filename))
+                    image_path = os.path.join(path, filename)
+                    updateProperty.image_url = image_path
 
-                    if image_file:
-                        filename = f"{updateProperty.ID}.{image_file.filename.split('.')[-1]}"
-                        upload_folder = './app/static/uploads/properties/'
-                        path = './static/uploads/properties/'
-                        image_file.save(os.path.join(upload_folder, filename))
-                        image_path = os.path.join(path, filename)
-                        updateProperty.image_url = image_path
-
-                    session.commit()
-                    flash("Updated successfully!")
-                else:
-                    flash("Property not found")
-
-            property = session.query(Property).filter_by(ID=id).first()
-            return property
+                Property.update_property()
+                return updateProperty
+            else:
+                return None
 
         except Exception as e:
             print("Error updating property:", str(e))
+
+    def REA_getProperty(id):
+        try:
+            property = session.query(Property).filter_by(ID=id).first()
+            return property
+        except Exception as e:
+            print("Error retrieving property:", str(e))
 
 # Delete Property Listing
 class deletePropertyController:
@@ -192,8 +175,7 @@ class deletePropertyController:
                     if os.path.exists(image_path):
                         os.remove(image_path)
 
-                session.delete(property)
-                session.commit()
+                Property.delete_property(property)
                 flash("Deleted successfully!")
             else:
                 flash("Property not found")
@@ -211,14 +193,13 @@ class savePropertyController:
             property = session.query(Property).filter_by(ID=property_id).first()
 
             if saved:
-                session.delete(saved)
-                property.saves -= 1
-                session.commit()
+                Save.delete_save(saved)
+                Property.minus_save(property)
                 return 'Save deleted'
             else:
-                new_favorite = Save(user_id=user_id, property_id=property_id)
-                session.add(new_favorite)
-                property.saves += 1 
+                new_save = Save(user_id=user_id, property_id=property_id)
+                Save.create_save(new_save)
+                Property.add_save(property)
                 session.commit()
                 return 'Save added'
         except Exception as e:
