@@ -1,4 +1,4 @@
-from flask import render_template, request, redirect
+from flask import render_template, request, redirect, session
 from app.control.loginController import loginController
 from app.boundary import loginBP
 
@@ -22,8 +22,9 @@ class loginBoundary:
         return render_template(result['template'], user=user)
 
     def logout(self):
-        result = loginController.logout()
-        return redirect(result['redirect'])
+        session.pop('user_id', None)
+        session.pop('email', None)
+        return redirect('/login')
 
 loginBoundary = loginBoundary()
 

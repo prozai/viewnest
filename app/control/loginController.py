@@ -29,11 +29,6 @@ class loginController:
             if user:
                 return {'template': '/login/dashboard.html', 'user': user}
         return {'redirect': '/login'}
-
-    def logout():
-        session.pop('user_id', None)
-        session.pop('email', None)
-        return {'redirect': 'login'}
     
     def login_required(func):
         @wraps(func)
