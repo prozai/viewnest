@@ -59,11 +59,16 @@
       background-color: #49bd7d;
       color: white;
     }
+    
+    .error{
+      color: red;
+    }
   </style>
 </head>
 <body>
   <h1> Update Property Listing </h1>
   <div class="form-container">
+    <span id="errorMessage" class="error"></span><br>
     Current Image:<br>
     <img src="{{ url_for('static', filename=property.image_url.replace('static/', '')) }}" alt="{{ property.propertyname }} image" class="property-image"><br>
     <form id="propertyForm" enctype="multipart/form-data">
@@ -88,7 +93,7 @@
         <input type="text" id="price" class="form-control" value="{{ property.price }}" required>
       </div>
       <div class="form-group">
-        <label for="psf">Square Feet (m):</label>
+        <label for="psf">Square Feet (m²):</label>
         <input type="text" id="psf" class="form-control" value="{{ property.psf }}" required>
       </div>
       <div class="form-group">
@@ -105,34 +110,69 @@
 
   <script>
     function submitForm() {
-      var propertyId = document.querySelector('.btn').dataset.propertyId;
-      console.log('Property ID:', propertyId);
-      var formData = new FormData();
-      formData.append('propertyname', document.getElementById('propertyname').value);
-      formData.append('propertytype', document.getElementById('propertytype').value);
-      formData.append('district', document.getElementById('district').value);
-      formData.append('bedroom_no', document.getElementById('bedroom_no').value);
-      formData.append('price', document.getElementById('price').value);
-      formData.append('psf', document.getElementById('psf').value);
-      formData.append('selleremail', document.getElementById('selleremail').value);
+      let isValid = true;
+      const errorMessage = document.getElementById('errorMessage');
+      errorMessage.innerHTML = '';
 
-      var imageFile = document.getElementById('image_url').files[0];
-      formData.append('image_url', imageFile);
-
-      fetch(`/update_property/${propertyId}`, {
-        method: 'POST',
-        body: formData
-      })
-      .then(response => {
-        if (response.ok) {
-          window.location.href = '/REA_properties';
-        } else {
-          console.error('Form submission failed!');
-        }
-      });
-    }
-
-        
+      if (document.getElementById('propertyname').value === '') {
+        errorMessage.innerHTML += 'Property Name is required<br>';
+        isValid = false;
+      }
+      if (document.getElementById('propertytype').value === '') {
+        errorMessage.innerHTML += 'Property Type is required<br>';
+        isValid = false;
+      }
+      if (document.getElementById('district').value === '') {
+        errorMessage.innerHTML += 'District is required<br>';
+        isValid = false;
+      }
+      if (document.getElementById('bedroom_no').value === '') {
+        errorMessage.innerHTML += 'No. of bedrooms is required<br>';
+        isValid = false;
+      }
+      if (document.getElementById('price').value === '') {
+        errorMessage.innerHTML += 'Price is required<br>';
+        isValid = false;
+      }
+      if (document.getElementById('psf').value === '') {
+        errorMessage.innerHTML += 'Square Feet is required<br>';
+        isValid = false;
+      }
+      if (document.getElementById('selleremail').value === '') {
+        errorMessage.innerHTML += "Seller's Email is required<br>";
+        isValid = false;
+      }
+      if (document.getElementById('image_url').files.length === 0) {
+        errorMessage.innerHTML += "Image is required<br>";
+        isValid = false;
+      }
+      if (isValid){ 
+        var propertyId = document.querySelector('.btn').dataset.propertyId;
+        var formData = new FormData();
+        formData.append('propertyname', document.getElementById('propertyname').value);
+        formData.append('propertytype', document.getElementById('propertytype').value);
+        formData.append('district', document.getElementById('district').value);
+        formData.append('bedroom_no', document.getElementById('bedroom_no').value);
+        formData.append('price', document.getElementById('price').value);
+        formData.append('psf', document.getElementById('psf').value);
+        formData.append('selleremail', document.getElementById('selleremail').value);
+  
+        var imageFile = document.getElementById('image_url').files[0];
+        formData.append('image_url', imageFile);
+  
+        fetch(`/update_property/${propertyId}`, {
+          method: 'POST',
+          body: formData
+        })
+        .then(response => {
+          if (response.ok) {
+            window.location.href = '/REA_properties';
+          } else {
+            console.error('Form submission failed!');
+          }
+        });
+      }
+    }   
   </script>
 </body>
 </html>

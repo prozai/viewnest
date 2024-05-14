@@ -54,12 +54,17 @@
       background-color: #49bd7d;
       color: white;
     }
+
+    .error{
+      color: red;
+    }
   </style>
 </head>
 <body>
   <h1> Create Property Listing </h1>
   <div class="form-container">
     <form id="propertyForm" enctype="multipart/form-data">
+      <span id="errorMessage" class="error"></span><br>
       <div class="form-group">
         <label for="propertyname">Property Name:</label>
         <input type="text" id="propertyname" class="form-control" required>
@@ -81,7 +86,7 @@
         <input type="text" id="price" class="form-control" required>
       </div>
       <div class="form-group">
-        <label for="psf">Square Feet (m):</label>
+        <label for="psf">Square Feet (m²):</label>
         <input type="text" id="psf" class="form-control" required>
       </div>
       <div class="form-group">
@@ -96,34 +101,71 @@
     </form>
   </div>
 
-  <script>
+  <script>  
     function submitForm() {
-      var formData = new FormData();
-      formData.append('propertyname', document.getElementById('propertyname').value);
-      formData.append('propertytype', document.getElementById('propertytype').value);
-      formData.append('district', document.getElementById('district').value);
-      formData.append('bedroom_no', document.getElementById('bedroom_no').value);
-      formData.append('price', document.getElementById('price').value);
-      formData.append('psf', document.getElementById('psf').value);
-      formData.append('selleremail', document.getElementById('selleremail').value);
+      let isValid = true;
+      const errorMessage = document.getElementById('errorMessage');
+      errorMessage.innerHTML = '';
 
-      var imageFile = document.getElementById('image_url').files[0];
-      formData.append('image_url', imageFile);
+      if (document.getElementById('propertyname').value === '') {
+        errorMessage.innerHTML += 'Property Name is required<br>';
+        isValid = false;
+      }
+      if (document.getElementById('propertytype').value === '') {
+        errorMessage.innerHTML += 'Property Type is required<br>';
+        isValid = false;
+      }
+      if (document.getElementById('district').value === '') {
+        errorMessage.innerHTML += 'District is required<br>';
+        isValid = false;
+      }
+      if (document.getElementById('bedroom_no').value === '') {
+        errorMessage.innerHTML += 'No. of bedrooms is required<br>';
+        isValid = false;
+      }
+      if (document.getElementById('price').value === '') {
+        errorMessage.innerHTML += 'Price is required<br>';
+        isValid = false;
+      }
+      if (document.getElementById('psf').value === '') {
+        errorMessage.innerHTML += 'Square Feet is required<br>';
+        isValid = false;
+      }
+      if (document.getElementById('selleremail').value === '') {
+        errorMessage.innerHTML += "Seller's Email is required<br>";
+        isValid = false;
+      }
+      if (document.getElementById('image_url').files.length === 0) {
+        errorMessage.innerHTML += "Image is required<br>";
+        isValid = false;
+      }
+      if (isValid){ 
+        var formData = new FormData();
+        formData.append('propertyname', document.getElementById('propertyname').value);
+        formData.append('propertytype', document.getElementById('propertytype').value);
+        formData.append('district', document.getElementById('district').value);
+        formData.append('bedroom_no', document.getElementById('bedroom_no').value);
+        formData.append('price', document.getElementById('price').value);
+        formData.append('psf', document.getElementById('psf').value);
+        formData.append('selleremail', document.getElementById('selleremail').value);
 
-      fetch('/create_property', {
-        method: 'POST',
-        body: formData
-      })
-      .then(response => {
-        if (response.ok) {
-          window.location.href = '/REA_properties';
-        } else {
-          console.error('Form submission failed!');
-        }
-      });
+        var imageFile = document.getElementById('image_url').files[0];
+        formData.append('image_url', imageFile);
+
+        fetch('/create_property', {
+          method: 'POST',
+          body: formData
+        })
+        .then(response => {
+          if (response.ok) {
+            window.location.href = '/REA_properties';
+          } else {
+            console.error('Form submission failed!');
+          }
+        });
+      }
     }
 
-        
   </script>
 </body>
 </html>
