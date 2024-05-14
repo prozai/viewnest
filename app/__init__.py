@@ -1,9 +1,8 @@
-import os
+import os, random
 from flask import Flask
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
-from werkzeug.security import generate_password_hash
 from config import Config
 
 # Create SQLAlchemy engine and session
@@ -46,12 +45,13 @@ def create_app(config_class=Config):
     # admin = UserProfile(roles='system admin')
     # session.add(admin)
     # session.commit()
+   
 
     # Register blueprint
     from app.boundary.loginBoundary import loginBP
     from app.boundary.propertyBoundary import propBP    
     from app.boundary.systemAdminBoundary import adminBP
-    from app.control import buyerBP
+    from app.boundary.buyerBoundary import buyerBP
   
     app.register_blueprint(loginBP)
     app.register_blueprint(propBP)

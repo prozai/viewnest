@@ -375,4 +375,4 @@ class Review(Base):
     
 
     def __repr__(self):
-        return f'User("{self.user_id}","{self.profile_id}""{self.fname}","{self.lname}","{self.email}","{self.username}","{self.phonenum}")'
+        return f'User("{self.user_id}","{self.review}","{self.rating}","{self.review_id}")'
