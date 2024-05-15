@@ -102,51 +102,65 @@
       </div>
       <div class="form-group">
         <label for="image_url">Image:</label>
-        <input type="file" id="image_url" class="form-control-image">
+        <input type="file" id="image_url" name="image_url" class="form-control-image">
       </div>
       <button type="button" onclick="submitForm()" data-property-id="{{ property.ID }}" class="btn btn-primary">Update</button>
     </form>
   </div>
 
   <script>
-    function submitForm() {
+    function isValid() {
       let isValid = true;
       const errorMessage = document.getElementById('errorMessage');
       errorMessage.innerHTML = '';
-
-      if (document.getElementById('propertyname').value === '') {
+    
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      const propertyname = document.getElementById('propertyname').value.trim();
+      const propertytype = document.getElementById('propertytype').value.trim();
+      const district = document.getElementById('district').value.trim();
+      const bedroom_no = document.getElementById('bedroom_no').value.trim();
+      const price = document.getElementById('price').value.trim();
+      const psf = document.getElementById('psf').value.trim();
+      const selleremail = document.getElementById('selleremail').value.trim();
+      const imageFile = document.getElementById('image_url').files.length;
+    
+      if (!propertyname) {
         errorMessage.innerHTML += 'Property Name is required<br>';
         isValid = false;
       }
-      if (document.getElementById('propertytype').value === '') {
+      if (!propertytype) {
         errorMessage.innerHTML += 'Property Type is required<br>';
         isValid = false;
       }
-      if (document.getElementById('district').value === '') {
+      if (!district) {
         errorMessage.innerHTML += 'District is required<br>';
         isValid = false;
       }
-      if (document.getElementById('bedroom_no').value === '') {
-        errorMessage.innerHTML += 'No. of bedrooms is required<br>';
+      if (!bedroom_no || isNaN(bedroom_no) || Number(bedroom_no) <= 0) {
+        errorMessage.innerHTML += 'No. of bedrooms is required and must be a positive integer<br>';
         isValid = false;
       }
-      if (document.getElementById('price').value === '') {
-        errorMessage.innerHTML += 'Price is required<br>';
+      if (!price || isNaN(price) || Number(price) <= 0) {
+        errorMessage.innerHTML += 'Price is required and must be a positive number<br>';
         isValid = false;
       }
-      if (document.getElementById('psf').value === '') {
-        errorMessage.innerHTML += 'Square Feet is required<br>';
+      if (!psf || isNaN(psf) || Number(psf) <= 0) {
+        errorMessage.innerHTML += 'Square Feet is required and must be a positive number<br>';
         isValid = false;
       }
-      if (document.getElementById('selleremail').value === '') {
-        errorMessage.innerHTML += "Seller's Email is required<br>";
+      if (!selleremail || !emailRegex.test(selleremail)) {
+        errorMessage.innerHTML += "Seller's Email is required and must be valid<br>";
         isValid = false;
       }
-      if (document.getElementById('image_url').files.length === 0) {
+      if (imageFile === 0) {
         errorMessage.innerHTML += "Image is required<br>";
         isValid = false;
       }
-      if (isValid){ 
+      return isValid;
+    }
+
+    function submitForm() {
+      if (isValid()){ 
         var propertyId = document.querySelector('.btn').dataset.propertyId;
         var formData = new FormData();
         formData.append('propertyname', document.getElementById('propertyname').value);
@@ -158,7 +172,7 @@
         formData.append('selleremail', document.getElementById('selleremail').value);
   
         var imageFile = document.getElementById('image_url').files[0];
-        formData.append('image_url', imageFile);
+        formData.append('image_url', imageFile);        
   
         fetch(`/update_property/${propertyId}`, {
           method: 'POST',
