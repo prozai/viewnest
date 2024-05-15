@@ -86,10 +86,10 @@ class deleteProperty:
     def delete_property(id):
         try:
             delete = deletePropertyController.REA_deleteProperty(id)
-            if delete:
-                flash("Deleted successfully!")
         except Exception as e:
             flash("Error deleting property: " + str(e))
+        
+        flash("Deleted successfully!")
         return redirect(url_for('route.REA_view_properties'))
 
 class saveProperty:
