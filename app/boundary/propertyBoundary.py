@@ -5,23 +5,25 @@ from app.boundary import propBP
 
 class viewPropertyBoundary:
     @propBP.route('/view_properties')
-    @loginController.login_required
     def view_properties():
         #Get user for HTML page
         result = loginController.dashboard()       
         user = result.get('user')                
      #  viewPropertyController.add_sample_properties()
         properties = viewPropertyController.view_properties()
-        return render_template('property/view_properties.html', properties=properties, user=user)
+        return render_template('property/view_properties.html', user=user , properties=properties )
 
+    @propBP.route('/view_calculation')
+    @loginController.login_required
     def view_calculation():
         #Get user for HTML page
         result = loginController.dashboard()       
-        user = result.get('user')        
-                
-        return render_template('property/view_calculation.html')
+        user = result.get('user')           
+        return render_template('property/view_calculation.html', user=user)
 
-    def view_property_detail(self,property_id):
+    @propBP.route('/view_property_detail/<int:property_id>')
+    @loginController.login_required
+    def view_property_detail(property_id):
         #Get user for HTML page
         result = loginController.dashboard()       
         user = result.get('user')        
@@ -32,23 +34,6 @@ class viewPropertyBoundary:
     
 property_boundary = viewPropertyBoundary()
 
-
-    
-@propBP.route('/view_calculation')
-@loginController.login_required
-def view_calculation():
-    #Get user for HTML page
-    result = loginController.dashboard()       
-    user = result.get('user')            
-    return property_boundary.view_calculation(user=user)
-
-@propBP.route('/view_property_detail/<int:property_id>')
-@loginController.login_required
-def view_property_detail(property_id):
-    #Get user for HTML page
-    result = loginController.dashboard()       
-    user = result.get('user')        
-    return property_boundary.view_property_detail(property_id, user=user)
 
 class createPropertyPage():
     @propBP.route('/create_property', methods=['GET', 'POST'])
@@ -106,7 +91,7 @@ class updatePropertyPage:
                     flash("Property not found")
             except Exception as e:
                 flash(f"Error updating property: {str(e)}")
-            return redirect(url_for('route.update_property', id=id))
+            return redirect(url_for('propRoutes.update_property', id=id))
         
         property = updatePropertyController.REA_getProperty(id)
         return render_template('REAgent/update_property.html', property=property,user = user)
@@ -123,7 +108,7 @@ class deleteProperty:
             flash("Error deleting property: " + str(e))
         
         flash("Deleted successfully!")
-        return redirect(url_for('route.REA_view_properties'),user= user)
+        return redirect(url_for('propRoutes.REA_view_properties'))
 
 class saveProperty:
     @propBP.route('/save_property', methods=['POST'])
@@ -133,7 +118,7 @@ class saveProperty:
         result = loginController.dashboard()       
         user = result.get('user')
         savePropertyController.buyer_saveProperty()
-        return redirect(url_for('route.view_properties'),user = user)
+        return redirect(url_for('propRoutes.view_properties'))
 
 class sellerPropertiesPage:
     @propBP.route('/seller_properties')
@@ -144,3 +129,42 @@ class sellerPropertiesPage:
                 
         properties = sellerPropertiesController.seller_viewProperties()
         return render_template('property/seller_properties.html', properties=properties, user = user)
+#search
+
+class SearchPropertyBoundary:
+    def __init__(self):
+        self.controller = SearchController()
+        
+    def search(self, search_query):
+        results = self.controller.search(search_query)
+        return render_template('property/search.html', results=results)
+
+    def searchSold(self, search_query):
+        results = self.controller.searchSold(search_query)
+        return render_template('property/search.html', results=results)
+
+    def searchAvailable(self, search_query):
+        results = self.controller.searchAvailable(search_query)
+        return render_template('property/search.html', results=results)
+
+search_boundary = SearchPropertyBoundary()
+
+
+@propBP.route('/search', methods=['POST', 'GET'])
+@loginController.login_required
+def search():
+    search_query = request.form.get('query')
+    return search_boundary.search(search_query)
+
+
+@propBP.route('/searchSold', methods=['POST', 'GET'])
+@loginController.login_required
+def searchSold():
+    search_query = request.form.get('query')
+    return search_boundary.searchSold(search_query)
+
+@propBP.route('/searchAvailable', methods=['POST', 'GET'])
+@loginController.login_required
+def searchAvailable():
+    search_query = request.form.get('query')
+    return search_boundary.searchAvailable(search_query)

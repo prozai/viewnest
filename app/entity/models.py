@@ -4,6 +4,7 @@ from app import Base, session
 from datetime import date
 from sqlalchemy.ext.declarative import declarative_base
 
+
 # User Profile Class
 class UserProfile(Base):
     __tablename__ = "user_profile"
@@ -203,17 +204,45 @@ class User(Base):
             #with session.begin():
                 session.add(account)
                 session.commit()
+                return True
         except Exception as e:
             session.rollback()
             print(f"Error creating new account: {e}")
+            return False
         finally:
             session.close()
+
+    # Function to check email
+    @classmethod
+    def check_email(cls, email):
+        email_exist = session.query(cls).filter(cls.email==email).first() is not None
+        return email_exist
+    
+     # Function to check phone num
+    @classmethod
+    def check_phonenum(cls, phonenum):
+        phone_num_exist = session.query(cls).filter(cls.email==phonenum).first() is not None
+        return phone_num_exist
+    
+    # Function to check username
+    @classmethod
+    def check_username(cls, username):
+        username_exist = session.query(cls).filter(cls.email==username).first() is not None
+        return username_exist
+
 
     # Function to read all account records in DB
     @classmethod
     def get_all_accounts(cls):
         users=session.query(cls).filter(cls.suspend_status==False).all()
         return users
+
+    # Function to read one account record 
+    @classmethod
+    def get_account_by_user_id(cls, user_id):
+        user = session.query(cls).filter(cls.user_id==user_id).all()
+        return user
+        
 
     # Function to update account record in DB
     @classmethod
@@ -357,6 +386,35 @@ class Property(Base):
     def get_sellerproperties(email):
         properties = session.query(Property).filter_by(selleremail=email).all()
         return properties
+    
+    def search_by_name(search_query):
+            # Split the search query into individual keywords
+        keywords = search_query.split()
+
+        return session.query(Property).filter(
+        *[Property.propertyname.like(f'%{keyword}%') for keyword in keywords]
+    ).all()
+
+
+    def search_by_sold(search_query):
+    # Split the search query into individual keywords
+         keywords = search_query.split()
+
+         return session.query(Property).filter(
+        *[Property.propertyname.like(f'%{keyword}%') for keyword in keywords],
+        Property.sold == 1  # Add this condition to filter sold properties
+    ).all()
+         
+    def search_by_avail(search_query):
+    # Split the search query into individual keywords
+         keywords = search_query.split()
+
+         return session.query(Property).filter(
+        *[Property.propertyname.like(f'%{keyword}%') for keyword in keywords],
+        Property.sold == 0  # Add this condition to filter sold properties
+    ).all()
+
+    
     
  # Save Class   
 class Save(Base):

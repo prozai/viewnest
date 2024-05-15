@@ -38,6 +38,7 @@ class viewPropertyController:
     # Function to show all properties.
     def view_properties():
         try:
+            
             properties = session.query(Property).all()
             return properties
         except Exception as e:

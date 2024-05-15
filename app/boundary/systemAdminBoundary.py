@@ -117,9 +117,8 @@ class SearchProfilePage():
 
 class CreateAccountsPage():
     @adminBP.route('/registerAccount', methods=['GET', 'POST'])
-    @loginController.sysadmin_authentication
     def createAccount():
-                #Get user for HTML page
+                        #Get user for HTML page
         result = loginController.dashboard()       
         user = result.get('user')
         if request.method == 'POST':
@@ -133,15 +132,27 @@ class CreateAccountsPage():
                 username=request.form.get("username")
 
                 add_account = CreateAccountController()
+
+                # Check if unique attributes exist
+                if (add_account.check_email(email)):
+                    return render_template('systemAdmin/register-account.html', error='Email already exists!')
+                
+                if (add_account.check_phonenum(phonenum)):
+                    return render_template('systemAdmin/register-account.html', error='Phone number already exists!')
+                
+                if (add_account.check_username(username)):
+                    return render_template('systemAdmin/register-account.html', error='Username already exists!')
+
                 status = add_account.addAccount(profile_name, fname, lname, email, phonenum, username, password)
 
                 if status:
                     return redirect(url_for('.displayAccounts'))
                 else:
-                    raise Exception('Error in creating account!')
+                    return redirect('systemAdmin/register-account.html', error='Error creating new account.')
             except Exception as e:
                 print("Error:", e)
-        return render_template('systemAdmin/register-account.html',user=user)
+        return render_template('systemAdmin/register-account.html',user = user)
+    
     
 class DisplayAccountsPage():
     @adminBP.route('/displayAccounts', methods=['POST', 'GET'])
