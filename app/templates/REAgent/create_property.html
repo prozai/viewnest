@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Property Listing</title>
+  <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/property.css')}}"> -->
+  <style>
+    *{
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    }
+    
+    h1 {
+      text-align: center;
+      padding-top: 20px;
+    }
+  
+    .form-container {
+      text-align: center;
+      max-width: 700px;
+      margin: 30px auto;
+      padding: 30px 0px 30px 0px;
+      border: solid 1px;
+      border-radius: 50px;
+      box-shadow: lightgray 10px 10px;
+    }
+    .form-group {
+      padding: 10px; 
+    }
+    
+    .form-control{
+      padding: 6px; 
+      border: solid 1px black;
+    }
+    
+    .form-control-image{
+      padding: 5px; 
+      border: solid 1px black;
+    }
+    
+    .btn{
+      font-weight: bold;
+      margin-top: 20px;
+      margin-bottom: 10px;
+      padding: 10px 30px 10px 30px;
+      border-radius: 50px;
+      background-color: white; 
+      color: black; 
+      border: 2px solid #49bd7d;
+      cursor: pointer;
+    }
+    
+    .btn:hover {
+      background-color: #49bd7d;
+      color: white;
+    }
+
+    .error{
+      color: red;
+    }
+  </style>
+</head>
+<body>
+      <!-- Include the menu template -->
+      {% include 'topMenu.html' %}
+
+  <h1> Create Property Listing </h1>
+  <div class="form-container">
+    <form id="propertyForm" enctype="multipart/form-data">
+      <span id="errorMessage" class="error"></span><br>
+      <div class="form-group">
+        <label for="propertyname">Property Name:</label>
+        <input type="text" id="propertyname" class="form-control" required>
+      </div>
+      <div class="form-group">
+        <label for="propertytype">Property Type:</label>
+        <input type="text" id="propertytype" class="form-control" required>
+      </div>
+      <div class="form-group">
+        <label for="district">District:</label>
+        <input type="text" id="district" class="form-control" required>
+      </div>
+      <div class="form-group">
+        <label for="bedroom_no">No. of bedrooms:</label>
+        <input type="text" id="bedroom_no" class="form-control" required>
+      </div>
+      <div class="form-group">
+        <label for="price">Price ($):</label>
+        <input type="text" id="price" class="form-control" required>
+      </div>
+      <div class="form-group">
+        <label for="psf">Square Feet (m²):</label>
+        <input type="text" id="psf" class="form-control" required>
+      </div>
+      <div class="form-group">
+        <label for="selleremail">Seller's Email:</label>
+        <input type="text" id="selleremail" class="form-control" required>
+      </div>
+      <div class="form-group">
+        <label for="image_url">Image:</label>
+        <input type="file" id="image_url" class="form-control-image" required>
+      </div>
+      <button type="button" onclick="submitForm()" class="btn btn-primary">Submit</button>
+    </form>
+  </div>
+
+  <script>  
+    function isValid() {
+      let isValid = true;
+      const errorMessage = document.getElementById('errorMessage');
+      errorMessage.innerHTML = '';
+    
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      const propertyname = document.getElementById('propertyname').value.trim();
+      const propertytype = document.getElementById('propertytype').value.trim();
+      const district = document.getElementById('district').value.trim();
+      const bedroom_no = document.getElementById('bedroom_no').value.trim();
+      const price = document.getElementById('price').value.trim();
+      const psf = document.getElementById('psf').value.trim();
+      const selleremail = document.getElementById('selleremail').value.trim();
+      const imageFile = document.getElementById('image_url').files.length;
+    
+      if (!propertyname) {
+        errorMessage.innerHTML += 'Property Name is required<br>';
+        isValid = false;
+      }
+      if (!propertytype) {
+        errorMessage.innerHTML += 'Property Type is required<br>';
+        isValid = false;
+      }
+      if (!district) {
+        errorMessage.innerHTML += 'District is required<br>';
+        isValid = false;
+      }
+      if (!bedroom_no || isNaN(bedroom_no) || Number(bedroom_no) <= 0) {
+        errorMessage.innerHTML += 'No. of bedrooms is required and must be a positive integer<br>';
+        isValid = false;
+      }
+      if (!price || isNaN(price) || Number(price) <= 0) {
+        errorMessage.innerHTML += 'Price is required and must be a positive number<br>';
+        isValid = false;
+      }
+      if (!psf || isNaN(psf) || Number(psf) <= 0) {
+        errorMessage.innerHTML += 'Square Feet is required and must be a positive number<br>';
+        isValid = false;
+      }
+      if (!selleremail || !emailRegex.test(selleremail)) {
+        errorMessage.innerHTML += "Seller's Email is required and must be valid<br>";
+        isValid = false;
+      }
+      if (imageFile === 0) {
+        errorMessage.innerHTML += "Image is required<br>";
+        isValid = false;
+      }
+      return isValid;
+    }
+    
+    function submitForm() {
+      if (isValid()){ 
+        var formData = new FormData();
+        formData.append('propertyname', document.getElementById('propertyname').value);
+        formData.append('propertytype', document.getElementById('propertytype').value);
+        formData.append('district', document.getElementById('district').value);
+        formData.append('bedroom_no', document.getElementById('bedroom_no').value);
+        formData.append('price', document.getElementById('price').value);
+        formData.append('psf', document.getElementById('psf').value);
+        formData.append('selleremail', document.getElementById('selleremail').value);
+
+        var imageFile = document.getElementById('image_url').files[0];
+        formData.append('image_url', imageFile);
+
+        fetch('/create_property', {
+          method: 'POST',
+          body: formData
+        })
+        .then(response => {
+          if (response.ok) {
+            window.location.href = '/REA_properties';
+          } else {
+            console.error('Form submission failed!');
+          }
+        });
+      }
+    }
+
+  </script>
+</body>
+</html>

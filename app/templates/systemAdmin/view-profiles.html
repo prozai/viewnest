@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+<!-- Include the menu bar -->
+{% include 'topMenu.html' %}
+{% block title %} View All Profile {% endblock %}
+
+{% block body %} 
+<div class="container">
+    <div class="my-2">
+        <div>
+            <form action="/searchProfile" method="POST">
+                <input type="text" id="query" name="query" placeholder="Search...">
+                <button type="submit">Search</button>
+            </form>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Name</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    {% for profile in profiles %}
+                    <tr>
+                        <td>{{profile.profile_id}}</td>
+                        <td>{{profile.roles}}</td>
+                        <td>{{profile.description}}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

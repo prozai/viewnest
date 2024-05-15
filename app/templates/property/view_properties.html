@@ -1,0 +1,211 @@
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>ViewNest Property Listings</title>
+        <style>
+            body {
+                font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            }
+            .container {
+                max-width: 800px;
+                margin: 20px auto;
+                padding: 20px;
+                background-color: #fff;
+                border-radius: 8px;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            }
+            h1 {
+                text-align: center;
+                margin-bottom: 20px;
+            }
+            .button-container {
+                text-align: center;
+                margin-bottom: 20px;
+            }
+            .button-container button {
+                background-color: rgba(51, 51, 51, 0.05);
+                border-radius: 8px;
+                border-width: 0;
+                color: #333333;
+                cursor: pointer;
+                display: inline-block;
+                font-family: "Haas Grot Text R Web", "Helvetica Neue", Helvetica, Arial, sans-serif;
+                font-size: 14px;
+                font-weight: 500;
+                line-height: 20px;
+                list-style: none;
+                margin: 0;
+                padding: 10px 12px;
+                text-align: center;
+                transition: all 200ms;
+                vertical-align: baseline;
+                white-space: nowrap;
+                user-select: none;
+                -webkit-user-select: none;
+                touch-action: manipulation;
+            }
+            .button searchPropertyButton{
+                text-align: right;
+            }
+            .search-bar {
+                text-align: center;
+            }
+            .search-bar input {
+                margin-right: 5px;
+            }
+            .property-list {
+                list-style-type: none;
+                padding: 0;
+            }
+            .property-item {
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                padding: 10px;
+                margin-bottom: 10px;
+                background-color: #f9f9f9;
+                font-size: x-large
+            }
+            .property-image {
+                max-width: 100%;
+                height: auto;
+                margin-bottom: 10px;
+            }
+            .search-bar {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-bottom: 20px;
+            }
+            .search-bar input[type="text"] {
+                padding: 10px;
+                border: 2px solid #ccc;
+                border-radius: 5px;
+                outline: none;
+                width: 300px;
+            }
+            .search-bar button {
+                background-color: #808080;
+                color: #fff;
+                border: none;
+                border-radius: 5px;
+                padding: 10px 20px;
+                margin-left: 10px;
+                cursor: pointer;
+            }
+            .search-bar button:hover {
+                background-color: #6c6c6c;
+            }
+
+        </style>
+    </head>
+    <body>
+              <!-- Include the menu template -->
+      {% include 'topMenu.html' %}
+
+        <div class="container">
+            <h1>ViewNest Property Listings</h1>
+            <br>
+            <p id="filter-status"><strong>Showing All Properties</strong></p>
+            <div class="button-container">
+                <button onclick="showAvailable()">Available</button>
+                <button onclick="showSold()">Sold</button>
+                <button onclick="showAll()">Show All</button>
+            </div>
+            <!-- Search Form -->
+            <div class="search-bar">
+                <form id="searchForm" action="/search" method="POST">
+                    <input type="hidden" name="search_type" id="searchType" value="all">
+                    <input type="text" name="query" id="searchPlaceholder" placeholder="Search all properties">
+                    <button type="submit">Search</button>
+                </form>
+            </div>
+            <div class="button-container">
+                <button onclick="viewCalculateProperty()">Mortgage Calculator</button>
+            </div>
+
+            <ul class="property-list">
+                {% for property in properties %}
+                    <li onclick="viewPropertyDetail('{{ property.ID }}')" style="cursor: pointer;" class="property-item {% if property.sold %}sold{% endif %}">
+                        <img src="{{ property.image_url }}" alt="{{ property.propertyname }} image" class="property-image"> 
+                        <div>
+                            <strong>{{ property.propertyname }}</strong>
+                            <strong style="float: right;">S${{ "{:,.2f}".format(property.price) }}</strong><br>
+                            <span>{{ property.propertytype }} ({{ property.bedroom_no }} Bedroom)</span>
+                            {% if property.sold %}
+                            <span style="float: right;">Sold</span>
+                        {% else %}
+                            <span style="float: right;">Available</span>
+                        {% endif %}
+                            <div style="clear: both;"></div>
+
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+        <script>
+            function showAvailable() {
+                document.getElementById('filter-status').innerHTML = '<strong>Showing All Available Properties</strong>';
+                document.getElementById('searchPlaceholder').placeholder = 'Search Available Properties';
+                document.getElementById('searchType').value = 'available';
+                document.getElementById('searchForm').action = '/searchAvailable';
+                var items = document.getElementsByClassName('property-item');
+                for (var i = 0; i < items.length; i++) {
+                    if (items[i].classList.contains('sold')) {
+                        items[i].style.display = 'none';
+                    } else {
+                        items[i].style.display = 'block';
+                    }
+                }
+            }
+
+            function showSold() {
+                document.getElementById('filter-status').innerHTML = '<strong>Showing All Sold Properties</strong>';
+                document.getElementById('searchPlaceholder').placeholder = 'Search Sold Properties';
+                document.getElementById('searchType').value = 'sold';
+                document.getElementById('searchForm').action = '/searchSold';
+                var items = document.getElementsByClassName('property-item');
+                for (var i = 0; i < items.length; i++) {
+                    if (items[i].classList.contains('sold')) {
+                        items[i].style.display = 'block';
+                    } else {
+                        items[i].style.display = 'none';
+                    }
+                }
+            }
+
+            function showAll() {
+                document.getElementById('filter-status').innerHTML = '<strong>Showing All Properties</strong>';
+                document.getElementById('searchPlaceholder').placeholder = 'Search All Properties';
+                document.getElementById('searchType').value = 'all';
+                document.getElementById('searchForm').action = '/search';
+                var items = document.getElementsByClassName('property-item');
+                for (var i = 0; i < items.length; i++) {
+                    items[i].style.display = 'block';
+                }
+            }
+
+            function clearSearch() {
+                var input = document.getElementById('search');
+                input.value = ''; 
+                searchProperties(); 
+                document.getElementById('filter-status').innerHTML = '<strong>Search Result Cleared.</strong>'
+            }
+
+
+            function viewSearchProperties() {
+                window.location.href = '/search_properties';
+            }
+
+            function viewCalculateProperty(propertyName, propertyPrice) {
+                window.location.href = '/view_calculation';
+            }
+
+            function viewPropertyDetail(propertyId) {
+                window.location.href = '/view_property_detail/' + propertyId;
+            }
+        </script>
+    </body>
+    </html>
