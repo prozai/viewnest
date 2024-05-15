@@ -1,4 +1,4 @@
-from flask import request, session, flash
+from flask import logging, request, session
 from app import session
 from app.entity.models import *
 import os
@@ -94,7 +94,7 @@ class createPropertyController:
             image_file.save(os.path.join(upload_folder, filename))
             image_path = os.path.join(path, filename)
 
-            new_property = Property(user_id=user_id,  # session['user_id']
+            new_property = Property(user_id=user_id,  # flask_session['user_id']
                                     propertyname=propertyname,
                                     propertytype=propertytype,
                                     district=district,
@@ -108,9 +108,6 @@ class createPropertyController:
                                     sold=False)
             
             Property.create_property(new_property)
-
-            flash("Added successfully!")
-            
         except Exception as e:
             print("Error creating property:", str(e))
 
@@ -127,9 +124,18 @@ class REAPropertiesController:
 
 # Update Property Listing
 class updatePropertyController:
-    def REA_updateProperty(self, id, propertyname, propertytype, district, bedroom_no, price, psf, selleremail, image_file):
+    def REA_updateProperty(id):
         try:
-            updateProperty = session.query(Property).filter_by(ID=id).first()
+            if request.method == 'POST':
+                propertyname = request.form['propertyname']
+                propertytype = request.form['propertytype']
+                district = request.form['district']
+                bedroom_no = request.form['bedroom_no']
+                price = request.form['price']
+                psf = request.form['psf']
+                selleremail = request.form['selleremail']
+                image_file = request.files.get('image_url')
+                updateProperty = session.query(Property).filter_by(ID=id).first()
 
             if updateProperty:
                 updateProperty.propertyname = propertyname
@@ -176,9 +182,8 @@ class deletePropertyController:
                         os.remove(image_path)
 
                 Property.delete_property(property)
-                flash("Deleted successfully!")
             else:
-                flash("Property not found")
+                print("Property not found", str(e))
 
         except Exception as e:
             print("Error deleting property:", str(e))
@@ -188,7 +193,7 @@ class savePropertyController:
     def buyer_saveProperty():
         try:
             property_id = request.form['property_id']
-            user_id = 2  # session['user_id']
+            user_id = 2  # flask_session['user_id']
             saved = session.query(Save).filter_by(user_id=user_id, property_id=property_id).first()
             property = session.query(Property).filter_by(ID=property_id).first()
 
