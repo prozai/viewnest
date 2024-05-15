@@ -245,6 +245,10 @@ class Property(Base):
             print("Error creating property:", str(e))
         finally:
             session.close()
+            
+    def get_sellerproperties(email):
+        properties = session.query(Property).filter_by(selleremail=email).all()
+        return properties
         
  # Save Class   
 class Save(Base):
