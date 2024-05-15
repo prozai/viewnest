@@ -24,7 +24,7 @@
             text-align: center;
             margin-bottom: 20px;
         }
-        .button-container button {
+        .button-container button, .button-container .load-more-btn {
             background-color: rgba(51, 51, 51, 0.05);
             border-radius: 8px;
             border-width: 0;
@@ -108,7 +108,7 @@
     <div class="container">
         <h1>ViewNest Property Listings</h1>
         <br>
-        <p id="filter-status"><strong>Showing All {{ properties | length }} Properties</strong></p>
+        <p id="filter-status"><strong>Showing All Properties</strong></p>
         <div class="button-container">
             <button onclick="showAvailable()">Available</button>
             <button onclick="showSold()">Sold</button>
@@ -126,9 +126,9 @@
             <button onclick="viewCalculateProperty()">Mortgage Calculator</button>
         </div>
 
-        <ul class="property-list">
+        <ul id="propertyList" class="property-list">
             {% for property in properties %}
-                <li onclick="viewPropertyDetail('{{ property.ID }}')" style="cursor: pointer;" class="property-item {% if property.sold %}sold{% endif %}">
+                <li onclick="viewPropertyDetail('{{ property.id }}')" style="cursor: pointer;" class="property-item {% if property.sold %}sold{% endif %}">
                     <img src="{{ property.image_url }}" alt="{{ property.propertyname }} image" class="property-image"> 
                     <div>
                         <strong>{{ property.propertyname }}</strong>
@@ -144,15 +144,17 @@
                     </div>
                 </li>
             {% endfor %}
+            <div class="button-container">
+                <button id="loadMoreBtn" class="load-more-btn">Show More Properties</button>
+            </div>
         </ul>
     </div>
     <script>
-        function showAvailable() {
-            var availableProperties = Array.from(document.getElementsByClassName('property-item')).filter(function(item) {
-                return !item.classList.contains('sold'); 
-            });
+        var filter_type;
 
-            document.getElementById('filter-status').innerHTML = '<strong>Showing All ' + availableProperties.length + ' Available Properties</strong>';
+        function showAvailable() {
+            changeFilter('available');
+            document.getElementById('filter-status').innerHTML = '<strong>Showing Available Properties</strong>';
             document.getElementById('searchPlaceholder').placeholder = 'Search Available Properties';
             document.getElementById('searchType').value = 'available';
             document.getElementById('searchForm').action = '/searchAvailable';
@@ -167,11 +169,8 @@
         }
 
         function showSold() {
-            var soldProperties = Array.from(document.getElementsByClassName('property-item')).filter(function(item) {
-                return item.classList.contains('sold');
-            });
-
-            document.getElementById('filter-status').innerHTML = '<strong>Showing All ' + soldProperties.length + ' Sold Properties</strong>';
+            changeFilter('sold');
+            document.getElementById('filter-status').innerHTML = '<strong>Showing Sold Properties</strong>';
             document.getElementById('searchPlaceholder').placeholder = 'Search Sold Properties';
             document.getElementById('searchType').value = 'sold';
             document.getElementById('searchForm').action = '/searchSold';
@@ -186,7 +185,8 @@
         }
 
         function showAll() {
-            document.getElementById('filter-status').innerHTML = '<strong>Showing All {{ properties | length }} Properties</strong>';
+            changeFilter('all');
+            document.getElementById('filter-status').innerHTML = '<strong>Showing All Properties</strong>';
             document.getElementById('searchPlaceholder').placeholder = 'Search All Properties';
             document.getElementById('searchType').value = 'all';
             document.getElementById('searchForm').action = '/search';
@@ -194,6 +194,10 @@
             for (var i = 0; i < items.length; i++) {
                 items[i].style.display = 'block';
             }
+        }
+
+        function changeFilter(filterType) {
+            filter_type = filterType;
         }
 
         function clearSearch() {
@@ -215,7 +219,65 @@
         function viewPropertyDetail(propertyId) {
             window.location.href = '/view_property_detail/' + propertyId;
         }
-     
+        document.addEventListener('DOMContentLoaded', function() {
+        var loadMoreBtn = document.getElementById('loadMoreBtn');
+        var propertyList = document.getElementById('propertyList');
+        var offset = 0;
+        var limit = 10;
+        loadMoreBtn.addEventListener('click', function() {
+            // Increment offset for the next request
+            offset += limit;
+            var filterType = filter_type
+
+            // AJAX request to fetch more properties with updated offset and limit
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', '/load_more_properties?offset=' + offset + '&limit=' + limit + '&filter_type=' + filterType, true);
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    try {
+                        var data = JSON.parse(xhr.responseText);
+                        var properties = data.properties;
+                        properties.forEach(function(property) {
+                            var li = document.createElement('li');
+                            li.classList.add('property-item');
+                            li.innerHTML = `
+                            <div onclick="viewPropertyDetail('${property.id}')" style="cursor: pointer;">
+                                <img src="${property.image_url}" alt="${property.propertyname} image" class="property-image"> 
+                                <div>
+                                    <strong>${property.propertyname}</strong>
+                                    <strong style="float: right;">S$${property.price.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</strong><br>
+                                    <span>${property.propertytype} (${property.bedroom_no} Bedroom)</span>
+                                    ${property.sold ? '<span style="float: right;">Sold</span>' : '<span style="float: right;">Available</span>'}
+                                    <div style="clear: both;"></div>
+                                </div>
+                            </div>
+                        `;
+
+                            propertyList.appendChild(li);
+                        });
+                        // Move the load more button to the end of the list
+                        propertyList.appendChild(loadMoreBtn);
+                    } catch (error) {
+                        console.error('Error parsing JSON:', error);
+                    }
+                } else {
+                    console.error('Error loading properties:', xhr.statusText);
+                }
+            };
+
+            // Log before sending the request
+            console.log('Sending AJAX request...');
+
+            xhr.send();
+
+            // Log after sending the request
+            console.log('AJAX request sent.');
+        });
+    });
+
+
+
+
     </script>
 </body>
 </html>

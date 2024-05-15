@@ -35,15 +35,40 @@ class viewPropertyController:
     #         session.close()
 
     # Function to show all properties.
-    def view_properties():
-        try:
-            properties = session.query(Property).all()
-            return properties
-        except Exception as e:
-            print(f"Error fetching properties: {e}")
-            return None
-        finally:
-            session.close()
+    def view_properties(offset, limit, filter_type):
+        query = session.query(Property)
+
+        # Apply filter if specified
+        if filter_type == 'available':
+            query = query.filter_by(sold=False)
+        elif filter_type == 'sold':
+            query = query.filter_by(sold=True)
+        
+
+        # Execute the query with offset and limit
+        properties = query.offset(offset).limit(limit).all()
+
+        # Serialize the properties
+        serialized_properties = []
+        for prop in properties:
+            serialized_properties.append({
+                'id': prop.ID,
+                'propertyname': prop.propertyname,
+                'propertytype': prop.propertytype,
+                'district': prop.district,
+                'bedroom_no': prop.bedroom_no,
+                'price': prop.price,
+                'psf': prop.psf,
+                'selleremail': prop.selleremail,
+                'listing_date': prop.listing_date.isoformat() if prop.listing_date else None,
+                'date_sold': prop.date_sold.isoformat() if prop.date_sold else None,
+                'image_url': prop.image_url,
+                'sold': prop.sold,
+                'view_count': prop.view_count,
+                'saves': prop.saves
+            })
+
+        return serialized_properties
 
     # Function to show selected property.
     def view_property_detail(property_id):
@@ -66,6 +91,17 @@ class viewPropertyController:
             return None
         finally:
             session.close()
+
+    def load_more_properties(offset, limit, filter_type):
+        try:
+            properties = viewPropertiesController.view_properties(offset, limit, filter_type)
+            if not properties:
+                return jsonify(error="No properties found"), 404
+            return jsonify(properties=properties)
+        except Exception as e:
+            print("Error loading more properties:", str(e))
+            return jsonify(error="Internal server error"), 500
+    
 class viewCountController:
     # Function to add view count to property when viewed.
     def add_viewCount(property_id):

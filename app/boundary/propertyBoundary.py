@@ -2,11 +2,14 @@ from flask import render_template, request, redirect, url_for
 from app.control.propertyController import *
 from app.control.loginController import loginController
 from app.boundary import propBP
-
+from app.control.propertyController import viewPropertyController
 class viewPropertyBoundary:
     def view_properties(self):
      #  viewPropertyController.add_sample_properties()
-        properties = viewPropertyController.view_properties()
+        offset = 0
+        limit = 10
+        filter_type = 'all'
+        properties = viewPropertyController.view_properties(offset, limit, filter_type)
         return render_template('property/view_properties.html', properties=properties)
 
     def view_calculation(self):
@@ -16,7 +19,11 @@ class viewPropertyBoundary:
         property = viewPropertyController.view_property_detail(property_id)
         viewCountController.add_viewCount(property_id)
         return render_template('property/view_property_detail.html', property=property)
-    
+
+    def load_more_properties(self, offset, limit, filter_type):
+        properties = viewPropertyController.view_properties(offset, limit, filter_type)
+        return jsonify(properties=properties)
+
 property_boundary = viewPropertyBoundary()
 
 @propBP.route('/view_properties')
@@ -34,7 +41,13 @@ def view_calculation():
 def view_property_detail(property_id):
     return property_boundary.view_property_detail(property_id)
 
-
+@propBP.route('/load_more_properties', methods=['GET'])
+@loginController.login_required
+def load_more_properties_route():
+    offset = request.args.get('offset', type=int)
+    limit = request.args.get('limit', type=int)
+    filter_type = request.args.get('filter_type', type=str)
+    return property_boundary.load_more_properties(offset, limit, filter_type)
 
 class createPropertyBoundary:
     def __init__(self):
@@ -164,3 +177,4 @@ def searchSold():
 def searchAvailable():
     search_query = request.form.get('query')
     return search_boundary.searchAvailable(search_query)
+

@@ -304,6 +304,24 @@ class Property(Base):
         self.image_url = image_url
         self.sold = sold
 
+    def to_dict(self):
+        return {
+            'user_id': self.user_id,
+            'propertyname': self.propertyname,
+            'propertytype': self.propertytype,
+            'district': self.district,
+            'bedroom_no': self.bedroom_no,
+            'price': self.price,
+            'psf': self.psf,
+            'selleremail': self.selleremail,
+            'listing_date': self.listing_date.isoformat() if self.listing_date else None,
+            'date_sold': self.date_sold.isoformat() if self.date_sold else None,
+            'image_url': self.image_url,
+            'sold': self.sold,
+            'view_count': self.view_count,
+            'saves': self.saves
+        }
+
     def get_property_id(self):
         return self.ID
     
