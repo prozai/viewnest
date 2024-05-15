@@ -213,10 +213,9 @@ class savePropertyController:
 # Seller View Property Listings + Saves
 class sellerPropertiesController:
     def seller_viewProperties():
-        # user_id = 3 # session['user_id']
-        # user = session.query(User).filter_by(user_id=user_id).first()
         try:
-            properties = session.query(Property).filter_by(selleremail="seller1@gmail.com").all()  # user.email
+            email = "seller1@gmail.com"
+            properties = Property.get_sellerproperties(email)
             return properties
 
         except Exception as e:
