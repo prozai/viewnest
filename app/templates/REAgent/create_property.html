@@ -54,18 +54,17 @@
       background-color: #49bd7d;
       color: white;
     }
+
+    .error{
+      color: red;
+    }
   </style>
 </head>
 <body>
   <h1> Create Property Listing </h1>
-  <h1>Welcome, (User ID: {{ 
-    user.user_id}})</h1>
   <div class="form-container">
     <form id="propertyForm" enctype="multipart/form-data">
-      <div class="form-group">
-        <label for="id">REA ID:</label>
-        <input type="text" id="user_id" class="form-control" required value="{{ user.user_id }}" readonly>
-      </div>
+      <span id="errorMessage" class="error"></span><br>
       <div class="form-group">
         <label for="propertyname">Property Name:</label>
         <input type="text" id="propertyname" class="form-control" required>
@@ -87,7 +86,7 @@
         <input type="text" id="price" class="form-control" required>
       </div>
       <div class="form-group">
-        <label for="psf">Square Feet (m):</label>
+        <label for="psf">Square Feet (m²):</label>
         <input type="text" id="psf" class="form-control" required>
       </div>
       <div class="form-group">
@@ -102,53 +101,85 @@
     </form>
   </div>
 
-  <script>
+  <script>  
+    function isValid() {
+      let isValid = true;
+      const errorMessage = document.getElementById('errorMessage');
+      errorMessage.innerHTML = '';
+    
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      const propertyname = document.getElementById('propertyname').value.trim();
+      const propertytype = document.getElementById('propertytype').value.trim();
+      const district = document.getElementById('district').value.trim();
+      const bedroom_no = document.getElementById('bedroom_no').value.trim();
+      const price = document.getElementById('price').value.trim();
+      const psf = document.getElementById('psf').value.trim();
+      const selleremail = document.getElementById('selleremail').value.trim();
+      const imageFile = document.getElementById('image_url').files.length;
+    
+      if (!propertyname) {
+        errorMessage.innerHTML += 'Property Name is required<br>';
+        isValid = false;
+      }
+      if (!propertytype) {
+        errorMessage.innerHTML += 'Property Type is required<br>';
+        isValid = false;
+      }
+      if (!district) {
+        errorMessage.innerHTML += 'District is required<br>';
+        isValid = false;
+      }
+      if (!bedroom_no || isNaN(bedroom_no) || Number(bedroom_no) <= 0) {
+        errorMessage.innerHTML += 'No. of bedrooms is required and must be a positive integer<br>';
+        isValid = false;
+      }
+      if (!price || isNaN(price) || Number(price) <= 0) {
+        errorMessage.innerHTML += 'Price is required and must be a positive number<br>';
+        isValid = false;
+      }
+      if (!psf || isNaN(psf) || Number(psf) <= 0) {
+        errorMessage.innerHTML += 'Square Feet is required and must be a positive number<br>';
+        isValid = false;
+      }
+      if (!selleremail || !emailRegex.test(selleremail)) {
+        errorMessage.innerHTML += "Seller's Email is required and must be valid<br>";
+        isValid = false;
+      }
+      if (imageFile === 0) {
+        errorMessage.innerHTML += "Image is required<br>";
+        isValid = false;
+      }
+      return isValid;
+    }
+    
     function submitForm() {
-      var formData = new FormData();
-      formData.append('user_id', document.getElementById('user_id').value);
-      formData.append('propertyname', document.getElementById('propertyname').value);
-      formData.append('propertytype', document.getElementById('propertytype').value);
-      formData.append('district', document.getElementById('district').value);
-      formData.append('bedroom_no', document.getElementById('bedroom_no').value);
-      formData.append('price', document.getElementById('price').value);
-      formData.append('psf', document.getElementById('psf').value);
-      formData.append('selleremail', document.getElementById('selleremail').value);
+      if (isValid()){ 
+        var formData = new FormData();
+        formData.append('propertyname', document.getElementById('propertyname').value);
+        formData.append('propertytype', document.getElementById('propertytype').value);
+        formData.append('district', document.getElementById('district').value);
+        formData.append('bedroom_no', document.getElementById('bedroom_no').value);
+        formData.append('price', document.getElementById('price').value);
+        formData.append('psf', document.getElementById('psf').value);
+        formData.append('selleremail', document.getElementById('selleremail').value);
 
-      var imageFile = document.getElementById('image_url').files[0];
-      formData.append('image_url', imageFile);
+        var imageFile = document.getElementById('image_url').files[0];
+        formData.append('image_url', imageFile);
 
-      fetch('/create_property', {
-        method: 'POST',
-        body: formData
-      })
-      .then(response => {
-        if (response.ok) {
-          window.location.href = 'REAgent/REA_properties';
-        } else {
-          console.error('Form submission failed!');
-        }
-      });
+        fetch('/create_property', {
+          method: 'POST',
+          body: formData
+        })
+        .then(response => {
+          if (response.ok) {
+            window.location.href = '/REA_properties';
+          } else {
+            console.error('Form submission failed!');
+          }
+        });
+      }
     }
 
-
-
-
-    document.addEventListener("DOMContentLoaded", function() {
-            var userId = parseInt("{{ user.user_id }}", 10); // Convert user ID to integer
-
-            // Send the user ID value to the server using AJAX
-            var xhr = new XMLHttpRequest();
-            xhr.open("POST", "/submitUserId", true); // Change the URL to your server endpoint
-            xhr.setRequestHeader("Content-Type", "application/json");
-            xhr.onreadystatechange = function () {
-                if (xhr.readyState === 4 && xhr.status === 200) {
-                    console.log(xhr.responseText); // Optional: Handle server response
-                }
-            };
-            var data = JSON.stringify({ userId: userId });
-            xhr.send(data);
-        });
-        
   </script>
 </body>
 </html>

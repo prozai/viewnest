@@ -6,6 +6,7 @@ from flask import render_template, request, redirect, url_for, flash, jsonify
 import os
 from datetime import datetime
 from app.entity.models import *
+from sqlalchemy import desc
 
 class viewPropertyController:
     
@@ -83,73 +84,50 @@ class viewCountController:
             session.close()
 
 class createPropertyController:
-    def REA_createProperty(user):
+    def REA_createProperty(self, propertyname, propertytype, district, bedroom_no, price, psf, image_file, selleremail):
         try:
+            user_id = flask_session['user__id']
+            max_id = session.query(Property).order_by(desc(Property.ID)).first()
+            highest_id = max_id.ID if max_id else None
 
-            if request.method == 'POST':
-                user_id = request.form['user_id']
-                propertyname = request.form['propertyname']
-                propertytype = request.form['propertytype']
-                district = request.form['district']
-                bedroom_no = request.form['bedroom_no']
-                price = request.form['price']
-                psf = request.form['psf']
-                image_file = request.files['image_url']
-                selleremail = request.form['selleremail']
+            propertyid = highest_id + 1
+            filename = f"{propertyid}.{image_file.filename.split('.')[-1]}"
+            upload_folder = './app/static/uploads/properties/'
+            path = './static/uploads/properties/'
+            image_file.save(os.path.join(upload_folder, filename))
+            image_path = os.path.join(path, filename)
 
-                if image_file:
-                    new_property = Property(user_id=user_id,  # session['user_id']
-                                            propertyname=propertyname,
-                                            propertytype=propertytype,
-                                            district=district,
-                                            bedroom_no=bedroom_no,
-                                            price=price,
-                                            psf=psf,
-                                            selleremail=selleremail,
-                                            listing_date=datetime.now().date(),
-                                            date_sold=None,
-                                            image_url=None,
-                                            sold=False)
-                    session.add(new_property)
-                    session.commit()
-
-                    propertyid = new_property.ID
-                    filename = f"{propertyid}.{image_file.filename.split('.')[-1]}"
-                    upload_folder = './app/static/uploads/properties/'
-                    path = './static/uploads/properties/'
-                    image_file.save(os.path.join(upload_folder, filename))
-                    image_path = os.path.join(path, filename)
-
-                    new_property.image_url = image_path
-                    session.commit()
-
-                    flash("Added successfully!")
-
-                else:
-                    image_path = None
-
+            new_property = Property(user_id=user_id,  # flask_session['user_id']
+                                    propertyname=propertyname,
+                                    propertytype=propertytype,
+                                    district=district,
+                                    bedroom_no=bedroom_no,
+                                    price=price,
+                                    psf=psf,
+                                    selleremail=selleremail,
+                                    listing_date=datetime.now().date(),
+                                    date_sold=None,
+                                    image_url= image_path,
+                                    sold=False)
+            
+            Property.create_property(new_property)
         except Exception as e:
             print("Error creating property:", str(e))
 
-
 # REA View Property Listings
-class viewPropertiesController:
-    def REA_viewProperties(user):
+class REAPropertiesController:
+    def REA_viewProperties():
         try:
-            if 'user_id' in flask_session:
-                user_id = flask_session['user_id']
-                properties = session.query(Property).filter_by(user_id=user_id).all()
-                return properties
-            else:
-                # Handle the case where user_id is not in session
-                return "User ID not found in session."
+            user_id = flask_session['user_id']
+            properties = Property.get_REAproperties(user_id)
+            return properties
 
         except Exception as e:
             print("Error retrieving property listings:", str(e))
 
 # Update Property Listing
 class updatePropertyController:
-    def REA_updateProperty(self, id):
+    def REA_updateProperty(id):
         try:
             if request.method == 'POST':
                 propertyname = request.form['propertyname']
@@ -158,56 +136,57 @@ class updatePropertyController:
                 bedroom_no = request.form['bedroom_no']
                 price = request.form['price']
                 psf = request.form['psf']
+                selleremail = request.form['selleremail']
                 image_file = request.files.get('image_url')
-
                 updateProperty = session.query(Property).filter_by(ID=id).first()
 
-                if updateProperty:
-                    updateProperty.propertyname = propertyname
-                    updateProperty.propertytype = propertytype
-                    updateProperty.district = district
-                    updateProperty.bedroom_no = bedroom_no
-                    updateProperty.price = price
-                    updateProperty.psf = psf
-                    updateProperty.listing_date = datetime.now().date()
+            if updateProperty:
+                updateProperty.propertyname = propertyname
+                updateProperty.propertytype = propertytype
+                updateProperty.district = district
+                updateProperty.bedroom_no = bedroom_no
+                updateProperty.price = price
+                updateProperty.psf = psf
+                updateProperty.selleremail = selleremail
 
-                    if image_file:
-                        filename = f"{updateProperty.ID}.{image_file.filename.split('.')[-1]}"
-                        upload_folder = './app/static/uploads/properties/'
-                        path = './static/uploads/properties/'
-                        image_file.save(os.path.join(upload_folder, filename))
-                        image_path = os.path.join(path, filename)
-                        updateProperty.image_url = image_path
+                if image_file:
+                    filename = f"{updateProperty.ID}.{image_file.filename.split('.')[-1]}"
+                    upload_folder = './app/static/uploads/properties/'
+                    path = './static/uploads/properties/'
+                    image_file.save(os.path.join(upload_folder, filename))
+                    image_path = os.path.join(path, filename)
+                    updateProperty.image_url = image_path
 
-                    session.commit()
-                    flash("Updated successfully!")
-                else:
-                    flash("Property not found")
-
-            property = session.query(Property).filter_by(ID=id).first()
-            return property
+                Property.update_property()
+                return updateProperty
+            else:
+                return None
 
         except Exception as e:
             print("Error updating property:", str(e))
 
+    def REA_getProperty(id):
+        try:
+            property = session.query(Property).filter_by(ID=id).first()
+            return property
+        except Exception as e:
+            print("Error retrieving property:", str(e))
+
 # Delete Property Listing
 class deletePropertyController:
-    def REA_deleteProperty(self, id):
+    def REA_deleteProperty(id):
         try:
             property = session.query(Property).filter_by(ID=id).first()
             if property:
-                # Remove the associated image file if it exists
                 if property.image_url:
                     upload_folder = './app/static/uploads/properties/'
                     image_path = os.path.join(upload_folder, property.image_url.split("/")[-1])
                     if os.path.exists(image_path):
                         os.remove(image_path)
 
-                session.delete(property)
-                session.commit()
-                flash("Deleted successfully!")
+                Property.delete_property(property)
             else:
-                flash("Property not found")
+                print("Property not found", str(e))
 
         except Exception as e:
             print("Error deleting property:", str(e))

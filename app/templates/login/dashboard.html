@@ -5,6 +5,35 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ViewNest Dashboard</title>
     <style>
+        /* Styles for the menu bar and container */
+        .top-menu {
+            background-color: #333;
+            color: #fff;
+            padding: 10px 0;
+            text-align: center;
+            margin-bottom: 20px; /* Added margin for spacing */
+        }
+        .top-menu ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .top-menu li {
+            display: inline-block;
+            margin: 0 10px;
+        }
+        .top-menu li a {
+            color: #fff;
+            text-decoration: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+        .top-menu li a:hover {
+            background-color: #555;
+        }
+
+        /* Other styles remain unchanged */
         body {
             font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
             background-color: #f0f0f0;
@@ -12,67 +41,72 @@
             padding: 0;
         }
         .container {
-            max-width: 600px;
+            max-width: 800px; /* Increased max-width for better layout */
             margin: 50px auto;
             padding: 20px;
             background-color: #fff;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            position: relative; /* Added relative positioning */
         }
         h1, h2 {
             text-align: center;
             margin-bottom: 20px;
         }
-        button {
+        .button-form {
+            text-align: center; /* Center align the form */
+        }
+        .button-form button {
             background-color: #808080;
             color: #fff;
             padding: 10px 20px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            width: 100%;
-            margin-bottom: 10px;
+            margin: 10px;
         }
-        button:hover {
+        .button-form button:hover {
             background-color: #6c6c6c;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Welcome, {{ user.fname }} {{ user.lname }} (User ID: {{ 
-            user.user_id}})</h1>
+      <!-- Include the menu bar -->
+      <div id="menu-container">
+        <!-- Using iframe -->
+        {% include 'base.html' %}
+      </div>
+
+        <!-- Rest of your content -->
+        <h1>Welcome, {{ user.fname }} {{ user.lname }} (User ID: {{ user.user_id}})</h1>
         <h2>Your account type is: {{ user.userprofile.roles }}.</h2>
 
-        <div id="buttonsContainer"></div>
+        <div id="buttonsContainer" class="button-form"></div>
 
         <form id="logoutForm" action="/logout" method="post">
             <button type="button" onclick="confirmLogout()">Logout</button>
         </form>
     </div>
-    <script>
-        function confirmLogout() {
-            var confirmLogout = confirm("Are you sure you want to logout?");
-            if (confirmLogout) {
-                document.getElementById("logoutForm").submit();
-            }
-        }
 
+
+
+    <!-- Script for dynamic buttons -->
+    <script>
         // Add this script to dynamically generate buttons based on user roles
         var roles = "{{ user.userprofile.profile_id }}"; // Assuming roles is a comma-separated string
         var buttonsContainer = document.getElementById("buttonsContainer");
         var rolesArray = roles.split(", ");
 
         if (rolesArray.includes("3")) {
-            var realEstateAgentButtons = [
+            var choices = [
                 { text: "Create Property Listings", page: "/create_property" },
                 { text: "View my Property Listings", page: "/REA_properties" },
                 { text: "Retrieve Clientele Ratings", page: "retrieve_clientele_ratings.html" },
                 { text: "Retrieve Clientele Reviews", page: "retrieve_clientele_reviews.html" },
-                { text: "Search Property Listings", page: "search_property_listings" }
             ];
 
-            realEstateAgentButtons.forEach(function(buttonInfo) {
+            choices.forEach(function(buttonInfo) {
                 var buttonElement = document.createElement("button");
                 buttonElement.textContent = buttonInfo.text;
                 buttonElement.dataset.page = buttonInfo.page; // Set data-page attribute
@@ -84,14 +118,14 @@
                 buttonsContainer.appendChild(buttonElement);
             });
         } else if (rolesArray.includes("1")) {
-            var buyerButtons = [
+            var choices = [
                 { text: "View Property Listings", page: "/view_properties" },
                 { text: "Calculate Property Mortgages", page: "calculate_property_mortgages.html" },
                 { text: "Create Ratings for Real Estate agents", page: "create_ratings.html" },
                 { text: "Create Reviews for Real Estate agents", page: "create_reviews.html" }
             ];
 
-            buyerButtons.forEach(function(buttonInfo) {
+            choices.forEach(function(buttonInfo) {
                 var buttonElement = document.createElement("button");
                 buttonElement.textContent =  buttonInfo.text;
                 buttonElement.addEventListener("click", function() {
@@ -100,7 +134,7 @@
                 buttonsContainer.appendChild(buttonElement);
             });
         } else if (rolesArray.includes("4")) {
-            var adminButtons = [
+            var choices = [
                 { text: "Create User Profiles", page: "/registerProfile"  },
                 { text: "Create User Accounts", page: "/registerAccount"  },
                 { text: "Retrieve User Profiles", page: "/displayProfiles"  },
@@ -113,7 +147,7 @@
                 { text: "Search User Accounts", page: "/searchAccount"  }
             ];
 
-            adminButtons.forEach(function(buttonInfo) {
+            choices.forEach(function(buttonInfo) {
                 var buttonElement = document.createElement("button");
                 buttonElement.textContent = buttonInfo.text;
                 buttonElement.addEventListener("click", function() {
@@ -122,14 +156,14 @@
                 buttonsContainer.appendChild(buttonElement);
             });
         } else if (rolesArray.includes("2")) {
-            var sellerButtons = [
+            var choices = [
                 { text: "View Seller Properties", page: "/seller_properties"  },
                 { text: "Create Ratings for Real Estate agents", page: "create_ratings.html" },
                 { text: "Create Reviews for Real Estate agents", page: "create_reviews.html" }
 
             ];
 
-            sellerButtons.forEach(function(buttonInfo) {
+            choices.forEach(function(buttonInfo) {
                 var buttonElement = document.createElement("button");
                 buttonElement.textContent = buttonInfo.text;
                 buttonElement.addEventListener("click", function() {
@@ -137,8 +171,6 @@
                 });
                 buttonsContainer.appendChild(buttonElement);
             });
-
-
         }
     </script>
 </body>
