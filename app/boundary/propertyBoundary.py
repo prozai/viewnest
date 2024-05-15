@@ -64,42 +64,6 @@ class REAPropertiesPage:
         return render_template('REAgent/REA_properties.html', properties=properties)
     
 class updatePropertyPage:
-    # @bp.route('/update_property/<int:id>/', methods=['GET', 'POST'])
-    # def update_property(id):
-    #     if request.method == 'POST':
-    #         try:
-    #             propertyname = request.form.get("propertyname")
-    #             propertytype = request.form.get("propertytype")
-    #             district = request.form.get("district")
-    #             bedroom_no = request.form.get("bedroom_no")
-    #             price = request.form.get("price")
-    #             psf = request.form.get("psf")
-    #             selleremail = request.form.get("selleremail")
-    #             image_file = request.files.get('image_url')
-                
-    #             updatedProperty = updatePropertyController.REA_updateProperty(id, propertyname, propertytype, district, bedroom_no, price, psf, selleremail, image_file)
-
-    #             if updatedProperty:
-    #                 flash("Updated successfully!")
-    #             else:
-    #                 flash("Property not found")
-    #         except Exception as e:
-    #             flash("Error updating property: " + str(e))
-
-    #     property = updatePropertyController.REA_getProperty(id)
-    #     return render_template('REAgent/update_property.html', property=property)
-
-    # @bp.route('/update_property/<int:id>/', methods=['GET', 'POST'])
-    # def update_property(id):
-    #     property = updatePropertyController.REA_updateProperty(id)
-    #     if property:
-    #         flash("Updated successfully!")
-    #     else:
-    #         flash("Property not found")
-        
-    #     return render_template('REAgent/update_property.html', property=property)
-
-
     @bp.route('/update_property/<int:id>/', methods=['GET', 'POST'])
     def update_property(id):
         property = None
@@ -121,7 +85,7 @@ class deleteProperty:
     @bp.route('/delete_property/<int:id>/', methods=['POST'])
     def delete_property(id):
         try:
-            delete = deletePropertyController.REA_deleteProperty(id)
+            deletePropertyController.REA_deleteProperty(id)
         except Exception as e:
             flash("Error deleting property: " + str(e))
         
