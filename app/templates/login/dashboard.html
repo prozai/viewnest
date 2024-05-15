@@ -71,12 +71,9 @@
     </style>
 </head>
 <body>
-    <div class="container">
       <!-- Include the menu bar -->
-      <div id="menu-container">
-        <!-- Using iframe -->
-        {% include 'base.html' %}
-      </div>
+        {% include 'topmenu.html' %}
+
 
         <!-- Rest of your content -->
         <h1>Welcome, {{ user.fname }} {{ user.lname }} (User ID: {{ user.user_id}})</h1>

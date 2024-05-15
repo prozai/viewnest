@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
-
+<!-- Include the menu bar -->
+{% include 'topMenu.html' %}
 {% block title %} View All Profile {% endblock %}
 
 {% block body %} 
@@ -21,6 +22,7 @@
                     </tr>
                 </thead>
                 <tbody>
+
                     {% for profile in profiles %}
                     <tr>
                         <td>{{profile.profile_id}}</td>

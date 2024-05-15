@@ -354,7 +354,10 @@ class Property(Base):
         finally:
             session.close()
         
-
+    def get_sellerproperties(email):
+        properties = session.query(Property).filter_by(selleremail=email).all()
+        return properties
+    
  # Save Class   
 class Save(Base):
     __tablename__ = "Save"

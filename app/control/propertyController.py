@@ -248,16 +248,27 @@ class savePropertyController:
             print("Error adding saved property:", str(e))
 
 # Seller View Property Listings + Saves
+# class sellerPropertiesController:
+#     def seller_viewProperties():
+#         try:
+#                if 'email' in flask_session:
+#                      email = flask_session['email']
+#                      properties = session.query(Property).filter_by(selleremail=email).all()
+#                      return properties
+#         # try:
+#         #     properties = session.query(Property).filter_by(selleremail="seller1@gmail.com").all()  # user.email
+#         #     return properties
+
+#         except Exception as e:
+#             print("Error retrieving property listings:", str(e))
+            
 class sellerPropertiesController:
     def seller_viewProperties():
         try:
-               if 'email' in flask_session:
-                     email = flask_session['email']
-                     properties = session.query(Property).filter_by(selleremail=email).all()
-                     return properties
-        # try:
-        #     properties = session.query(Property).filter_by(selleremail="seller1@gmail.com").all()  # user.email
-        #     return properties
+            if 'email' in flask_session:
+                    email = flask_session['email']            
+                    properties = Property.get_sellerproperties(email)
+                    return properties
 
         except Exception as e:
             print("Error retrieving property listings:", str(e))

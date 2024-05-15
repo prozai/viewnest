@@ -1,0 +1,100 @@
+<!-- menu.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ViewNest Dashboard</title>
+    <style>
+        /* Styles for the menu bar */
+        .top-menu {
+            background-color: #3498db; /* Blue background color */
+            color: #fff;
+            padding: 10px 0;
+            text-align: center;
+            margin-bottom: 20px; /* Added margin for spacing */
+        }
+        .top-menu ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .top-menu li {
+            display: inline-block;
+            margin: 0 10px;
+        }
+        .top-menu li a {
+            color: #fff;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+            background-color: #2980b9; /* Darker blue background */
+        }
+        .top-menu li a:hover {
+            background-color: #fff; /* White background on hover */
+            color: #3498db; /* Blue text color on hover */
+        }
+    </style>
+</head>
+<body>
+    <div class="top-menu">
+        <ul>
+
+        </ul>
+    </div>
+    <!-- Script for top menu bar -->
+    <script>
+        // Add this script to generate the top menu bar
+        // Add this script to dynamically generate buttons based on user roles
+        var roles = "{{ user.userprofile.profile_id }}"; // Assuming roles is a comma-separated string
+        var topMenu = document.querySelector(".top-menu ul");
+        var rolesArray = roles.split(", ");
+
+        if (rolesArray.includes("3")) {        
+            var menuItems = [
+                { text: "Home", page:"/dashboard"},
+                { text: "Create Property", page: "/create_property" },
+                { text: "View my Property", page: "/REA_properties" },
+                { text: "Retrieve Clientele Ratings", page: "retrieve_clientele_ratings.html" },
+                { text: "Retrieve Clientele Reviews", page: "retrieve_clientele_reviews.html" },
+            ];
+        } else if (rolesArray.includes("4")) {        
+            var menuItems = [
+                { text: "Home", page:"/dashboard"},
+                { text: "Create User Profiles", page: "/registerProfile"  },
+                { text: "Create User Accounts", page: "/registerAccount"  },
+                { text: "Retrieve User Profiles", page: "/displayProfiles"  },
+                { text: "Retrieve User Accounts", page: "/displayAccounts"  },
+                { text: "Update User Profiles", page: "/updateProfile"  },
+                { text: "Update User Accounts", page: "/updateAccount"  },
+                { text: "Suspend User Profiles", page: "/suspendProfile"  },
+                { text: "Suspend User Accounts", page: "/suspendAccount"  },
+            // Add more menu items for role 4 as needed
+            ];
+        } else if (rolesArray.includes("1")) {        
+            var menuItems = [
+                { text: "Home", page:"/dashboard"},
+                { text: "View Property Listings", page: "/view_properties" },
+                { text: "Calculate Property Mortgages", page: "calculate_property_mortgages.html" },
+                // Add more menu items for role 1 as needed
+            ];
+        } else if (rolesArray.includes("2")) {        
+            var menuItems = [
+                { text: "Home", page:"/dashboard"},
+                { text: "View Seller Properties", page: "/seller_properties"  },
+                // Add more menu items for role 2 as needed
+            ];
+        }
+
+        menuItems.forEach(function(item) {
+            var menuItem = document.createElement("li");
+            var menuLink = document.createElement("a");
+            menuLink.textContent = item.text;
+            menuLink.href = item.page;
+            menuItem.appendChild(menuLink);
+            topMenu.appendChild(menuItem);
+        });
+    </script>
+</body>
+</html>
