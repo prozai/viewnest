@@ -49,12 +49,23 @@ class CreateAccountController():
             password_hash = generate_password_hash(password)
 
             user = User(profile_id, fname, lname, email, phonenum, username, password_hash)
+
             User.create_new_account(user)
 
             return True
         except Exception as e:
             print("Error:", e) 
         return False
+    
+    def check_email(self, email):
+        return User.check_email(email)
+    
+    def check_phonenum(self, phonenum):
+        return User.check_phonenum(phonenum)
+    
+    def check_username(self, username):
+        return User.check_username(username)
+
 
 # View Account Controller
 class ViewAccountController():
@@ -64,6 +75,10 @@ class ViewAccountController():
     
 # Update Account Controller
 class UpdateAccountController():
+    def getExistingAccount(self, user_id):
+        user = User.get_account_by_user_id(user_id)
+        return user
+
     def updateAccount(self, username, fname, lname, email, phonenum, password):
         password_hash = generate_password_hash(password)
         status = User.update_account(username, fname, lname, email, phonenum, password_hash)

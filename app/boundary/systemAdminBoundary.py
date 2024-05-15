@@ -110,12 +110,23 @@ class CreateAccountsPage():
                 username=request.form.get("username")
 
                 add_account = CreateAccountController()
+
+                # Check if unique attributes exist
+                if (add_account.check_email(email)):
+                    return render_template('systemAdmin/register-account.html', error='Email already exists!')
+                
+                if (add_account.check_phonenum(phonenum)):
+                    return render_template('systemAdmin/register-account.html', error='Phone number already exists!')
+                
+                if (add_account.check_username(username)):
+                    return render_template('systemAdmin/register-account.html', error='Username already exists!')
+
                 status = add_account.addAccount(profile_name, fname, lname, email, phonenum, username, password)
 
                 if status:
                     return redirect(url_for('.displayAccounts'))
                 else:
-                    raise Exception('Error in creating account!')
+                    return redirect('systemAdmin/register-account.html', error='Error creating new account.')
             except Exception as e:
                 print("Error:", e)
         return render_template('systemAdmin/register-account.html')
@@ -128,6 +139,16 @@ class DisplayAccountsPage():
         return render_template('systemAdmin/view-users.html', title="All Users", users=user_list)
     
 class UpdateAccountPage():
+    @adminBP.route('/edit/<int:user_id>', methods=['GET'])
+    def edit_user(user_id):
+        update_user = UpdateAccountController()
+        user = update_user.getExistingAccount(user_id)
+        if user:
+            return redirect(url_for('.updateAccount', user=user))
+        #render_template('update-account.html', user=user)
+        else:
+            return "User not found", 404
+
     @adminBP.route('/updateAccount', methods=['POST', 'GET'])
     def updateUserAccount():
         if request.method == "POST":

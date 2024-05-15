@@ -7,7 +7,7 @@
         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12">
             <div class="card">
                 <div class="card-body">
-                    <form method="post" class='needs-validation' id="createaccount" novalidate>
+                    <form method="post" class='needs-validation' id="createaccount" novalidate action="{{ url_for('updateAccount', user=user) }}"> 
                         <!-- Username -->
                         <div>
                             <label for="username" class="form-label">Enter username:</label>
@@ -23,7 +23,7 @@
                         <!-- First Name -->
                         <div>
                             <label for="fname" class="form-label">First Name:</label>
-                            <input type="text" class="form-control" id="fname" name="fname" size="50" >
+                            <input type="text" class="form-control" id="fname" name="fname" size="50" value="{{ user.fname }}">
                             <div class="invalid-feedback">
                                 Please enter your first name.
                             </div>
@@ -33,7 +33,7 @@
                         <!-- Last Name -->
                         <div>
                             <label for="lname" class="form-label">Last Name:</label>
-                            <input type="text"  class="form-control" id="lname" name="lname" size="50" >
+                            <input type="text"  class="form-control" id="lname" name="lname" size="50" value="{{ user.lname }}">
                             <div class="invalid-feedback">
                                 Please enter your last name.
                             </div>
@@ -43,7 +43,7 @@
                         <!-- Email -->
                         <div>
                             <label for="email" class="form-label">Email:</label>
-                            <input type="email" class="form-control" id="email" name="email" >
+                            <input type="email" class="form-control" id="email" name="email" value="{{ user.email }}">
                             <div class="invalid-feedback">
                                 Please enter a valid email address.
                             </div>
@@ -53,25 +53,33 @@
                         <!-- Phone Number -->
                         <div>
                             <label for="phonenum" class="form-label">Phone Number:</label>
-                            <input type="tel" class="form-control" id="phonenum" name="phonenum" size="50" >
+                            <input type="tel" class="form-control" id="phonenum" name="phonenum" value="{{ user.phonenum }}">
                             <div class="invalid-feedback">
-                                Please enter a valid phone number.
+                                Please enter a valid phone number. 
                             </div>
                         </div>
                         <br>
 
-                        <!-- Password -->
                         <div>
-                            <label for="password" class="form-label">Password:</label>
-                            <input type="password" class="form-control" id="password" name="password" size="50">
-                            <div class="invalid-feedback"></div>
+                            <label> 
+                                <input type="checkbox" id="toggleCheckbox"> Change Password?
+                            </label>
+                        </div>
+
+                        <!-- New Password -->
+                        <div class="d-none" id="newpassword">
+                            <label for="password" class="form-label">New Password:</label>
+                            <input type="password" class="form-control" id="password" name="password" value=""> 
+                            <div class="invalid-feedback">
+                                Please enter a valid password.
+                            </div>
                         </div>
                         <br>
 
                         <!-- Confirm Password -->
-                        <div>
+                        <div class="d-none" id="confirmpassword">
                             <label for="password2" class="form-label">Confirm Password:</label>
-                            <input type="password" class="form-control" id="password2" name="password2" size="50">
+                            <input type="password" class="form-control" id="password2" name="password2"> 
                             <div class="invalid-feedback"></div>
                         </div>
                         <br>
@@ -88,6 +96,23 @@
 </div>
 
 <script>
+
+document.addEventListener('DOMContentLoaded', function() {
+    var checkbox = document.getElementById('toggleCheckbox');
+
+    checkbox.addEventListener('change', function() {
+        //if (checkbox.checked) {
+            var newpassword = document.getElementById("newpassword");
+            newpassword.classList.toggle("d-none");
+
+            var confirmpassword = document.getElementById("confirmpassword")
+            confirmpassword.classList.toggle("d-none");
+        //} else {
+            //changePassword.style.display = 'none';
+            //password2.style.display = 'none';
+        //}
+    });
+});
 
 (function () {
     'use strict'
@@ -107,16 +132,24 @@
 
       // Additional checks
       // Check password validity 
+      
       document.getElementById('password').addEventListener('input', function() {
-        var password = this.value;
-        var passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$%*?&!])[A-Za-z\d@$%*?&]{8,}$/;
-        if (!passwordRegex.test(password)) {
-            this.setCustomValidity('Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long.');
-        } else {
-            this.setCustomValidity('');
-        }
-        this.reportValidity()
-      });
+        //if (phonenum==""){
+        //    this.setCustomValidity('');
+        //}
+        //else {
+            var password = this.value;
+            var passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$%*?&!])[A-Za-z\d@$%*?&!]{8,}$/;
+        
+            if (this.value!='' || !passwordRegex.test(password)) {
+                console.log(this.value)
+                this.setCustomValidity('Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long.');
+            } else {
+                this.setCustomValidity('');
+            }
+            this.reportValidity()
+        
+    });
 
       document.getElementById('password2').addEventListener('input', function() {
         var password1 = document.getElementById('password').value;
@@ -130,17 +163,24 @@
 
       // Check phone number validity 
       document.getElementById('phonenum').addEventListener('input', function() {
-        var phonenum = this.value;
-        var phoneNumberRegex = /(6|8|9){1}\d{7}/;
-        if (!phoneNumberRegex.test(phonenum)) {
-            this.setCustomValidity('Phone number must start with 6, 8 or 9 and must be 8 digits.');
-        } else {
-            this.setCustomValidity('');
-        }
+        //if (phonenum==""){
+          //  this.setCustomValidity('');
+        //}
+        //else {
+            var phonenum = this.value.trim();
+            var phoneNumberRegex = /(6|8|9){1}\d{7}/;
+            
+            if (this.value!='' || !phoneNumberRegex.test(phonenum)) {
+                console.log(this.value)
+                this.setCustomValidity('Phone number must start with 6, 8 or 9 and must be 8 digits.');
+            } else {
+                this.setCustomValidity('');
+            }
+        
+        
         this.reportValidity()
       });
     });
 })();
-
 </script>
 {% endblock %}

@@ -6,6 +6,9 @@
         <h1>Create New User Account</h1>
         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12">
             <div class="card">
+                {% if error %}
+                    <p style="color: red;">{{ error }}</p>
+                {% endif %}
                 <div class="card-body">
                     <form method="post" class='needs-validation' id="createaccount" novalidate>
                         <!-- Profile Role -->
@@ -152,6 +155,12 @@
         }
         this.reportValidity()
       });
+
+      // Check email validity
+      document.getElementById('email').addEventListener('input', function() {
+        var email = this.value;
+        
+      })
     });
 })();
 
