@@ -78,7 +78,7 @@ class updatePropertyPage:
                     flash("Property not found")
             except Exception as e:
                 flash(f"Error updating property: {str(e)}")
-            return redirect(url_for('route.update_property', id=id))
+            return redirect(url_for('propRoutes.update_property', id=id))
         
         property = updatePropertyController.REA_getProperty(id)
         return render_template('REAgent/update_property.html', property=property)
@@ -92,7 +92,7 @@ class deleteProperty:
             flash("Error deleting property: " + str(e))
         
         flash("Deleted successfully!")
-        return redirect(url_for('route.REA_view_properties'))
+        return redirect(url_for('propRoutes.REA_view_properties'))
 
 class saveProperty:
     @propBP.route('/save_property', methods=['POST'])
