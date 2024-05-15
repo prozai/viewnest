@@ -4,17 +4,12 @@ from app.entity.models import Review
 from app import Session
 
 # Create Buyer Controller
-class addReviewController():
+class ReviewController:
+    def addReview(self, rating, review, user_id):
+        review = Review(rating, review, user_id)
+        status = Review.create_new_review(review=review)
+        return status
     
-    def add_review(review, rating, user_id):
-        review = request.form.get("review")
-        rating = request.form.get("rating")
-        # user_id = request.form.get("user_id")
-        user_id = 2
-        review = Review(review, rating, user_id)
-        Review.create_new_review(review)
-        print(review)
-        return {'redirect': '/addReviews'}
-    def view_reviews():
+    def view_reviews(self):
         reviews = Session.query(Review).all()
         return reviews

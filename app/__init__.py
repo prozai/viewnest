@@ -26,8 +26,8 @@ def create_app(config_class=Config):
     # Base.metadata.drop_all(engine)
 
     # # Create database tables
-    # from app.entity.models import User
-    # Base.metadata.create_all(engine)
+    from app.entity.models import User
+    Base.metadata.create_all(engine)
 
     # # Add known user types to UserProfile
     # buyer = UserProfile(roles='buyer')
