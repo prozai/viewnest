@@ -54,6 +54,7 @@ class createPropertyPage():
                     raise Exception('Error creating property')
             except Exception as e:
                 print(e)
+            flash("Added successfully!")
         return render_template('REAgent/create_property.html')
     
 class REAPropertiesPage:
@@ -65,34 +66,30 @@ class REAPropertiesPage:
 class updatePropertyPage:
     @bp.route('/update_property/<int:id>/', methods=['GET', 'POST'])
     def update_property(id):
+        property = None
         if request.method == 'POST':
             try:
-                propertyname = request.form['propertyname']
-                propertytype = request.form['propertytype']
-                district = request.form['district']
-                bedroom_no = request.form['bedroom_no']
-                price = request.form['price']
-                psf = request.form['psf']
-                selleremail = request.form['selleremail']
-                image_file = request.files.get('image_url')
-
-                updatedProperty = updatePropertyController.REA_updateProperty(id, propertyname, propertytype, district, bedroom_no, price, psf, selleremail, image_file)
-
-                if updatedProperty:
+                property = updatePropertyController.REA_updateProperty(id)
+                if property:
                     flash("Updated successfully!")
                 else:
                     flash("Property not found")
             except Exception as e:
-                flash("Error updating property: " + str(e))
-
+                flash(f"Error updating property: {str(e)}")
+            return redirect(url_for('route.update_property', id=id))
+        
         property = updatePropertyController.REA_getProperty(id)
         return render_template('REAgent/update_property.html', property=property)
-
     
 class deleteProperty:
     @bp.route('/delete_property/<int:id>/', methods=['POST'])
     def delete_property(id):
-        deletePropertyController.REA_deleteProperty(id)
+        try:
+            delete = deletePropertyController.REA_deleteProperty(id)
+            if delete:
+                flash("Deleted successfully!")
+        except Exception as e:
+            flash("Error deleting property: " + str(e))
         return redirect(url_for('route.REA_view_properties'))
 
 class saveProperty:
