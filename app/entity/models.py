@@ -218,13 +218,13 @@ class User(Base):
      # Function to check phone num
     @classmethod
     def check_phonenum(cls, phonenum):
-        phone_num_exist = session.query(cls).filter(cls.email==phonenum).first() is not None
+        phone_num_exist = session.query(cls).filter(cls.phonenum==phonenum).first() is not None
         return phone_num_exist
     
     # Function to check username
     @classmethod
     def check_username(cls, username):
-        username_exist = session.query(cls).filter(cls.email==username).first() is not None
+        username_exist = session.query(cls).filter(cls.username==username).first() is not None
         return username_exist
 
 
