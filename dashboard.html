@@ -1,0 +1,172 @@
+      <!-- Include the menu bar -->
+      {% include 'topmenu.html' %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ViewNest Dashboard</title>
+    <style>
+ 
+        /* Other styles remain unchanged */
+        body {
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+        }
+
+        h1, h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .button-form {
+            display: flex; 
+            flex-wrap: wrap;
+            justify-content: space-around; /* Center horizontally */
+            align-items: center; /* Center vertically */
+            height: 100%; /* Ensure container takes up full height */
+            padding: 0 250px; /* Add left and right padding */
+
+        }
+   
+        .image-button {
+            display: inline-block;
+            width: 650px; /* Fixed width */
+            height: 350px; /* Fixed height */
+            padding: 0; /* Remove padding */
+            font-size: 1.2em;
+            text-decoration: none;
+            color: #ffffff;
+            background-color: #ffffff;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            margin: 10px;
+            transition: all 0.3s ease;
+        }
+        
+            .image-button:hover {
+                opacity: 0.8;
+            }
+        
+    </style>
+</head>
+<body>
+
+
+
+        <!-- Rest of your content -->
+        <h1>Welcome, {{ user.fname }} {{ user.lname }} </h1><!--(User ID: {{ user.user_id}})</h1>
+        <h2>Your account type is: {{ user.userprofile.roles }}.</h2> ? -->
+
+        <div id="buttonsContainer" class="button-form"></div>
+
+        <form id="logoutForm" action="/logout" method="post">
+            <button type="button" onclick="confirmLogout()">Logout</button>
+        </form>
+    </div>
+
+
+
+    <!-- Script for dynamic buttons -->
+    <script>
+        // Add this script to dynamically generate buttons based on user roles
+        var roles = "{{ user.userprofile.profile_id }}"; // Assuming roles is a comma-separated string
+        var buttonsContainer = document.getElementById("buttonsContainer");
+        var rolesArray = roles.split(", ");
+
+        if (rolesArray.includes("3")) {
+            var choices = [
+                { text: "Create Property Listings", page: "/create_property" , image:"./static/uploads/properties/property1.jpg" },
+                { text: "View my Property Listings", page: "/REA_properties" , image:"./static/uploads/properties/property1.jpg" },
+                { text: "Retrieve Clientele Ratings", page: "retrieve_clientele_ratings.html", image:"./static/uploads/properties/ratings.jpg"  },
+                { text: "Retrieve Clientele Reviews", page: "retrieve_clientele_reviews.html", image:"./static/uploads/properties/review.png"  },
+            ];
+
+            choices.forEach(function(buttonInfo) {
+                var buttonElement = document.createElement("button");
+                buttonElement.textContent = buttonInfo.text;
+                buttonElement.dataset.page = buttonInfo.page;
+                buttonElement.className = "image-button";
+                buttonElement.style.backgroundImage = "linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('" + buttonInfo.image + "')"; // Adding linear gradient
+                buttonElement.addEventListener("click", function() {
+                    window.location.href = buttonInfo.page;
+                });
+                buttonsContainer.appendChild(buttonElement);
+    
+            });
+        } else if (rolesArray.includes("1")) {
+            var choices = [
+                { text: "View Property Listings", page: "/view_properties", image:"./static/uploads/properties/property1.jpg" },
+                { text: "Calculate Property Mortgages", page: "/view_calculation", image: "./static/uploads/properties/calculator.jpg" },
+                { text: "Create Ratings for Real Estate agents", page: "create_ratings.html", image: "./static/uploads/properties/ratings.jpg"  },
+                { text: "Create Reviews for Real Estate agents", page: "create_reviews.html", image: "./static/uploads/properties/review.png"  },
+
+            ];
+    
+            choices.forEach(function(buttonInfo) {
+                var buttonElement = document.createElement("button");
+                buttonElement.textContent = buttonInfo.text;
+                buttonElement.dataset.page = buttonInfo.page;
+                buttonElement.className = "image-button";
+                buttonElement.style.backgroundImage = "linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('" + buttonInfo.image + "')"; // Adding linear gradient
+                buttonElement.addEventListener("click", function() {
+                    window.location.href = buttonInfo.page;
+                });
+                buttonsContainer.appendChild(buttonElement);
+    
+            });
+        }
+         else if (rolesArray.includes("4")) {
+            var choices = [
+                { text: "Create User Profiles", page: "/registerProfile" , image:"./static/uploads/properties/profile.jpg"  },
+                { text: "Create User Accounts", page: "/registerAccount"  , image:"./static/uploads/properties/account.png" },
+                { text: "View All Profiles", page: "/displayProfiles"  , image:"./static/uploads/properties/view.png" },
+                { text: "View All Accounts", page: "/displayAccounts"  , image:"./static/uploads/properties/view.png" },
+                { text: "Update User Profiles", page: "/updateProfile" , image:"./static/uploads/properties/edit.png"  },
+                { text: "Update User Accounts", page: "/updateAccount" , image:"./static/uploads/properties/edit.png"  },
+                { text: "Suspend User Profiles", page: "/suspendProfile"  , image:"./static/uploads/properties/suspend.png" },
+                { text: "Suspend User Accounts", page: "/suspendAccount" , image:"./static/uploads/properties/suspend.png"  },
+                { text: "Search User Profiles", page: "/searchProfile" , image:"./static/uploads/properties/search.png"  },
+                { text: "Search User Accounts", page: "/searchAccount" , image:"./static/uploads/properties/search.png"  }
+            ];
+
+            choices.forEach(function(buttonInfo) {
+                var buttonElement = document.createElement("button");
+                buttonElement.textContent = buttonInfo.text;
+                buttonElement.dataset.page = buttonInfo.page;
+                buttonElement.className = "image-button";
+                buttonElement.style.backgroundImage = "linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('" + buttonInfo.image + "')"; // Adding linear gradient
+                buttonElement.addEventListener("click", function() {
+                    window.location.href = buttonInfo.page;
+                });
+                buttonsContainer.appendChild(buttonElement);
+    
+            });
+        } else if (rolesArray.includes("2")) {
+            var choices = [
+                { text: "View Seller Properties", page: "/seller_properties", image:"./static/uploads/properties/property1.jpg" },
+                { text: "Create Ratings for Real Estate agents", page: "create_ratings.html" , image:"./static/uploads/properties/ratings.jpg" },
+                { text: "Create Reviews for Real Estate agents", page: "create_reviews.html" , image:"./static/uploads/properties/review.png" }
+
+            ];
+
+            choices.forEach(function(buttonInfo) {
+                var buttonElement = document.createElement("button");
+                buttonElement.textContent = buttonInfo.text;
+                buttonElement.dataset.page = buttonInfo.page;
+                buttonElement.className = "image-button";
+                buttonElement.style.backgroundImage = "linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('" + buttonInfo.image + "')"; // Adding linear gradient
+                buttonElement.addEventListener("click", function() {
+                    window.location.href = buttonInfo.page;
+                });
+                buttonsContainer.appendChild(buttonElement);
+    
+            });
+        }
+    </script>
+</body>
+</html>
