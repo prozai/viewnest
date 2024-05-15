@@ -93,9 +93,7 @@ class SearchProfilePage():
     @adminBP.route('/searchProfile', methods=['POST', 'GET'])
     @loginController.sysadmin_authentication
     def displaySearchProfile():
-                #Get user for HTML page
-        result = loginController.dashboard()       
-        user = result.get('user')
+
         try:
             search_term = request.form.get('query')
             search_profile = SearchProfileController()
@@ -103,7 +101,7 @@ class SearchProfilePage():
             results = search_profile.searchProfile(search_term)
 
             if results :
-                return render_template('systemAdmin/search_profile.html', results=results,user=user)
+                return render_template('systemAdmin/search_profile.html', results=results)
             else:
                 print('None found!')
     
@@ -216,9 +214,7 @@ class SearchProfilePage():
     @adminBP.route('/searchAccount', methods=['POST', 'GET'])
     @loginController.sysadmin_authentication
     def displaySearchAccount():
-                #Get user for HTML page
-        result = loginController.dashboard()       
-        user = result.get('user')
+
         try:
             search_term = request.form.get('query')
 
@@ -226,7 +222,7 @@ class SearchProfilePage():
             results = search_account.searchAccount(search_term)
 
             if results :
-                return render_template('systemAdmin/search_account.html', results=results,user=user)
+                return render_template('systemAdmin/search_account.html', results=results)
             else:
                 print('None found!')
     

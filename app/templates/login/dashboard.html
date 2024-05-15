@@ -1,3 +1,5 @@
+      <!-- Include the menu bar -->
+      {% include 'topmenu.html' %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,7 +13,6 @@
             font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
             background-color: #f0f0f0;
             margin: 0;
-            padding: 0;
         }
 
         h1, h2 {
@@ -24,6 +25,8 @@
             justify-content: space-around; /* Center horizontally */
             align-items: center; /* Center vertically */
             height: 100%; /* Ensure container takes up full height */
+            padding: 0 250px; /* Add left and right padding */
+
         }
    
         .image-button {
@@ -34,7 +37,9 @@
             font-size: 1.2em;
             text-decoration: none;
             color: #ffffff;
-            background-size: cover;
+            background-color: #ffffff;
+            background-size: contain;
+            background-repeat: no-repeat;
             background-position: center;
             border: none;
             border-radius: 10px;
@@ -50,8 +55,7 @@
     </style>
 </head>
 <body>
-      <!-- Include the menu bar -->
-        {% include 'topmenu.html' %}
+
 
 
         <!-- Rest of your content -->
@@ -76,24 +80,25 @@
 
         if (rolesArray.includes("3")) {
             var choices = [
-                { text: "Create Property Listings", page: "/create_property" },
-                { text: "View my Property Listings", page: "/REA_properties" },
-                { text: "Retrieve Clientele Ratings", page: "retrieve_clientele_ratings.html" },
-                { text: "Retrieve Clientele Reviews", page: "retrieve_clientele_reviews.html" },
+                { text: "Create Property Listings", page: "/create_property" , image:"./static/uploads/properties/property1.jpg" },
+                { text: "View my Property Listings", page: "/REA_properties" , image:"./static/uploads/properties/property1.jpg" },
+                { text: "Retrieve Clientele Ratings", page: "retrieve_clientele_ratings.html", image:"./static/uploads/properties/ratings.jpg"  },
+                { text: "Retrieve Clientele Reviews", page: "retrieve_clientele_reviews.html", image:"./static/uploads/properties/review.png"  },
             ];
 
             choices.forEach(function(buttonInfo) {
-                var buttonElement = document.createElement("img");
+                var buttonElement = document.createElement("button");
                 buttonElement.textContent = buttonInfo.text;
-                buttonElement.dataset.page = buttonInfo.page; // Set data-page attribute
-                if (buttonInfo.action) {
-                }
+                buttonElement.dataset.page = buttonInfo.page;
+                buttonElement.className = "image-button";
+                buttonElement.style.backgroundImage = "linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('" + buttonInfo.image + "')"; // Adding linear gradient
                 buttonElement.addEventListener("click", function() {
                     window.location.href = buttonInfo.page;
                 });
                 buttonsContainer.appendChild(buttonElement);
+    
             });
-        }  else if (rolesArray.includes("1")) {
+        } else if (rolesArray.includes("1")) {
             var choices = [
                 { text: "View Property Listings", page: "/view_properties", image:"./static/uploads/properties/property1.jpg" },
                 { text: "Calculate Property Mortgages", page: "/view_calculation", image: "./static/uploads/properties/calculator.jpg" },
@@ -117,41 +122,49 @@
         }
          else if (rolesArray.includes("4")) {
             var choices = [
-                { text: "Create User Profiles", page: "/registerProfile"  },
-                { text: "Create User Accounts", page: "/registerAccount"  },
-                { text: "Retrieve User Profiles", page: "/displayProfiles"  },
-                { text: "Retrieve User Accounts", page: "/displayAccounts"  },
-                { text: "Update User Profiles", page: "/updateProfile"  },
-                { text: "Update User Accounts", page: "/updateAccount"  },
-                { text: "Suspend User Profiles", page: "/suspendProfile"  },
-                { text: "Suspend User Accounts", page: "/suspendAccount"  },
-                { text: "Search User Profiles", page: "/searchProfile"  },
-                { text: "Search User Accounts", page: "/searchAccount"  }
+                { text: "Create User Profiles", page: "/registerProfile" , image:"./static/uploads/properties/profile.jpg"  },
+                { text: "Create User Accounts", page: "/registerAccount"  , image:"./static/uploads/properties/account.png" },
+                { text: "View All Profiles", page: "/displayProfiles"  , image:"./static/uploads/properties/view.png" },
+                { text: "View All Accounts", page: "/displayAccounts"  , image:"./static/uploads/properties/view.png" },
+                { text: "Update User Profiles", page: "/updateProfile" , image:"./static/uploads/properties/edit.png"  },
+                { text: "Update User Accounts", page: "/updateAccount" , image:"./static/uploads/properties/edit.png"  },
+                { text: "Suspend User Profiles", page: "/suspendProfile"  , image:"./static/uploads/properties/suspend.png" },
+                { text: "Suspend User Accounts", page: "/suspendAccount" , image:"./static/uploads/properties/suspend.png"  },
+                { text: "Search User Profiles", page: "/searchProfile" , image:"./static/uploads/properties/search.png"  },
+                { text: "Search User Accounts", page: "/searchAccount" , image:"./static/uploads/properties/search.png"  }
             ];
 
             choices.forEach(function(buttonInfo) {
-                var buttonElement = document.createElement("img");
+                var buttonElement = document.createElement("button");
                 buttonElement.textContent = buttonInfo.text;
+                buttonElement.dataset.page = buttonInfo.page;
+                buttonElement.className = "image-button";
+                buttonElement.style.backgroundImage = "linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('" + buttonInfo.image + "')"; // Adding linear gradient
                 buttonElement.addEventListener("click", function() {
                     window.location.href = buttonInfo.page;
                 });
                 buttonsContainer.appendChild(buttonElement);
+    
             });
         } else if (rolesArray.includes("2")) {
             var choices = [
-                { text: "View Seller Properties", page: "/seller_properties"  },
-                { text: "Create Ratings for Real Estate agents", page: "create_ratings.html" },
-                { text: "Create Reviews for Real Estate agents", page: "create_reviews.html" }
+                { text: "View Seller Properties", page: "/seller_properties", image:"./static/uploads/properties/property1.jpg" },
+                { text: "Create Ratings for Real Estate agents", page: "create_ratings.html" , image:"./static/uploads/properties/ratings.jpg" },
+                { text: "Create Reviews for Real Estate agents", page: "create_reviews.html" , image:"./static/uploads/properties/review.png" }
 
             ];
 
             choices.forEach(function(buttonInfo) {
-                var buttonElement = document.createElement("img");
+                var buttonElement = document.createElement("button");
                 buttonElement.textContent = buttonInfo.text;
+                buttonElement.dataset.page = buttonInfo.page;
+                buttonElement.className = "image-button";
+                buttonElement.style.backgroundImage = "linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('" + buttonInfo.image + "')"; // Adding linear gradient
                 buttonElement.addEventListener("click", function() {
                     window.location.href = buttonInfo.page;
                 });
                 buttonsContainer.appendChild(buttonElement);
+    
             });
         }
     </script>
