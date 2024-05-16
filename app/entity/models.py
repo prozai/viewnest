@@ -435,7 +435,7 @@ class Property(Base):
         finally:
             session.close()
 
-    def add_save(property):
+    def add_save_new(property):
         try:
             property.saves += 1
             session.commit()
@@ -444,7 +444,25 @@ class Property(Base):
         finally:
             session.close()
 
-    def minus_save(property):
+    def add_save_sold(property):
+        try:
+            property.saves += 1
+            session.commit()
+        except Exception as e:
+            print("Error creating property:", str(e))
+        finally:
+            session.close()
+
+    def minus_save_new(property):
+        try:
+            property.saves -= 1
+            session.commit()
+        except Exception as e:
+            print("Error creating property:", str(e))
+        finally:
+            session.close()
+
+    def minus_save_sold(property):
         try:
             property.saves -= 1
             session.commit()
@@ -514,7 +532,30 @@ class Save(Base):
     def __init__(self, user_id, property_id):
         self.user_id = user_id
         self.property_id = property_id
-        
+
+    def delete_save_new(saved):
+        try:
+            session.delete(saved)
+        except Exception as e:
+            print("Error deleting save:", str(e))
+
+    def delete_save_sold(saved):
+        try:
+            session.delete(saved)
+        except Exception as e:
+            print("Error deleting save:", str(e))
+
+    def create_save_new(new_save):
+        try:
+            session.add(new_save)
+        except Exception as e:
+            print("Error deleting save:", str(e))
+
+    def create_save_sold(new_save):
+        try:
+            session.add(new_save)
+        except Exception as e:
+            print("Error deleting save:", str(e))
         
 
 
