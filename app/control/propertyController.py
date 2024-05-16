@@ -36,53 +36,35 @@ class viewPropertyController:
     #         session.close()
 
     # Function to show all properties.
-    def view_properties():
-        try:
-            
-            properties = session.query(Property).all()
-            return properties
-        except Exception as e:
-            print(f"Error fetching properties: {e}")
-            return None
-        finally:
-            session.close()
-
+    def view_properties(offset, limit, filter_type):
+        properties = Property.view_properties(offset, limit, filter_type)
+        return properties 
+    
     # Function to show selected property.
     def view_property_detail(property_id):
+        property = Property.view_property_detail(property_id)
+        return property
+
+    def load_more_properties(offset, limit, filter_type):
         try:
-            property = session.query(Property).filter_by(ID=property_id).first()
-
-            # Check if property is saved
-            user_id = flask_session['user_id']
-
-#            user_id = 2  session['user_id']
-            saved = session.query(Save).filter_by(user_id=user_id, property_id=property_id).first()
-            if saved:
-                property.is_saved = True
-            else:
-                property.is_saved = False
-
-            return property
+            properties = Property.load_more_properties(offset, limit, filter_type)
+            if not properties:
+                return jsonify(error="No properties found"), 404
+            return jsonify(properties=properties)
         except Exception as e:
-            print(f"Error fetching property: {e}")
-            return None
-        finally:
-            session.close()
+            print("Error loading more properties:", str(e))
+            return jsonify(error="Internal server error"), 500
+    
 class viewCountController:
     # Function to add view count to property when viewed.
     def add_viewCount(property_id):
         try:
-            property = session.query(Property).filter_by(ID=property_id).first()
-            if property:
-                property.view_count += 1
-                session.commit()
-                return property
+            property = Property.add_ViewCount(property_id)
+            return property
         except Exception as e:
-                session.rollback()
-                print(f"Error fetching property: {e}")
-                return None
-        finally:
-            session.close()
+            print(f"Error fetching property: {e}")
+            return None
+
 
 class createPropertyController:
     def REA_createProperty(self, propertyname, propertytype, district, bedroom_no, price, psf, image_file, selleremail):

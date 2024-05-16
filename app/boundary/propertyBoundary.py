@@ -2,38 +2,52 @@ from flask import render_template, request, redirect, url_for
 from app.control.propertyController import *
 from app.control.loginController import loginController
 from app.boundary import propBP
-
 class viewPropertyBoundary:
-    @propBP.route('/view_properties')
-    def view_properties():
-        #Get user for HTML page
-        result = loginController.dashboard()       
-        user = result.get('user')                
+    def view_properties(self):
      #  viewPropertyController.add_sample_properties()
-        properties = viewPropertyController.view_properties()
-        return render_template('property/view_properties.html', user=user , properties=properties )
+        offset = 0
+        limit = 10
+        filter_type = 'all'
+        properties = viewPropertyController.view_properties(offset, limit, filter_type)
+        return render_template('property/view_properties.html', properties=properties)
 
-    @propBP.route('/view_calculation')
-    @loginController.login_required
-    def view_calculation():
-        #Get user for HTML page
-        result = loginController.dashboard()       
-        user = result.get('user')           
-        return render_template('property/view_calculation.html', user=user)
+    def view_calculation(self):
+        return render_template('property/view_calculation.html')
 
-    @propBP.route('/view_property_detail/<int:property_id>')
-    @loginController.login_required
-    def view_property_detail(property_id):
-        #Get user for HTML page
-        result = loginController.dashboard()       
-        user = result.get('user')        
-                
+    def view_property_detail(self, property_id):
         property = viewPropertyController.view_property_detail(property_id)
         viewCountController.add_viewCount(property_id)
-        return render_template('property/view_property_detail.html', property=property, user=user)
+        return render_template('property/view_property_detail.html', property=property)
+
+    def load_more_properties(self, offset, limit, filter_type):
+        properties = viewPropertyController.view_properties(offset, limit, filter_type)
+        return jsonify(properties=properties)
     
 property_boundary = viewPropertyBoundary()
 
+
+@propBP.route('/view_properties')
+@loginController.login_required
+def view_properties():
+    return property_boundary.view_properties()
+    
+@propBP.route('/view_calculation')
+@loginController.login_required
+def view_calculation():
+    return property_boundary.view_calculation()
+
+@propBP.route('/view_property_detail/<int:property_id>')
+@loginController.login_required
+def view_property_detail(property_id):
+    return property_boundary.view_property_detail(property_id)
+
+@propBP.route('/load_more_properties', methods=['GET'])
+@loginController.login_required
+def load_more_properties_route():
+    offset = request.args.get('offset', type=int)
+    limit = request.args.get('limit', type=int)
+    filter_type = request.args.get('filter_type', type=str)
+    return property_boundary.load_more_properties(offset, limit, filter_type)
 
 class createPropertyPage():
     @propBP.route('/create_property', methods=['GET', 'POST'])
