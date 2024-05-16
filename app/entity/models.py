@@ -236,10 +236,9 @@ class User(Base):
 
     # Function to read one account record 
     @classmethod
-    def get_account_by_user_id(cls, user_id):
-        user = session.query(cls).filter(cls.user_id==user_id).all()
+    def get_account_by_username(cls, username):
+        user = session.query(cls).filter(cls.username==username).first()
         return user
-        
 
     # Function to update account record in DB
     @classmethod

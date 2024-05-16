@@ -139,13 +139,12 @@ class DisplayAccountsPage():
         return render_template('systemAdmin/view-users.html', title="All Users", users=user_list)
     
 class UpdateAccountPage():
-    @adminBP.route('/edit/<int:user_id>', methods=['GET'])
-    def edit_user(user_id):
+    @adminBP.route('/edit/<string:username>', methods=['GET'])
+    def edit_user(username):
         update_user = UpdateAccountController()
-        user = update_user.getExistingAccount(user_id)
+        user = update_user.getExistingAccount(username)
         if user:
-            return redirect(url_for('.updateAccount', user=user))
-        #render_template('update-account.html', user=user)
+            return render_template('systemAdmin/update-account.html', user=user, message="")
         else:
             return "User not found", 404
 
@@ -161,12 +160,23 @@ class UpdateAccountPage():
                 phonenum=request.form.get("phonenum")
                 
                 update_account = UpdateAccountController()
+                temp = update_account.getExistingAccount(username)
+
+                # Check if unique attributes exist
+                if (temp.get_email()!=email and update_account.check_email(email)):
+                    return render_template('systemAdmin/update-account.html', user=temp, error='Email already exists!')
+                
+                if (temp.get_phone_num()!=phonenum and update_account.check_phonenum(phonenum)):
+                    return render_template('systemAdmin/update-account.html', user=temp, error='Phone number already exists!')
+                
                 status = update_account.updateAccount(username, fname, lname, email, phonenum, password)
 
                 if status:
-                    return redirect(url_for('.displayAccounts'))
+                    message = "Update Successful!"
+
+                    return render_template('systemAdmin/update-account.html', user=temp, message=message)
                 else:
-                    raise Exception('Error in updating account!')
+                    return render_template('systemAdmin/update-account.html', user=temp, error='Error updating account!')
             except Exception as e:
                 print(e)
         return render_template('systemAdmin/update-account.html')
