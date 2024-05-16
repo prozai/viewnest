@@ -43,6 +43,13 @@ class viewPropertyController:
     # Function to show selected property.
     def view_property_detail(property_id):
         property = Property.view_property_detail(property_id)
+        user_id = flask_session['user_id']
+        saved = session.query(Save).filter_by(user_id=user_id, property_id=property_id).first()
+        if saved:
+            property.is_saved = True
+        else:
+            property.is_saved = False
+
         return property
 
     def load_more_properties(offset, limit, filter_type):
@@ -203,13 +210,9 @@ class SearchController:
 search_controller = SearchController()
 
     
-
-
-
-
 # Save property
 class savePropertyController:
-    def buyer_saveProperty():
+    def buyer_saveNewProperty():
         try:
             property_id = request.form['property_id']
             user_id = flask_session['user_id']
@@ -217,34 +220,38 @@ class savePropertyController:
             property = session.query(Property).filter_by(ID=property_id).first()
 
             if saved:
-                session.delete(saved)
-                property.saves -= 1
-                session.commit()
+                Save.delete_save_new(saved)
+                Property.minus_save_new(property)
                 return 'Save deleted'
             else:
-                new_favorite = Save(user_id=user_id, property_id=property_id)
-                session.add(new_favorite)
-                property.saves += 1 
-                session.commit()
+                new_save = Save(user_id=user_id, property_id=property_id)
+                Save.create_save_new(new_save)
+                Property.add_save_new(property)
                 return 'Save added'
         except Exception as e:
             print("Error adding saved property:", str(e))
 
-# Seller View Property Listings + Saves
-# class sellerPropertiesController:
-#     def seller_viewProperties():
-#         try:
-#                if 'email' in flask_session:
-#                      email = flask_session['email']
-#                      properties = session.query(Property).filter_by(selleremail=email).all()
-#                      return properties
-#         # try:
-#         #     properties = session.query(Property).filter_by(selleremail="seller1@gmail.com").all()  # user.email
-#         #     return properties
+    def buyer_saveSoldProperty():
+            try:
+                property_id = request.form['property_id']
+                user_id = flask_session['user_id']
+                saved = session.query(Save).filter_by(user_id=user_id, property_id=property_id).first()
+                property = session.query(Property).filter_by(ID=property_id).first()
 
-#         except Exception as e:
-#             print("Error retrieving property listings:", str(e))
-            
+                if saved:
+                    Save.delete_save_sold(saved)
+                    Property.minus_save_sold(property)
+                    return 'Save deleted'
+                else:
+                    new_save = Save(user_id=user_id, property_id=property_id)
+                    Save.create_save_sold(new_save)
+                    Property.add_save_sold(property)
+                    return 'Save added'
+            except Exception as e:
+                print("Error adding saved property:", str(e))
+
+
+# Seller View Property Listings + Saves
 class sellerPropertiesController:
     def seller_viewProperties():
         try:
