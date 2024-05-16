@@ -163,10 +163,10 @@ class UpdateAccountPage():
                 temp = update_account.getExistingAccount(username)
 
                 # Check if unique attributes exist
-                if (temp.get_email()!=email and update_account.check_email(email)):
+                if (update_account.check_email(email=email, username=username)):
                     return render_template('systemAdmin/update-account.html', user=temp, error='Email already exists!')
                 
-                if (temp.get_phone_num()!=phonenum and update_account.check_phonenum(phonenum)):
+                if (update_account.check_phonenum(phonenum=phonenum, username=username)):
                     return render_template('systemAdmin/update-account.html', user=temp, error='Phone number already exists!')
                 
                 status = update_account.updateAccount(username, fname, lname, email, phonenum, password)
