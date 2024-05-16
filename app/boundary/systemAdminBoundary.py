@@ -164,39 +164,51 @@ class DisplayAccountsPage():
         return render_template('systemAdmin/view-users.html', title="All Users", users=user_list,user=user)
     
 class UpdateAccountPage():
-    @adminBP.route('/updateAccount', methods=['POST', 'GET'])
-    @loginController.sysadmin_authentication
-    def updateUserAccount():
-                #Get user for HTML page
-        result = loginController.dashboard()       
-        user = result.get('user')
-        if request.method == "POST":
-            try:
-                username = request.form.get("username")
-                password=request.form.get("password")
-                fname=request.form.get("fname")
-                lname=request.form.get("lname") 
-                email=request.form.get("email") 
-                phonenum=request.form.get("phonenum")
-                
-                update_account = UpdateAccountController()
-                status = update_account.updateAccount(username, fname, lname, email, phonenum, password)
+    @adminBP.route('/edit/<string:username>', methods=['GET'])
+    def edit_user(username):
+        update_user = UpdateAccountController()
+        user = update_user.getExistingAccount(username)
+        if user:
+            return render_template('systemAdmin/update-account.html', user=user, message="")
+        else:
+            return "User not found", 404
 
-                if status:
-                    return redirect(url_for('.displayAccounts'))
-                else:
-                    raise Exception('Error in updating account!')
-            except Exception as e:
-                print(e)
-        return render_template('systemAdmin/update-account.html',user=user)
+@adminBP.route('/updateAccount', methods=['POST', 'GET'])
+def updateUserAccount():
+  if request.method == "POST":
+    try:
+      username = request.form.get("username")
+      password=request.form.get("password")
+      fname=request.form.get("fname")
+      lname=request.form.get("lname") 
+      email=request.form.get("email") 
+      phonenum=request.form.get("phonenum")
+      
+      update_account = UpdateAccountController()
+      temp = update_account.getExistingAccount(username)
 
+      # Check if unique attributes exist
+      if (temp.get_email()!=email and update_account.check_email(email)):
+        return render_template('systemAdmin/update-account.html', user=temp, error='Email already exists!')
+      
+      if (temp.get_phone_num()!=phonenum and update_account.check_phonenum(phonenum)):
+        return render_template('systemAdmin/update-account.html', user=temp, error='Phone number already exists!')
+      
+      status = update_account.updateAccount(username, fname, lname, email, phonenum, password)
+
+      if status:
+        message = "Update Successful!"
+
+        return render_template('systemAdmin/update-account.html', user=temp, message=message)
+      else:
+        return render_template('systemAdmin/update-account.html', user=temp, error='Error updating account!')
+    except Exception as e:
+      print(e)
+  return render_template('systemAdmin/update-account.html')
+  
 class SuspendAccountPage():
     @adminBP.route('/suspendAccount', methods=['POST', 'GET'])
-    @loginController.sysadmin_authentication
     def suspendAccount():
-                #Get user for HTML page
-        result = loginController.dashboard()       
-        user = result.get('user')
         if request.method == "POST":
             try:
                 username = request.form.get("username")
@@ -205,11 +217,16 @@ class SuspendAccountPage():
                 status = suspend_account.suspendAccount(username)
 
                 if status:
-                    return redirect(url_for('.displayAccounts'))
+                    message = "Update Successful!"
+                    return render_template('systemAdmin/suspend-account.html', message=message)
+                else:
+                    return render_template('systemAdmin/suspend-account.html', Error='Error suspending account!')
+            
+        
             except Exception as e:
-                print(e)
-        return render_template('systemAdmin/suspend-account.html',user=user)
-    
+               print(e)
+            return render_template('systemAdmin/suspend-account.html')
+        
 class SearchProfilePage():
     @adminBP.route('/searchAccount', methods=['POST', 'GET'])
     @loginController.sysadmin_authentication

@@ -56,8 +56,9 @@
                 { text: "Home", page:"/dashboard"},
                 { text: "Create Property", page: "/create_property" },
                 { text: "View my Property", page: "/REA_properties" },
-                { text: "Retrieve Clientele Ratings", page: "retrieve_clientele_ratings.html" },
-                { text: "Retrieve Clientele Reviews", page: "retrieve_clientele_reviews.html" },
+                { text: "View my Ratings & Reviews", page: "/viewReviews" },
+                { text: "Logout", page: "/login"  },
+
             ];
         } else if (rolesArray.includes("4")) {        
             var menuItems = [
@@ -70,6 +71,8 @@
                 { text: "Update User Accounts", page: "/updateAccount"  },
                 { text: "Suspend User Profiles", page: "/suspendProfile"  },
                 { text: "Suspend User Accounts", page: "/suspendAccount"  },
+                { text: "Logout", page: "/login"  },
+
             // Add more menu items for role 4 as needed
             ];
         } else if (rolesArray.includes("1")) {        
@@ -77,12 +80,18 @@
                 { text: "Home", page:"/dashboard"},
                 { text: "View Property Listings", page: "/view_properties" },
                 { text: "Calculate Property Mortgages", page: "/view_calculation" },
+                { text: "Create Ratings & Reviews for agents", page: "/addReview" },
+                { text: "Logout", page: "/login"  },
+
                 // Add more menu items for role 1 as needed
             ];
         } else if (rolesArray.includes("2")) {        
             var menuItems = [
                 { text: "Home", page:"/dashboard"},
                 { text: "View Seller Properties", page: "/seller_properties"  },
+                { text: "Create Ratings & Reviews for agents", page: "/sellerAddReview" },
+                { text: "Logout", page: "/login"  },
+
                 // Add more menu items for role 2 as needed
             ];
         }

@@ -4,6 +4,8 @@ from app.boundary import loginBP
 
 class loginBoundary:
     def login(self):
+        session.pop('user_id', None)
+        session.pop('email', None)
         if request.method == 'POST':
             username = request.form.get('username')
             password = request.form.get('password')
