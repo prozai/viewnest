@@ -192,7 +192,10 @@ class SuspendAccountPage():
                 status = suspend_account.suspendAccount(username)
 
                 if status:
-                    return redirect(url_for('.displayAccounts'))
+                    message = "Update Successful!"
+                    return render_template('systemAdmin/suspend-account.html', message=message)
+                else:
+                    return render_template('systemAdmin/suspend-account.html', Error='Error suspending account!')
             except Exception as e:
                 print(e)
         return render_template('systemAdmin/suspend-account.html')
