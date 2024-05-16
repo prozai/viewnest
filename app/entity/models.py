@@ -325,6 +325,50 @@ class Property(Base):
     def get_property_id(self):
         return self.ID
     
+    def view_properties(offset, limit, filter_type):
+        query = session.query(Property)
+
+        # Apply filter if specified
+        if filter_type == 'available':
+            query = query.filter_by(sold=False)
+        elif filter_type == 'sold':
+            query = query.filter_by(sold=True)
+
+        # Execute the query with offset and limit
+        properties = query.offset(offset).limit(limit).all()
+
+        # Serialize the properties
+        serialized_properties = []
+        for prop in properties:
+            serialized_properties.append({
+                'id': prop.ID,
+                'propertyname': prop.propertyname,
+                'propertytype': prop.propertytype,
+                'district': prop.district,
+                'bedroom_no': prop.bedroom_no,
+                'price': prop.price,
+                'psf': prop.psf,
+                'selleremail': prop.selleremail,
+                'listing_date': prop.listing_date.isoformat() if prop.listing_date else None,
+                'date_sold': prop.date_sold.isoformat() if prop.date_sold else None,
+                'image_url': prop.image_url,
+                'sold': prop.sold,
+                'view_count': prop.view_count,
+                'saves': prop.saves
+            })
+
+        return serialized_properties
+
+    def view_property_detail(property_id):
+        try:
+            property = session.query(Property).filter_by(ID=property_id).first()
+            return property
+        except Exception as e:
+            print(f"Error fetching property: {e}")
+            return None
+        finally:
+            session.close()
+
     def search_by_name(search_query):
             # Split the search query into individual keywords
         keywords = search_query.split()
@@ -333,6 +377,23 @@ class Property(Base):
         *[Property.propertyname.like(f'%{keyword}%') for keyword in keywords]
     ).all()
 
+    def load_more_properties(offset, limit, filter_type):
+        properties = Property.view_properties(offset, limit, filter_type)
+        return properties
+
+    def add_ViewCount(property_id):
+        try:
+            property = session.query(Property).filter_by(ID=property_id).first()
+            if property:
+                property.view_count += 1
+                session.commit()
+                return property
+        except Exception as e:
+                session.rollback()
+                print(f"Error fetching property: {e}")
+                return None
+        finally:
+            session.close()
 
     def search_by_sold(search_query):
     # Split the search query into individual keywords

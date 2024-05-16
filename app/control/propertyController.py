@@ -36,65 +36,17 @@ class viewPropertyController:
 
     # Function to show all properties.
     def view_properties(offset, limit, filter_type):
-        query = session.query(Property)
-
-        # Apply filter if specified
-        if filter_type == 'available':
-            query = query.filter_by(sold=False)
-        elif filter_type == 'sold':
-            query = query.filter_by(sold=True)
-        
-
-        # Execute the query with offset and limit
-        properties = query.offset(offset).limit(limit).all()
-
-        # Serialize the properties
-        serialized_properties = []
-        for prop in properties:
-            serialized_properties.append({
-                'id': prop.ID,
-                'propertyname': prop.propertyname,
-                'propertytype': prop.propertytype,
-                'district': prop.district,
-                'bedroom_no': prop.bedroom_no,
-                'price': prop.price,
-                'psf': prop.psf,
-                'selleremail': prop.selleremail,
-                'listing_date': prop.listing_date.isoformat() if prop.listing_date else None,
-                'date_sold': prop.date_sold.isoformat() if prop.date_sold else None,
-                'image_url': prop.image_url,
-                'sold': prop.sold,
-                'view_count': prop.view_count,
-                'saves': prop.saves
-            })
-
-        return serialized_properties
-
+        properties = Property.view_properties(offset, limit, filter_type)
+        return properties 
+    
     # Function to show selected property.
     def view_property_detail(property_id):
-        try:
-            property = session.query(Property).filter_by(ID=property_id).first()
-
-            # Check if property is saved
-            user_id = flask_session['user_id']
-
-#            user_id = 2  session['user_id']
-            saved = session.query(Save).filter_by(user_id=user_id, property_id=property_id).first()
-            if saved:
-                property.is_saved = True
-            else:
-                property.is_saved = False
-
-            return property
-        except Exception as e:
-            print(f"Error fetching property: {e}")
-            return None
-        finally:
-            session.close()
+        property = Property.view_property_detail(property_id)
+        return property
 
     def load_more_properties(offset, limit, filter_type):
         try:
-            properties = viewPropertiesController.view_properties(offset, limit, filter_type)
+            properties = Property.load_more_properties(offset, limit, filter_type)
             if not properties:
                 return jsonify(error="No properties found"), 404
             return jsonify(properties=properties)
@@ -106,17 +58,11 @@ class viewCountController:
     # Function to add view count to property when viewed.
     def add_viewCount(property_id):
         try:
-            property = session.query(Property).filter_by(ID=property_id).first()
-            if property:
-                property.view_count += 1
-                session.commit()
-                return property
+            property = Property.add_ViewCount(property_id)
+            return property
         except Exception as e:
-                session.rollback()
-                print(f"Error fetching property: {e}")
-                return None
-        finally:
-            session.close()
+            print(f"Error fetching property: {e}")
+            return None
 
 class createPropertyController:
     def REA_createProperty(user):
