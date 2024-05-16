@@ -144,145 +144,150 @@
                     </div>
                 </li>
             {% endfor %}
-            <div class="button-container">
-                <button id="loadMoreBtn" class="load-more-btn">Show More Properties</button>
-            </div>
         </ul>
+    </div>
+    <div class="button-container">
+        <button id="loadMoreBtn" class="load-more-btn">Show More Properties</button>
     </div>
     <div class="button-container">
         <button onclick="back()">Back to Dashboard</button>
     </div>
     <script>
-        var filter_type;
-
+        var filter_type = 'all';  // Initialize the filter type
+        var offset = { available: 0, sold: 0, all: 0 };  // Track offset for each filter type
+        var limit = 10;  // Number of properties to load at a time
+    
         function showAvailable() {
-            changeFilter('available');
-            document.getElementById('filter-status').innerHTML = '<strong>Showing Available Properties</strong>';
-            document.getElementById('searchPlaceholder').placeholder = 'Search Available Properties';
-            document.getElementById('searchType').value = 'available';
-            document.getElementById('searchForm').action = '/searchAvailable';
-            var items = document.getElementsByClassName('property-item');
-            for (var i = 0; i < items.length; i++) {
-                if (items[i].classList.contains('sold')) {
-                    items[i].style.display = 'none';
-                } else {
-                    items[i].style.display = 'block';
-                }
-            }
+            filter_type = 'available';
+            applyFilter();
         }
-
+    
         function showSold() {
-            changeFilter('sold');
-            document.getElementById('filter-status').innerHTML = '<strong>Showing Sold Properties</strong>';
-            document.getElementById('searchPlaceholder').placeholder = 'Search Sold Properties';
-            document.getElementById('searchType').value = 'sold';
-            document.getElementById('searchForm').action = '/searchSold';
+            filter_type = 'sold';
+            applyFilter();
+        }
+    
+        function showAll() {
+            filter_type = 'all';
+            applyFilter();
+        }
+    
+        function applyFilter() {
+            var filterText;
+            var placeholderText;
+            var actionUrl;
+            if (filter_type === 'available') {
+                filterText = 'Showing Available Properties';
+                placeholderText = 'Search Available Properties';
+                actionUrl = '/searchAvailable';
+            } else if (filter_type === 'sold') {
+                filterText = 'Showing Sold Properties';
+                placeholderText = 'Search Sold Properties';
+                actionUrl = '/searchSold';
+            } else {
+                filterText = 'Showing All Properties';
+                placeholderText = 'Search All Properties';
+                actionUrl = '/search';
+            }
+    
+            document.getElementById('filter-status').innerHTML = '<strong>' + filterText + '</strong>';
+            document.getElementById('searchPlaceholder').placeholder = placeholderText;
+            document.getElementById('searchType').value = filter_type;
+            document.getElementById('searchForm').action = actionUrl;
+    
             var items = document.getElementsByClassName('property-item');
             for (var i = 0; i < items.length; i++) {
-                if (items[i].classList.contains('sold')) {
-                    items[i].style.display = 'block';
-                } else {
+                var isSold = items[i].classList.contains('sold');
+                if (filter_type === 'available' && isSold) {
                     items[i].style.display = 'none';
+                } else if (filter_type === 'sold' && !isSold) {
+                    items[i].style.display = 'none';
+                } else {
+                    items[i].style.display = 'block';
                 }
             }
         }
-
-        function showAll() {
-            changeFilter('all');
-            document.getElementById('filter-status').innerHTML = '<strong>Showing All Properties</strong>';
-            document.getElementById('searchPlaceholder').placeholder = 'Search All Properties';
-            document.getElementById('searchType').value = 'all';
-            document.getElementById('searchForm').action = '/search';
-            var items = document.getElementsByClassName('property-item');
-            for (var i = 0; i < items.length; i++) {
-                items[i].style.display = 'block';
-            }
-        }
-
-        function changeFilter(filterType) {
-            filter_type = filterType;
-        }
-
+    
         function clearSearch() {
             var input = document.getElementById('search');
             input.value = ''; 
             searchProperties(); 
-            document.getElementById('filter-status').innerHTML = '<strong>Search Result Cleared.</strong>'
+            document.getElementById('filter-status').innerHTML = '<strong>Search Result Cleared.</strong>';
         }
-
-
+    
         function viewSearchProperties() {
             window.location.href = '/search_properties';
         }
-
+    
         function viewCalculateProperty(propertyName, propertyPrice) {
             window.location.href = '/view_calculation';
         }
-
+    
         function viewPropertyDetail(propertyId) {
             window.location.href = '/view_property_detail/' + propertyId;
         }
+    
         document.addEventListener('DOMContentLoaded', function() {
-        var loadMoreBtn = document.getElementById('loadMoreBtn');
-        var propertyList = document.getElementById('propertyList');
-        var offset = 0;
-        var limit = 10;
-        loadMoreBtn.addEventListener('click', function() {
-            // Increment offset for the next request
-            offset += limit;
-            var filterType = filter_type
-
-            // AJAX request to fetch more properties with updated offset and limit
-            var xhr = new XMLHttpRequest();
-            xhr.open('GET', '/load_more_properties?offset=' + offset + '&limit=' + limit + '&filter_type=' + filterType, true);
-            xhr.onload = function() {
-                if (xhr.status === 200) {
-                    try {
-                        var data = JSON.parse(xhr.responseText);
-                        var properties = data.properties;
-                        properties.forEach(function(property) {
-                            var li = document.createElement('li');
-                            li.classList.add('property-item');
-                            li.innerHTML = `
-                            <div onclick="viewPropertyDetail('${property.id}')" style="cursor: pointer;">
-                                <img src="${property.image_url}" alt="${property.propertyname} image" class="property-image"> 
-                                <div>
-                                    <strong>${property.propertyname}</strong>
-                                    <strong style="float: right;">S$${property.price.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</strong><br>
-                                    <span>${property.propertytype} (${property.bedroom_no} Bedroom)</span>
-                                    ${property.sold ? '<span style="float: right;">Sold</span>' : '<span style="float: right;">Available</span>'}
-                                    <div style="clear: both;"></div>
-                                </div>
-                            </div>
-                        `;
-
-                            propertyList.appendChild(li);
-                        });
-                        // Move the load more button to the end of the list
-                        propertyList.appendChild(loadMoreBtn);
-                    } catch (error) {
-                        console.error('Error parsing JSON:', error);
+            var loadMoreBtn = document.getElementById('loadMoreBtn');
+            var propertyList = document.getElementById('propertyList');
+    
+            loadMoreBtn.addEventListener('click', function() {
+                // Increment offset for the next request
+                offset[filter_type] += limit;
+    
+                // AJAX request to fetch more properties with updated offset and limit
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', '/load_more_properties?offset=' + offset[filter_type] + '&limit=' + limit + '&filter_type=' + filter_type, true);
+                xhr.onload = function() {
+                    if (xhr.status === 200) {
+                        try {
+                            var data = JSON.parse(xhr.responseText);
+                            var properties = data.properties;
+                            properties.forEach(function(property) {
+                                var li = document.createElement('li');
+                                li.classList.add('property-item');
+                                if (property.sold) {
+                                    li.classList.add('sold');
+                                }
+                                li.innerHTML = `
+                                    <div onclick="viewPropertyDetail('${property.id}')" style="cursor: pointer;">
+                                        <img src="${property.image_url}" alt="${property.propertyname} image" class="property-image">
+                                        <div>
+                                            <strong>${property.propertyname}</strong>
+                                            <strong style="float: right;">S$${property.price.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</strong><br>
+                                            <span>${property.propertytype} (${property.bedroom_no} Bedroom)</span>
+                                            ${property.sold ? '<span style="float: right;">Sold</span>' : '<span style="float: right;">Available</span>'}
+                                            <div style="clear: both;"></div>
+                                        </div>
+                                    </div>
+                                `;
+                                propertyList.appendChild(li);
+                            });
+                            applyFilter();
+                            // Move the load more button to the end of the list
+                        } catch (error) {
+                            console.error('Error parsing JSON:', error);
+                        }
+                    } else {
+                        console.error('Error loading properties:', xhr.statusText);
                     }
-                } else {
-                    console.error('Error loading properties:', xhr.statusText);
-                }
-            };
-
-            // Log before sending the request
-            console.log('Sending AJAX request...');
-
-            xhr.send();
-
-            // Log after sending the request
-            console.log('AJAX request sent.');
+                };
+    
+                // Log before sending the request
+                console.log('Sending AJAX request...');
+    
+                xhr.send();
+    
+                // Log after sending the request
+                console.log('AJAX request sent.');
+            });
         });
-    });
-
-    function back() {
-        window.location.href = '/dashboard'; // Redirect to view_properties.html
-    }
-
-
+    
+        function back() {
+            window.location.href = '/dashboard'; // Redirect to view_properties.html
+        }
     </script>
+    
+    
 </body>
 </html>
