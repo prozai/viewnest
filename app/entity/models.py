@@ -393,10 +393,15 @@ class Review(Base):
         return reviews
     
     @classmethod
+    def get_reviews_by_rea_id(cls, rea_id):
+        reviews = session.query(cls).filter(cls.rea_id==rea_id).all()
+        return reviews
+
+    @classmethod
     def get_review_by_id(cls, id):
         review = session.query(cls).filter(cls.review_id==id).first()
         return review
     
 
     def __repr__(self):
-        return f'User("{self.user_id}","{self.review}","{self.rating}","{self.review_id}")'
+        return f'User("{self.buyer_id}","{self.review}","{self.rating}","{self.review_id}", "{self.rea_id}")'

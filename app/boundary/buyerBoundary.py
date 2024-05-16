@@ -4,7 +4,7 @@ from app.control.loginController import loginController
 from app.boundary import buyerBP
 
 class buyerBoundary:
-    def  addReview(self):
+    def addReview(self):
         if request.method == 'POST':
             #pass user id thru
             result = loginController.dashboard()
