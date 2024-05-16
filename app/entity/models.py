@@ -330,12 +330,12 @@ class Review(Base):
     review_id = Column(Integer, primary_key=True, autoincrement=True, unique=True)
     review = Column(String(255), nullable=False)
     rating = Column(Integer, nullable=False)
-    buyer_id = Column(Integer, ForeignKey('users_info.user_id'))
+    user_id = Column(Integer, ForeignKey('users_info.user_id'))
     rea_id = Column(Integer, ForeignKey('users_info.user_id'))
-    def __init__(self, review, rating, buyer_id, rea_id, review_id=None):
+    def __init__(self, review, rating, user_id, rea_id, review_id=None):
         self.review = review
         self.rating = rating
-        self.buyer_id = buyer_id
+        self.user_id = user_id
         self.rea_id = rea_id
         self.review_id = review_id
 
@@ -404,4 +404,4 @@ class Review(Base):
     
 
     def __repr__(self):
-        return f'User("{self.buyer_id}","{self.review}","{self.rating}","{self.review_id}", "{self.rea_id}")'
+        return f'User("{self.user_id}","{self.review}","{self.rating}","{self.review_id}", "{self.rea_id}")'
