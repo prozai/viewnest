@@ -12,15 +12,20 @@
                     <form method="post" class='needs-validation' id="createReview" novalidate>
                        <!-- <hidden id = "user_id" name = "user_id" value = "{{user_id}}"/> -->
                         <hidden id = "user_id" name = "user_id" value = "1"/>
+                        <div>
+                            <label for="rea-email" class="form-label">Email: </label><br>
+                            <input type="email" class="form-control" id="email" name="rea-email" size="50" required>
+                        </div>
+                        
                         <!-- Ratings -->
                         <div>
                             <label for="rating" class="form-label">Rating: </label><br>
                             <div class="star-rating">
-                                <input id="star1" type="radio" name="rating" value="1"><label for="star1">★</label>
-                                <input id="star2" type="radio" name="rating" value="2"><label for="star2">★</label>
-                                <input id="star3" type="radio" name="rating" value="3"><label for="star3">★</label>
-                                <input id="star4" type="radio" name="rating" value="4"><label for="star4">★</label>
                                 <input id="star5" type="radio" name="rating" value="5"><label for="star5">★</label>
+                                <input id="star4" type="radio" name="rating" value="4"><label for="star4">★</label>
+                                <input id="star3" type="radio" name="rating" value="3"><label for="star3">★</label>
+                                <input id="star2" type="radio" name="rating" value="2"><label for="star2">★</label>
+                                <input id="star1" type="radio" name="rating" value="1"><label for="star1">★</label>
                             </div>
                         </div>
                         <br><br>

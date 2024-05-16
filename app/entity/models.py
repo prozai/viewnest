@@ -257,6 +257,18 @@ class User(Base):
     def __repr__(self):
         return f'User("{self.user_id}","{self.profile_id}""{self.fname}","{self.lname}","{self.email}","{self.username}","{self.phonenum}")'
 
+    # Function to check email
+    @classmethod
+    def check_email(cls, email):
+        email_exist = session.query(cls).filter(cls.email==email).first() is not None
+        return email_exist
+    
+    # Function to retrieve REA ID by email
+    @classmethod
+    def retrieve_rea_id_by_email(cls, email):
+        rea = session.query(cls).filter(cls.email==email).first()
+        return rea.user_id
+    
 #added during integration
     def is_system_admin(self):
         # Assuming roles is a string containing comma-separated roles
@@ -318,12 +330,13 @@ class Review(Base):
     review_id = Column(Integer, primary_key=True, autoincrement=True, unique=True)
     review = Column(String(255), nullable=False)
     rating = Column(Integer, nullable=False)
-    user_id = Column(Integer, ForeignKey('users_info.user_id'))
-
-    def __init__(self, review, rating, user_id, review_id=None):
+    buyer_id = Column(Integer, ForeignKey('users_info.user_id'))
+    rea_id = Column(Integer, ForeignKey('users_info.user_id'))
+    def __init__(self, review, rating, buyer_id, rea_id, review_id=None):
         self.review = review
         self.rating = rating
-        self.user_id = user_id
+        self.buyer_id = buyer_id
+        self.rea_id = rea_id
         self.review_id = review_id
 
     def get_review_id(self):
@@ -362,6 +375,17 @@ class Review(Base):
             return 500
         finally:
             session.close()
+    @classmethod
+    def get_rea_id_by_email(cls, email):
+        try:
+            rea = session.query(cls).filter(cls.email == email).first()
+            if rea:
+                return rea.user_id
+            else:
+                return None
+        except Exception as e:
+            print(f"Error getting REA ID by email: {e}")
+            return None
     
     @classmethod
     def get_all_reviews(cls):
