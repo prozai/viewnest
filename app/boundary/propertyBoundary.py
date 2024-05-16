@@ -123,17 +123,25 @@ class deleteProperty:
         
         flash("Deleted successfully!")
         return redirect(url_for('propRoutes.REA_view_properties'))
-
-class saveProperty:
-    @propBP.route('/save_property', methods=['POST'])
     
-    def save_property():
+class saveNewProperty:
+    @propBP.route('/save_new', methods=['POST'])
+    def save_new_property():
         #Get user for HTML page
         result = loginController.dashboard()       
         user = result.get('user')
-        savePropertyController.buyer_saveProperty()
+        savePropertyController.buyer_saveNewProperty()
         return redirect(url_for('propRoutes.view_properties'))
 
+class saveSoldProperty:
+    @propBP.route('/save_sold', methods=['POST'])
+    def save_sold_property():
+        #Get user for HTML page
+        result = loginController.dashboard()       
+        user = result.get('user')
+        savePropertyController.buyer_saveSoldProperty()
+        return redirect(url_for('propRoutes.view_properties'))
+    
 class sellerPropertiesPage:
     @propBP.route('/seller_properties')
     def seller_view_properties():
