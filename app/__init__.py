@@ -52,12 +52,14 @@ def create_app(config_class=Config):
     from app.boundary.propertyBoundary import propBP    
     from app.boundary.systemAdminBoundary import adminBP
     from app.boundary.buyerBoundary import buyerBP
+    from app.boundary.sellerBoundary import sellerBP
     from app.boundary.reaBoundary import reaBP
   
     app.register_blueprint(loginBP)
     app.register_blueprint(propBP)
     app.register_blueprint(adminBP)
     app.register_blueprint(buyerBP)
+    app.register_blueprint(sellerBP)
     app.register_blueprint(reaBP)
     # Close session on app teardown
     #@app.teardown_appcontext
