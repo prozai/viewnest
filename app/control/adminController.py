@@ -21,8 +21,8 @@ class ViewProfileController():
     
 # Update Profile Controller
 class UpdateProfileController():
-    def updateProfile(self, role, role_name, description):
-        status = UserProfile.update_profile(role, role_name, description)
+    def updateProfile(self, role, description):
+        status = UserProfile.update_profile(role, description)
         return status
 
 # Suspend Profile Controller

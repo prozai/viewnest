@@ -50,7 +50,7 @@ class UpdateProfilePage():
                 description = request.form.get("description")
 
                 update_profile = UpdateProfileController()
-                status = update_profile.updateProfile(role, role_name, description)
+                status = update_profile.updateProfile(role, description)
 
                 if status:
                     return redirect(url_for('.displayProfile'))

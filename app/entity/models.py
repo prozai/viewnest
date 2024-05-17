@@ -78,10 +78,9 @@ class UserProfile(Base):
 
     # Function to update profile information
     @classmethod
-    def update_profile(cls, current_role, name, description):
+    def update_profile(cls, current_role, description):
         try:
             profile = session.query(cls).filter(cls.roles==current_role).first()
-            profile.set_role(name)
             profile.set_description(description)
             session.commit()
             session.close()

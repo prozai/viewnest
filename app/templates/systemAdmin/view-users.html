@@ -1,7 +1,6 @@
 {% extends 'base.html' %}
 
 {% block title %} View All Profile {% endblock %}
-
 {% block body %} 
 <style>
     .button-container {
@@ -11,12 +10,19 @@
 </style>
 <div class="container">
     <div class="my-2">
-        <div>
-            <form action="/searchAccount" method="POST">
-                <input type="text" id="query" name="query" placeholder="Search...">
-                <button type="submit">Search</button>
-            </form>
+        <h1 style="text-align: center;"> Accounts List </h1> <br>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <form action="/searchAccount" method="POST">
+                    <input type="text" id="query" name="query" placeholder="Search...">
+                    <button class="btn btn-secondary" type="submit">Search</button>
+                </form>  
+            </div>
+            <div>
+                <button class="btn btn-light" style="margin-right: auto;" onclick="back()">Back to Dashboard</button>
+            </div>
         </div>
+        <br>
         <div class="table-responsive">
             <table class="table table-bordered">
                 <thead>
@@ -28,7 +34,7 @@
                         <th>Phone Number</th>
                         <th>Username</th>
                         <th>Profile Type</th>
-                        <th ></th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -57,5 +63,11 @@
         }
     </script>
 </div>
-{% endblock %}
 
+<script>
+function back() {
+        window.location.href = '/dashboard'; // Redirect to view_properties.html
+    }
+</script>
+
+{% endblock %}
