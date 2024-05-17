@@ -189,6 +189,32 @@
         .cancel-btn {
             background-color: #aaa;
         }
+        .search-bar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .search-bar input[type="text"] {
+            padding: 10px;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            outline: none;
+            width: 300px;
+        }
+        .search-bar button {
+            background-color: #808080;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            margin-left: 10px;
+            cursor: pointer;
+        }
+        .search-bar button:hover {
+            background-color: #6c6c6c;
+        }
+
     </style>
 </head>
 
@@ -207,6 +233,14 @@
     {% endif %}
     {% endwith %}
     </div>
+            <!-- Search Form -->
+            <div class="search-bar">
+                <form id="searchForm" action="/search" method="POST">
+                    <input type="hidden" name="search_type" id="searchType" value="all">
+                    <input type="text" name="query" id="searchPlaceholder" placeholder="Search All Properties">
+                    <button type="submit">Search</button>
+                </form>
+            </div>
     <div class="container">
         <a href="/create_property" class="create-btn"><i class="fa-solid fa-plus"></i></a>
         <br>
