@@ -1,5 +1,7 @@
         <!-- Include the menu bar -->
         {% include 'topMenu.html' %}
+<!-- Include the menu bar -->
+{% include 'topMenu.html' %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -75,40 +77,40 @@
     <span id="errorMessage" class="error"></span><br>
     Current Image:<br>
     <img src="{{ url_for('static', filename=property.image_url.replace('static/', '')) }}" alt="{{ property.propertyname }} image" class="property-image"><br>
-    <form id="propertyForm" enctype="multipart/form-data">
+    <form id="propertyForm" enctype="multipart/form-data" method="POST" action="{{ url_for('propRoutes.update_property', id=property.ID) }}">
       <div class="form-group">
         <label for="propertyname">Property Name:</label>
-        <input type="text" id="propertyname" class="form-control"  value="{{ property.propertyname }}" required>
+        <input type="text" id="propertyname" name="propertyname" class="form-control"  value="{{ property.propertyname }}" required>
       </div>
       <div class="form-group">
         <label for="propertytype">Property Type:</label>
-        <input type="text" id="propertytype" class="form-control" value="{{ property.propertytype }}" required>
+        <input type="text" id="propertytype" name="propertytype" class="form-control" value="{{ property.propertytype }}" required>
       </div>
       <div class="form-group">
         <label for="district">District:</label>
-        <input type="text" id="district" class="form-control" value="{{ property.district }}" required>
+        <input type="text" id="district" name="district" class="form-control" value="{{ property.district }}" required>
       </div>
       <div class="form-group">
         <label for="bedroom_no">No. of bedrooms:</label>
-        <input type="text" id="bedroom_no" class="form-control" value="{{ property.bedroom_no }}" required>
+        <input type="text" id="bedroom_no" name="bedroom_no" class="form-control" value="{{ property.bedroom_no }}" required>
       </div>
       <div class="form-group">
         <label for="price">Price ($):</label>
-        <input type="text" id="price" class="form-control" value="{{ property.price }}" required>
+        <input type="text" id="price" name="price" class="form-control" value="{{ property.price }}" required>
       </div>
       <div class="form-group">
         <label for="psf">Square Feet (m²):</label>
-        <input type="text" id="psf" class="form-control" value="{{ property.psf }}" required>
+        <input type="text" id="psf" name="psf" class="form-control" value="{{ property.psf }}" required>
       </div>
       <div class="form-group">
         <label for="selleremail">Seller's Email :</label>
-        <input type="text" id="selleremail" class="form-control" value="{{ property.selleremail }}" required>
+        <input type="text" id="selleremail" name="selleremail" class="form-control" value="{{ property.selleremail }}" required>
       </div>
       <div class="form-group">
         <label for="image_url">Image:</label>
         <input type="file" id="image_url" name="image_url" class="form-control-image">
       </div>
-      <button type="button" onclick="submitForm()" data-property-id="{{ property.ID }}" class="btn btn-primary">Update</button>
+      <button type="submit" class="btn btn-primary">Update</button>
     </form>
   </div>
 
@@ -163,34 +165,11 @@
       return isValid;
     }
 
-    function submitForm() {
-      if (isValid()){ 
-        var propertyId = document.querySelector('.btn').dataset.propertyId;
-        var formData = new FormData();
-        formData.append('propertyname', document.getElementById('propertyname').value);
-        formData.append('propertytype', document.getElementById('propertytype').value);
-        formData.append('district', document.getElementById('district').value);
-        formData.append('bedroom_no', document.getElementById('bedroom_no').value);
-        formData.append('price', document.getElementById('price').value);
-        formData.append('psf', document.getElementById('psf').value);
-        formData.append('selleremail', document.getElementById('selleremail').value);
-  
-        var imageFile = document.getElementById('image_url').files[0];
-        formData.append('image_url', imageFile);        
-  
-        fetch(`/update_property/${propertyId}`, {
-          method: 'POST',
-          body: formData
-        })
-        .then(response => {
-          if (response.ok) {
-            window.location.href = '/REA_properties';
-          } else {
-            console.error('Form submission failed!');
-          }
-        });
+    document.getElementById('propertyForm').addEventListener('submit', function(event) {
+      if (!isValid()) {
+        event.preventDefault();
       }
-    }   
+    });
   </script>
 </body>
 </html>
