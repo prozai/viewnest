@@ -3,7 +3,7 @@ from sqlalchemy.orm import relationship
 from app import Base, session
 from datetime import date
 from sqlalchemy.ext.declarative import declarative_base
-
+from werkzeug.security import check_password_hash
 
 # User Profile Class
 class UserProfile(Base):
@@ -242,7 +242,6 @@ class User(Base):
     def get_account_by_user_id(cls, user_id):
         user = session.query(cls).filter(cls.user_id==user_id).all()
         return user
-        
 
     # Function to update account record in DB
     @classmethod
@@ -300,9 +299,22 @@ class User(Base):
         rea = session.query(cls).filter(cls.email==email).first()
         return rea.user_id
                        
-
     def __repr__(self):
         return f'User("{self.user_id}","{self.profile_id}""{self.fname}","{self.lname}","{self.email}","{self.username}","{self.phonenum}")'
+    
+    def login(username, password):
+        if username and password:
+            user = session.query(User).filter_by(username=username).first()
+            if user and check_password_hash(user.password_hash, password):
+                user_info = {
+                    'user_id': user.user_id,
+                    'email': user.email,
+                    'profile_id': user.profile_id
+                }
+                return user_info, None
+            return None, 'Incorrect username or password. Please try again.'
+        return None, 'Username and password must be provided.'
+
 # Property Class
 class Property(Base):
     __tablename__ = "Property"
@@ -557,7 +569,14 @@ class Save(Base):
         except Exception as e:
             print("Error deleting save:", str(e))
         
+    def is_saved(user_id, property_id):
+        saved = session.query(Save).filter_by(user_id=user_id, property_id=property_id).first()
+        if saved:
+            is_saved = True
+        else:
+            is_saved = False
 
+        return is_saved
 
 class Review(Base):
     __tablename__ = "review"
