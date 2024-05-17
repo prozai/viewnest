@@ -192,8 +192,7 @@ class SuspendAccountPage():
                 status = suspend_account.suspendAccount(username)
 
                 if status:
-                    message = "Update Successful!"
-                    return render_template('systemAdmin/suspend-account.html', message=message)
+                    return render_template('systemAdmin/suspend-account.html', message="Suspend Successful!")
                 else:
                     return render_template('systemAdmin/suspend-account.html', Error='Error suspending account!')
             except Exception as e:

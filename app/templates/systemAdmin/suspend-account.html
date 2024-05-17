@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="'container my-2">
+<div class="container my-2">
     <!-- Modal Structure -->
     <div class="modal fade" id="messageModal" tabindex="-1" role="dialog" aria-labelledby="messageModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
@@ -46,6 +46,16 @@
 </div>
 
 <script>
+document.addEventListener('DOMContentLoaded', function() {
+    var messageElement = document.getElementById('messageBody');
+    var message = "{{ message }}";
+
+    if (message) {
+        var modal = new bootstrap.Modal(document.getElementById('messageModal'), {});
+        modal.show();
+    }
+});
+
 function redirectToAnotherFunction() {
     // Generate the URL using Flask's url_for function
     var url = "{{ url_for('.displayAccounts') }}";
