@@ -6,7 +6,6 @@ from flask import render_template, request, redirect, url_for, flash, jsonify
 import os
 from datetime import datetime
 from app.entity.models import *
-from sqlalchemy import desc
 
 class viewPropertyController:
     
@@ -72,7 +71,7 @@ class viewCountController:
             print(f"Error fetching property: {e}")
             return None
 
-
+# Create Property Listing
 class createPropertyController:
     def REA_createProperty(self, propertyname, propertytype, district, bedroom_no, price, psf, image_file, selleremail):
         try:
@@ -117,18 +116,9 @@ class REAPropertiesController:
 
 # Update Property Listing
 class updatePropertyController:
-    def REA_updateProperty(id):
+    def REA_updateProperty(self, id, propertyname, propertytype, district, bedroom_no, price, psf, selleremail, image_file):
         try:
-            if request.method == 'POST':
-                propertyname = request.form['propertyname']
-                propertytype = request.form['propertytype']
-                district = request.form['district']
-                bedroom_no = request.form['bedroom_no']
-                price = request.form['price']
-                psf = request.form['psf']
-                selleremail = request.form['selleremail']
-                image_file = request.files.get('image_url')
-                updateProperty = session.query(Property).filter_by(ID=id).first()
+            updateProperty = Property.get_property_by_id(id)
 
             if updateProperty:
                 updateProperty.propertyname = propertyname
@@ -147,17 +137,19 @@ class updatePropertyController:
                     image_path = os.path.join(path, filename)
                     updateProperty.image_url = image_path
 
-                Property.update_property()
+                # Commit the changes to the database
+                session.commit()
                 return updateProperty
             else:
                 return None
 
         except Exception as e:
             print("Error updating property:", str(e))
+            return None
 
-    def REA_getProperty(id):
+    def REA_getProperty(self, id):
         try:
-            property = session.query(Property).filter_by(ID=id).first()
+            property = Property.get_property_by_id(id)
             return property
         except Exception as e:
             print("Error retrieving property:", str(e))
@@ -166,7 +158,7 @@ class updatePropertyController:
 class deletePropertyController:
     def REA_deleteProperty(id):
         try:
-            property = session.query(Property).filter_by(ID=id).first()
+            property = Property.get_property_by_id(id)
             if property:
                 if property.image_url:
                     upload_folder = './app/static/uploads/properties/'
@@ -216,8 +208,8 @@ class savePropertyController:
         try:
             property_id = request.form['property_id']
             user_id = flask_session['user_id']
-            saved = session.query(Save).filter_by(user_id=user_id, property_id=property_id).first()
-            property = session.query(Property).filter_by(ID=property_id).first()
+            saved = Save.get_save(user_id, property_id)
+            property = Property.get_property_by_id(property_id)
 
             if saved:
                 Save.delete_save_new(saved)
@@ -235,8 +227,8 @@ class savePropertyController:
             try:
                 property_id = request.form['property_id']
                 user_id = flask_session['user_id']
-                saved = session.query(Save).filter_by(user_id=user_id, property_id=property_id).first()
-                property = session.query(Property).filter_by(ID=property_id).first()
+                saved = Save.get_save(user_id, property_id)
+                property = Property.get_property_by_id(property_id)
 
                 if saved:
                     Save.delete_save_sold(saved)
@@ -249,7 +241,6 @@ class savePropertyController:
                     return 'Save added'
             except Exception as e:
                 print("Error adding saved property:", str(e))
-
 
 # Seller View Property Listings + Saves
 class sellerPropertiesController:
