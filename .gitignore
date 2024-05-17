@@ -7,3 +7,5 @@ app/entity/__pycache__/models.cpython-312.pyc
 /app/entity/__pycache__
 /app/control/__pycache__
 /app/boundary/__pycache__
+/app/boundary/__pycache__
+/app/control/__pycache__

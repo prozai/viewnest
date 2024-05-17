@@ -75,20 +75,30 @@ class ViewAccountController():
     
 # Update Account Controller
 class UpdateAccountController():
- def getExistingAccount(self, username):
+    def getExistingAccount(self, username):
         user = User.get_account_by_username(username)
         return user
 
-def updateAccount(self, username, fname, lname, email, phonenum, password):
-  password_hash = generate_password_hash(password)
-  status = User.update_account(username, fname, lname, email, phonenum, password_hash)
-  return status
+    def updateAccount(self, username, fname, lname, email, phonenum, password):
+        password_hash = generate_password_hash(password)
+        status = User.update_account(username, fname, lname, email, phonenum, password_hash)
+        return status
+    
+    def check_email(self, email, username):
+        current_user = User.get_account_by_username(username)
+        if (current_user.get_email() != email and User.check_email(email)):
+            return True
+        else:
+            return False
+    
+    def check_phonenum(self, phonenum, username):
+        current_user = User.get_account_by_username(username)
+        if (current_user.get_phone_num() != phonenum and User.check_phonenum(phonenum)):
+            return True
+        else:
+            return False
 
-def check_email(self, email):
-  return User.check_email(email)
 
-def check_phonenum(self, phonenum):
-  return User.check_phonenum(phonenum)
 # Suspend Account Controller
 class SuspendAccountController():
     def suspendAccount(self, username):

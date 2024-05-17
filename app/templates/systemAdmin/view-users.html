@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+
 {% block title %} View All Profile {% endblock %}
 
 {% block body %} 
@@ -10,7 +11,6 @@
                 <button type="submit">Search</button>
             </form>
         </div>
-
         <div class="table-responsive">
             <table class="table table-bordered">
                 <thead>
@@ -22,7 +22,7 @@
                         <th>Phone Number</th>
                         <th>Username</th>
                         <th>Profile Type</th>
-                        <th></th>
+                        <th ></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -35,6 +35,7 @@
                         <td>{{user.phonenum}}</td>
                         <td>{{user.username}}</td>
                         <td>{{user.userprofile.roles}}</td>
+                        <td><a class="btn btn-link" href="/edit/{{ user.username }}"> Update </a>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -42,5 +43,5 @@
         </div>
     </div>
 </div>
-
 {% endblock %}
+
