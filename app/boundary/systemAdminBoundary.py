@@ -1,15 +1,15 @@
 from flask import render_template, redirect, url_for, request
 from flask_babel import _
 from app.boundary import adminBP
-from app.control.adminController import *
-from app.control.loginController import loginController
+from app.control.adminController import ViewProfileController, ViewAccountController, CreateProfileController, \
+    CreateAccountController, UpdateProfileController, UpdateAccountController, SuspendProfileController, SuspendAccountController, \
+    SearchProfileController, SearchAccountController
 
 @adminBP.route('/')
 def index():
     return render_template('index.html', title="")
 
 @adminBP.route('/adminIndex')
-@loginController.sysadmin_authentication
 def adminIndex():
     return render_template('systemAdmin/index.html', title="")
 
@@ -17,11 +17,7 @@ def adminIndex():
 
 class CreateProfilePage():
     @adminBP.route('/registerProfile', methods=['GET', 'POST'])
-    @loginController.sysadmin_authentication
     def createProfile():
-        result = loginController.dashboard()       
-        user = result.get('user')
-        
         if request.method == "POST":
             try:
                 role = request.form.get("role")
@@ -35,26 +31,18 @@ class CreateProfilePage():
                     raise Exception ('Error in creating profile!')
             except Exception as e:
                 print(e)
-        return render_template('systemAdmin/register-profile.html', user = user)
+        return render_template('systemAdmin/register-profile.html')
 
 class DisplayProfilesPage():
-
-        
     @adminBP.route('/displayProfiles', methods=['POST', 'GET'])
-    @loginController.sysadmin_authentication
     def displayProfile():
-        result = loginController.dashboard()       
-        user = result.get('user')        
         view_profile = ViewProfileController()
         profile_list = view_profile.viewProfiles()
-        return render_template('systemAdmin/view-profiles.html', title="All Profile", profiles=profile_list, user = user)
+        return render_template('systemAdmin/view-profiles.html', title="All Profile", profiles=profile_list)
 
 class UpdateProfilePage():
     @adminBP.route('/updateProfile', methods=['POST', 'GET'])
-    @loginController.sysadmin_authentication
     def updateUserProfile():
-        result = loginController.dashboard()       
-        user = result.get('user')        
         if request.method == "POST":
             try:
                 role = request.form.get("profile_role")
@@ -68,14 +56,11 @@ class UpdateProfilePage():
                     return redirect(url_for('.displayProfile'))
             except Exception as e:
                 print(e)
-        return render_template('systemAdmin/update-profile.html',user=user)
+        return render_template('systemAdmin/update-profile.html')
 
 class SuspendProfilePage():
     @adminBP.route('/suspendProfile', methods=['POST', 'GET'])
-    @loginController.sysadmin_authentication
     def suspendUserProfile():
-        result = loginController.dashboard()       
-        user = result.get('user')        
         if request.method == "POST":
             try:
                 role = request.form.get("role")
@@ -87,13 +72,11 @@ class SuspendProfilePage():
                     return redirect(url_for('.displayProfile'))
             except Exception as e:
                 print(e)
-        return render_template('systemAdmin/suspend-profile.html',user=user)
+        return render_template('systemAdmin/suspend-profile.html')
 
 class SearchProfilePage():
     @adminBP.route('/searchProfile', methods=['POST', 'GET'])
-    @loginController.sysadmin_authentication
     def displaySearchProfile():
-
         try:
             search_term = request.form.get('query')
             search_profile = SearchProfileController()
@@ -116,9 +99,6 @@ class SearchProfilePage():
 class CreateAccountsPage():
     @adminBP.route('/registerAccount', methods=['GET', 'POST'])
     def createAccount():
-                        #Get user for HTML page
-        result = loginController.dashboard()       
-        user = result.get('user')
         if request.method == 'POST':
             try:
                 profile_name = request.form.get("profile_role")
@@ -149,19 +129,14 @@ class CreateAccountsPage():
                     return redirect('systemAdmin/register-account.html', error='Error creating new account.')
             except Exception as e:
                 print("Error:", e)
-        return render_template('systemAdmin/register-account.html',user = user)
-    
+        return render_template('systemAdmin/register-account.html')
     
 class DisplayAccountsPage():
     @adminBP.route('/displayAccounts', methods=['POST', 'GET'])
-    @loginController.sysadmin_authentication
     def displayAccounts():
-                #Get user for HTML page
-        result = loginController.dashboard()       
-        user = result.get('user')
         view_accounts = ViewAccountController()
         user_list = view_accounts.viewUsers()
-        return render_template('systemAdmin/view-users.html', title="All Users", users=user_list,user=user)
+        return render_template('systemAdmin/view-users.html', title="All Users", users=user_list)
     
 class UpdateAccountPage():
     @adminBP.route('/edit/<string:username>', methods=['GET'])
@@ -173,39 +148,39 @@ class UpdateAccountPage():
         else:
             return "User not found", 404
 
-@adminBP.route('/updateAccount', methods=['POST', 'GET'])
-def updateUserAccount():
-  if request.method == "POST":
-    try:
-      username = request.form.get("username")
-      password=request.form.get("password")
-      fname=request.form.get("fname")
-      lname=request.form.get("lname") 
-      email=request.form.get("email") 
-      phonenum=request.form.get("phonenum")
-      
-      update_account = UpdateAccountController()
-      temp = update_account.getExistingAccount(username)
+    @adminBP.route('/updateAccount', methods=['POST', 'GET'])
+    def updateUserAccount():
+        if request.method == "POST":
+            try:
+                username = request.form.get("username")
+                password=request.form.get("password")
+                fname=request.form.get("fname")
+                lname=request.form.get("lname") 
+                email=request.form.get("email") 
+                phonenum=request.form.get("phonenum")
+                
+                update_account = UpdateAccountController()
+                temp = update_account.getExistingAccount(username)
 
-      # Check if unique attributes exist
-      if (temp.get_email()!=email and update_account.check_email(email)):
-        return render_template('systemAdmin/update-account.html', user=temp, error='Email already exists!')
-      
-      if (temp.get_phone_num()!=phonenum and update_account.check_phonenum(phonenum)):
-        return render_template('systemAdmin/update-account.html', user=temp, error='Phone number already exists!')
-      
-      status = update_account.updateAccount(username, fname, lname, email, phonenum, password)
+                # Check if unique attributes exist
+                if (update_account.check_email(email=email, username=username)):
+                    return render_template('systemAdmin/update-account.html', user=temp, error='Email already exists!')
+                
+                if (update_account.check_phonenum(phonenum=phonenum, username=username)):
+                    return render_template('systemAdmin/update-account.html', user=temp, error='Phone number already exists!')
+                
+                status = update_account.updateAccount(username, fname, lname, email, phonenum, password)
 
-      if status:
-        message = "Update Successful!"
+                if status:
+                    message = "Update Successful!"
 
-        return render_template('systemAdmin/update-account.html', user=temp, message=message)
-      else:
-        return render_template('systemAdmin/update-account.html', user=temp, error='Error updating account!')
-    except Exception as e:
-      print(e)
-  return render_template('systemAdmin/update-account.html')
-  
+                    return render_template('systemAdmin/update-account.html', user=temp, message=message)
+                else:
+                    return render_template('systemAdmin/update-account.html', user=temp, error='Error updating account!')
+            except Exception as e:
+                print(e)
+        return render_template('systemAdmin/update-account.html')
+
 class SuspendAccountPage():
     @adminBP.route('/suspendAccount', methods=['POST', 'GET'])
     def suspendAccount():
@@ -221,17 +196,13 @@ class SuspendAccountPage():
                     return render_template('systemAdmin/suspend-account.html', message=message)
                 else:
                     return render_template('systemAdmin/suspend-account.html', Error='Error suspending account!')
-            
-        
             except Exception as e:
-               print(e)
-            return render_template('systemAdmin/suspend-account.html')
-        
+                print(e)
+        return render_template('systemAdmin/suspend-account.html')
+    
 class SearchProfilePage():
     @adminBP.route('/searchAccount', methods=['POST', 'GET'])
-    @loginController.sysadmin_authentication
     def displaySearchAccount():
-
         try:
             search_term = request.form.get('query')
 
