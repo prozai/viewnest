@@ -1,3 +1,5 @@
 env1/
 pycache/
 *.pyc
+app/entity/__pycache__/models.cpython-312.pyc
+app/entity/__pycache__/models.cpython-312.pyc
