@@ -44,8 +44,8 @@ class viewPropertyController:
     def view_property_detail(property_id):
         property = Property.view_property_detail(property_id)
         user_id = flask_session['user_id']
-        saved = session.query(Save).filter_by(user_id=user_id, property_id=property_id).first()
-        if saved:
+        is_saved = Save.is_saved(user_id, property_id)
+        if is_saved:
             property.is_saved = True
         else:
             property.is_saved = False

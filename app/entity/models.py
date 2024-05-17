@@ -569,7 +569,14 @@ class Save(Base):
         except Exception as e:
             print("Error deleting save:", str(e))
         
+    def is_saved(user_id, property_id):
+        saved = session.query(Save).filter_by(user_id=user_id, property_id=property_id).first()
+        if saved:
+            is_saved = True
+        else:
+            is_saved = False
 
+        return is_saved
 
 class Review(Base):
     __tablename__ = "review"
