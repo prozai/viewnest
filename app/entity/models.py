@@ -4,6 +4,7 @@ from app import Base, session
 from datetime import date
 from sqlalchemy.ext.declarative import declarative_base
 from werkzeug.security import check_password_hash
+from sqlalchemy import desc
 
 # User Profile Class
 class UserProfile(Base):
@@ -376,9 +377,6 @@ class Property(Base):
             'view_count': self.view_count,
             'saves': self.saves
         }
-
-    def get_property_id(self):
-        return self.ID
     
     def view_properties(offset, limit, filter_type):
         query = session.query(Property)
@@ -427,6 +425,10 @@ class Property(Base):
     def get_property_id(self):
         return self.ID
     
+    def get_max_id(id):
+        max_id = session.query(Property).order_by(desc(id)).first()
+        return max_id
+
     def create_property(new_property):
         try:
             session.add(new_property)
@@ -457,6 +459,10 @@ class Property(Base):
         finally:
             session.close()
 
+    def get_property_by_id(id):
+        property = session.query(Property).filter_by(ID=id).first()
+        return property
+    
     def add_save_new(property):
         try:
             property.saves += 1
@@ -554,6 +560,10 @@ class Save(Base):
     def __init__(self, user_id, property_id):
         self.user_id = user_id
         self.property_id = property_id
+        
+    def get_save(user_id, property_id):
+        save = session.query(Save).filter_by(user_id=user_id, property_id=property_id).first()
+        return save
 
     def delete_save_new(saved):
         try:
