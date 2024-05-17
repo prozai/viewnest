@@ -315,6 +315,10 @@ class User(Base):
             return None, 'Incorrect username or password. Please try again.'
         return None, 'Username and password must be provided.'
 
+    def dashboard(user_id):
+        user = session.query(User).filter_by(user_id=user_id).first()
+        return user
+    
 # Function to read one account record 
     @classmethod
     def get_account_by_username(cls, username):

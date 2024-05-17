@@ -45,6 +45,19 @@
     </div>
     <!-- Script for top menu bar -->
     <script>
+        function logout() {
+            var confirmation = confirm("Are you sure you want to logout?");
+            if (confirmation) {
+                var form = document.createElement("form");
+                form.method = "POST";
+                form.action = "/logout";
+
+                document.body.appendChild(form);
+                form.submit();
+            }
+        }
+
+
         // Add this script to generate the top menu bar
         // Add this script to dynamically generate buttons based on user roles
         var roles = "{{ user.userprofile.profile_id }}"; // Assuming roles is a comma-separated string
@@ -57,7 +70,7 @@
                 { text: "Create Property", page: "/create_property" },
                 { text: "View my Property", page: "/REA_properties" },
                 { text: "View my Ratings & Reviews", page: "/viewReviews" },
-                { text: "Logout", page: "/login"  },
+                { text: "Logout", onclick: logout },
 
             ];
         } else if (rolesArray.includes("4")) {        
@@ -71,7 +84,7 @@
                 { text: "Update User Accounts", page: "/updateAccount"  },
                 { text: "Suspend User Profiles", page: "/suspendProfile"  },
                 { text: "Suspend User Accounts", page: "/suspendAccount"  },
-                { text: "Logout", page: "/login"  },
+                { text: "Logout", onclick: logout },
 
             // Add more menu items for role 4 as needed
             ];
@@ -81,7 +94,7 @@
                 { text: "View Property Listings", page: "/view_properties" },
                 { text: "Calculate Property Mortgages", page: "/view_calculation" },
                 { text: "Create Ratings & Reviews for agents", page: "/addReview" },
-                { text: "Logout", page: "/login"  },
+                { text: "Logout", onclick: logout },
 
                 // Add more menu items for role 1 as needed
             ];
@@ -90,7 +103,7 @@
                 { text: "Home", page:"/dashboard"},
                 { text: "View Seller Properties", page: "/seller_properties"  },
                 { text: "Create Ratings & Reviews for agents", page: "/sellerAddReview" },
-                { text: "Logout", page: "/login"  },
+                { text: "Logout", onclick: logout },
 
                 // Add more menu items for role 2 as needed
             ];
@@ -100,10 +113,16 @@
             var menuItem = document.createElement("li");
             var menuLink = document.createElement("a");
             menuLink.textContent = item.text;
-            menuLink.href = item.page;
+            if (item.text === "Logout") {
+                menuLink.href = "#";
+                menuLink.onclick = item.onclick;
+            } else {
+                menuLink.href = item.page;
+            }
             menuItem.appendChild(menuLink);
             topMenu.appendChild(menuItem);
         });
+
     </script>
 </body>
 </html>

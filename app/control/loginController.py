@@ -28,8 +28,7 @@ class loginController:
     def dashboard():
         if 'user_id' in session:
             user_id = session['user_id']
-            
-            user = sqlalchemy_session.query(User).filter_by(user_id=user_id).first()
+            user = User.dashboard(user_id)
             if user:
                 return {'template': '/login/dashboard.html', 'user': user}
         return {'redirect': '/login'}
