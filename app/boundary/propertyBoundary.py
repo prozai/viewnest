@@ -93,23 +93,34 @@ class updatePropertyPage:
     @propBP.route('/update_property/<int:id>/', methods=['GET', 'POST'])
     def update_property(id):
         #Get user for HTML page
-        result = loginController.dashboard()       
-        user = result.get('user')        
-        property = None
+        result = loginController.dashboard()
+        user = result.get('user')
+
         if request.method == 'POST':
             try:
-                property = updatePropertyController.REA_updateProperty(id)
+                propertyname = request.form['propertyname']
+                propertytype = request.form['propertytype']
+                district = request.form['district']
+                bedroom_no = request.form['bedroom_no']
+                price = request.form['price']
+                psf = request.form['psf']
+                selleremail = request.form['selleremail']
+                image_file = request.files.get('image_url')
+                
+                property = updatePropertyController().REA_updateProperty(
+                    id, propertyname, propertytype, district, bedroom_no, price, psf, selleremail, image_file
+                )
                 if property:
                     flash("Updated successfully!")
                 else:
                     flash("Property not found")
             except Exception as e:
                 flash(f"Error updating property: {str(e)}")
-            return redirect(url_for('propRoutes.update_property', id=id))
+            return redirect(url_for('propRoutes.REA_view_properties'))
+
+        property = updatePropertyController().REA_getProperty(id)
+        return render_template('REAgent/update_property.html', property=property, user=user)
         
-        property = updatePropertyController.REA_getProperty(id)
-        return render_template('REAgent/update_property.html', property=property,user = user)
-    
 class deleteProperty:
     @propBP.route('/delete_property/<int:id>/', methods=['POST'])
     def delete_property(id):
