@@ -180,6 +180,10 @@ class SearchPropertyBoundary:
         results = self.controller.searchAvailable(search_query)
         return render_template('property/search.html', results=results)
 
+    def searchPropertiesREA(self, search_query):
+        results = self.controller.searchPropertiesREA(search_query)
+        return render_template('property/search.html', results=results)
+
 search_boundary = SearchPropertyBoundary()
 
 
@@ -201,3 +205,9 @@ def searchSold():
 def searchAvailable():
     search_query = request.form.get('query')
     return search_boundary.searchAvailable(search_query)
+
+@propBP.route('/searchPropertiesREA', methods=['POST', 'GET'])
+@loginController.login_required
+def searchPropertiesREA():
+    search_query = request.form.get('query')
+    return search_boundary.searchPropertiesREA(search_query)

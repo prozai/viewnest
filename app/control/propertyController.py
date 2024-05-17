@@ -199,6 +199,15 @@ class SearchController:
         results = Property.search_by_avail(search_query)
         return results
     
+    def searchPropertiesREA(self, search_query):
+        search_query = request.form.get('query')
+        user_id = flask_session['user_id']
+        if not search_query:
+            return jsonify({'error': 'No query provided'}), 400
+
+        results = Property.search_by_REA_Properties(search_query,user_id)
+        return results
+    
 search_controller = SearchController()
 
     

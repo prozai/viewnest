@@ -528,6 +528,17 @@ class Property(Base):
         *[Property.propertyname.like(f'%{keyword}%') for keyword in keywords],
         Property.sold == 0  # Add this condition to filter sold properties
     ).all()
+         
+    def search_by_REA_Properties(search_query, userid):
+    # Split the search query into individual keywords
+         keywords = search_query.split()
+
+         return session.query(Property).filter(
+        *[Property.propertyname.like(f'%{keyword}%') for keyword in keywords],
+        Property.user_id == userid  
+    ).all()
+
+
 
     def load_more_properties(offset, limit, filter_type):
         properties = Property.view_properties(offset, limit, filter_type)

@@ -89,6 +89,8 @@
         .property-image {
             max-width: 100%;
             width: 800px;
+            display: block;
+            margin: 0 auto; 
             height: 500px;
             margin-bottom: 10px;
         }
@@ -235,7 +237,7 @@
     </div>
             <!-- Search Form -->
             <div class="search-bar">
-                <form id="searchForm" action="/search" method="POST">
+                <form id="searchForm" method="POST" action = "/searchPropertiesREA">
                     <input type="hidden" name="search_type" id="searchType" value="all">
                     <input type="text" name="query" id="searchPlaceholder" placeholder="Search All Properties">
                     <button type="submit">Search</button>
