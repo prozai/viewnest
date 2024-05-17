@@ -7,7 +7,7 @@
         <style>
             body {
                 font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-             }
+            }
             .container {
                 max-width: 800px;
                 margin: 20px auto;
@@ -24,8 +24,30 @@
                 text-align: center;
                 margin-bottom: 20px;
             }
-            .button-container button {
-                margin: 0 5px;
+            .button-container button, .button-container .load-more-btn {
+                background-color: rgba(51, 51, 51, 0.05);
+                border-radius: 8px;
+                border-width: 0;
+                color: #333333;
+                cursor: pointer;
+                display: inline-block;
+                font-family: "Haas Grot Text R Web", "Helvetica Neue", Helvetica, Arial, sans-serif;
+                font-size: 14px;
+                font-weight: 500;
+                line-height: 20px;
+                list-style: none;
+                margin: 0;
+                padding: 10px 12px;
+                text-align: center;
+                transition: all 200ms;
+                vertical-align: baseline;
+                white-space: nowrap;
+                user-select: none;
+                -webkit-user-select: none;
+                touch-action: manipulation;
+            }
+            .button searchPropertyButton{
+                text-align: right;
             }
             .search-bar {
                 text-align: center;
@@ -43,35 +65,76 @@
                 padding: 10px;
                 margin-bottom: 10px;
                 background-color: #f9f9f9;
+                font-size: x-large
             }
             .property-image {
-                max-width: 100%;
-                height: auto;
+                max-width: 90%; 
+                max-height: 90%; 
+                width: auto; 
+                height: auto; 
+                display: block;
+                margin: 0 auto; 
                 margin-bottom: 10px;
             }
+            .search-bar {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-bottom: 20px;
+            }
+            .search-bar input[type="text"] {
+                padding: 10px;
+                border: 2px solid #ccc;
+                border-radius: 5px;
+                outline: none;
+                width: 300px;
+            }
+            .search-bar button {
+                background-color: #808080;
+                color: #fff;
+                border: none;
+                border-radius: 5px;
+                padding: 10px 20px;
+                margin-left: 10px;
+                cursor: pointer;
+            }
+            .search-bar button:hover {
+                background-color: #6c6c6c;
+            }
+    
         </style>
     </head>
 <body>
 
     <div class="container">
     <h2>Search Results</h2>
-    {% for result in results %}
-    <li onclick="viewPropertyDetail('{{ result.ID }}')" style="cursor: pointer;" class="property-item {% if result.sold %}sold{% endif %}">
-        <img src="{{ result.image_url }}" alt="{{ result.propertyname }} image" class="property-image"> 
-        <div>
-            <strong>{{ result.propertyname }}</strong>
-            <strong style="float: right;">S${{ "{:,.2f}".format(result.price) }}</strong><br>
-            <span>{{ result.propertytype }} ({{ result.bedroom_no }} Bedroom)</span>
-            {% if result.sold %}
-            <span style="float: right;">Sold</span>
-        {% else %}
-            <span style="float: right;">Available</span>
-        {% endif %}
-            <div style="clear: both;"></div>
+    <ul id="propertyList" class="property-list">
+        {% for result in results %}
+            <li onclick="viewPropertyDetail('{{ result.id }}')" style="cursor: pointer;" class="property-item {% if result.sold %}sold{% endif %}">
+                <img src="{{ result.image_url }}" alt="{{ result.propertyname }} image" class="property-image"> 
+                <div>
+                    <strong>{{ result.propertyname }}</strong>
+                    <strong style="float: right;">S${{ "{:,.2f}".format(result.price) }}</strong><br>
+                    <span>{{ result.propertytype }} ({{ result.bedroom_no }} Bedroom)</span>
+                    {% if result.sold %}
+                    <span style="float: right;">Sold</span>
+                {% else %}
+                    <span style="float: right;">Available</span>
+                {% endif %}
+                    <div style="clear: both;"></div>
 
-        </div>
-    </li>
-{% endfor %}
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
     </div>
+    <div class="button-container">
+        <button onclick="back()">Back to Dashboard</button>
+    </div>
+    <script>
+        function back() {
+            window.location.href = '/dashboard'; // Redirect to view_properties.html
+        }
+    </script>
 </body>
 </html>

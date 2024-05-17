@@ -3,6 +3,12 @@
 {% block title %} View All Profile {% endblock %}
 
 {% block body %} 
+<style>
+    .button-container {
+        text-align: center;
+        margin-top: 20px;
+    }
+</style>
 <div class="container">
     <div class="my-2">
         <div>
@@ -42,6 +48,14 @@
             </table>
         </div>
     </div>
+    <div class="button-container">
+        <button onclick="back()">Back to Dashboard</button>
+    </div>
+    <script>
+        function back() {
+            window.location.href = '/dashboard'; // Redirect to view_properties.html
+        }
+    </script>
 </div>
 {% endblock %}
 
