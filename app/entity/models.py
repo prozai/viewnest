@@ -315,6 +315,12 @@ class User(Base):
             return None, 'Incorrect username or password. Please try again.'
         return None, 'Username and password must be provided.'
 
+# Function to read one account record 
+    @classmethod
+    def get_account_by_username(cls, username):
+        user = session.query(cls).filter(cls.username==username).first()
+        return user
+    
 # Property Class
 class Property(Base):
     __tablename__ = "Property"
