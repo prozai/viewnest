@@ -76,7 +76,7 @@ class createPropertyController:
     def REA_createProperty(self, propertyname, propertytype, district, bedroom_no, price, psf, image_file, selleremail):
         try:
             user_id = flask_session['user_id']
-            max_id = session.query(Property).order_by(desc(Property.ID)).first()
+            max_id = Property.get_max_id(Property.ID)
             highest_id = max_id.ID if max_id else None
 
             propertyid = highest_id + 1
