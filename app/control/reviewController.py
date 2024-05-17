@@ -16,7 +16,3 @@ class ReviewController:
             review = Review(rating, review, user_id, rea_id)
             status = Review.create_new_review(review=review)
             return status
-    
-    def view_reviews(self):
-        reviews = Session.query(Review).all()
-        return reviews
