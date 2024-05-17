@@ -1,16 +1,33 @@
 {% extends "base.html" %}
-<!-- Include the menu bar -->
-{% include 'topMenu.html' %}
+
 {% block content %}
 <div class="'container my-2">
+    <!-- Modal Structure -->
+    <div class="modal fade" id="messageModal" tabindex="-1" role="dialog" aria-labelledby="messageModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="messageModalLabel">From Viewnest: </h5>
+                </div>
+                <div class="modal-body" id="messageBody">
+                    {{ message }}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="redirectToAnotherFunction()">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>   
     <div class="row-12 d-flex align-items-center h-100 justify-content-center flex-column">
-        <h1>Suspend Profile</h1>
+        <h1>Suspend Account</h1>
         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12">
             <div class="card">
+                {% if error %}
+                    <p style="color: red;">{{ error }}</p>
+                {% endif %}
                 <div class="card-body">
                     <form method="post" class='needs-validation' id="createprofile" novalidate>
                         <!-- Profile Role -->
-
                         <div>
                             <label for="username"  class="form-label">Enter username:</label>
                             <input type="text" class="form-control" id="username" name="username" size="50" required>
@@ -29,6 +46,14 @@
 </div>
 
 <script>
+function redirectToAnotherFunction() {
+    // Generate the URL using Flask's url_for function
+    var url = "{{ url_for('.displayAccounts') }}";
+    
+    // Use JavaScript to redirect to the generated URL
+    window.location.href = url;
+}
+
     (function () {
       'use strict'
     

@@ -1,18 +1,36 @@
 {% extends "base.html" %}
-<!-- Include the menu bar -->
+
 {% block content %}
 <div class="container my-2">
+    <!-- Modal Structure -->
+    <div class="modal fade" id="messageModal" tabindex="-1" role="dialog" aria-labelledby="messageModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="messageModalLabel">From Viewnest: </h5>
+                </div>
+                <div class="modal-body" id="messageBody">
+                    {{ message }}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="redirectToAnotherFunction()">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>    
     <div class="row-12 d-flex align-items-center h-100 justify-content-center flex-column">
         <h1>Update User Account</h1>
         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12">
             <div class="card">
+                {% if error %}
+                    <p style="color: red;">{{ error }}</p>
+                {% endif %}
                 <div class="card-body">
-                    <form method="post" class='needs-validation' id="createaccount" novalidate>
-
+                    <form method="post" action="/updateAccount" class='needs-validation' id="updateaccount" novalidate > 
                         <!-- Username -->
                         <div>
                             <label for="username" class="form-label">Enter username:</label>
-                            <input type="text" class="form-control" id="username" name="username" size="50" required>
+                            <input type="text" class="form-control" id="username" name="username" size="50" value="{{user.username}}" required>
                             <div class="invalid-feedback">
                                 Please enter a valid username.
                             </div>
@@ -24,7 +42,7 @@
                         <!-- First Name -->
                         <div>
                             <label for="fname" class="form-label">First Name:</label>
-                            <input type="text" class="form-control" id="fname" name="fname" size="50" >
+                            <input type="text" class="form-control" id="fname" name="fname" size="50" value={{user.fname}}>
                             <div class="invalid-feedback">
                                 Please enter your first name.
                             </div>
@@ -34,7 +52,7 @@
                         <!-- Last Name -->
                         <div>
                             <label for="lname" class="form-label">Last Name:</label>
-                            <input type="text"  class="form-control" id="lname" name="lname" size="50" >
+                            <input type="text"  class="form-control" id="lname" name="lname" size="50" value={{user.lname}}>
                             <div class="invalid-feedback">
                                 Please enter your last name.
                             </div>
@@ -44,7 +62,7 @@
                         <!-- Email -->
                         <div>
                             <label for="email" class="form-label">Email:</label>
-                            <input type="email" class="form-control" id="email" name="email" >
+                            <input type="email" class="form-control" id="email" name="email" value={{user.email}}>
                             <div class="invalid-feedback">
                                 Please enter a valid email address.
                             </div>
@@ -54,25 +72,33 @@
                         <!-- Phone Number -->
                         <div>
                             <label for="phonenum" class="form-label">Phone Number:</label>
-                            <input type="tel" class="form-control" id="phonenum" name="phonenum" size="50" >
+                            <input type="tel" class="form-control" id="phonenum" name="phonenum" value={{user.phonenum}}>
                             <div class="invalid-feedback">
-                                Please enter a valid phone number.
+                                Please enter a valid phone number. 
                             </div>
                         </div>
                         <br>
 
-                        <!-- Password -->
                         <div>
-                            <label for="password" class="form-label">Password:</label>
-                            <input type="password" class="form-control" id="password" name="password" size="50">
-                            <div class="invalid-feedback"></div>
+                            <label> 
+                                <input type="checkbox" id="toggleCheckbox"> Change Password?
+                            </label>
+                        </div>
+
+                        <!-- New Password -->
+                        <div class="d-none" id="newpassword">
+                            <label for="password" class="form-label">New Password:</label>
+                            <input type="password" class="form-control" id="password" name="password"> 
+                            <div class="invalid-feedback">
+                                Please enter a valid password.
+                            </div>
                         </div>
                         <br>
 
                         <!-- Confirm Password -->
-                        <div>
+                        <div class="d-none" id="confirmpassword">
                             <label for="password2" class="form-label">Confirm Password:</label>
-                            <input type="password" class="form-control" id="password2" name="password2" size="50">
+                            <input type="password" class="form-control" id="password2" name="password2"> 
                             <div class="invalid-feedback"></div>
                         </div>
                         <br>
@@ -90,6 +116,42 @@
 
 <script>
 
+document.addEventListener('DOMContentLoaded', function() {
+    var messageElement = document.getElementById('messageBody');
+    var message = "{{ message }}";
+
+    if (message) {
+        var modal = new bootstrap.Modal(document.getElementById('messageModal'), {});
+        modal.show();
+    }
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    var checkbox = document.getElementById('toggleCheckbox');
+
+    checkbox.addEventListener('change', function() {
+        //if (checkbox.checked) {
+            var newpassword = document.getElementById("newpassword");
+            newpassword.classList.toggle("d-none");
+
+            var confirmpassword = document.getElementById("confirmpassword")
+            confirmpassword.classList.toggle("d-none");
+
+        //} else {
+            //changePassword.style.display = 'none';
+            //password2.style.display = 'none';
+        //}
+    });
+});
+
+function redirectToAnotherFunction() {
+    // Generate the URL using Flask's url_for function
+    var url = "{{ url_for('.displayAccounts') }}";
+    
+    // Use JavaScript to redirect to the generated URL
+    window.location.href = url;
+}
+
 (function () {
     'use strict'
 
@@ -100,7 +162,7 @@
       form.addEventListener('submit', function (event) {
         if (!form.checkValidity()) {
             event.preventDefault()
-            event.stopPropagation()
+            //event.stopPropagation()
         }
 
         form.classList.add('was-validated')
@@ -110,8 +172,8 @@
       // Check password validity 
       document.getElementById('password').addEventListener('input', function() {
         var password = this.value;
-        var passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$%*?&!])[A-Za-z\d@$%*?&]{8,}$/;
-        if (!passwordRegex.test(password)) {
+        var passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$%*?&!])[A-Za-z\d@$%*?&!]{8,}$/;
+        if (password!="" && !passwordRegex.test(password)) {
             this.setCustomValidity('Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long.');
         } else {
             this.setCustomValidity('');
@@ -133,7 +195,7 @@
       document.getElementById('phonenum').addEventListener('input', function() {
         var phonenum = this.value;
         var phoneNumberRegex = /(6|8|9){1}\d{7}/;
-        if (!phoneNumberRegex.test(phonenum)) {
+        if (phonenum!="" && !phoneNumberRegex.test(phonenum)) {
             this.setCustomValidity('Phone number must start with 6, 8 or 9 and must be 8 digits.');
         } else {
             this.setCustomValidity('');
@@ -142,6 +204,5 @@
       });
     });
 })();
-
 </script>
 {% endblock %}
