@@ -45,6 +45,9 @@
                             <button type="submit" class="btn btn-outline-success">Submit</button>
                         </div>
                     </form>
+                    {% if error %}
+                    <p style="color: red;">{{ error }}</p>
+                    {% endif %}
                 </div>
             </div>
         </div>
