@@ -72,12 +72,12 @@ class createPropertyPage():
                 property = newProperty.REA_createProperty(propertyname, propertytype, district, bedroom_no, price, psf, image_file, selleremail)
 
                 if property:
+                    flash("Added successfully!")
                     return redirect(url_for('route.REA_view_properties'))
                 else:
-                    raise Exception('Error creating property')
+                    flash('Error creating property')
             except Exception as e:
                 print(e)
-            flash("Added successfully!")
         return render_template('REAgent/create_property.html',user=user)
     
 class REAPropertiesPage:
@@ -115,7 +115,7 @@ class updatePropertyPage:
                 else:
                     flash("Property not found")
             except Exception as e:
-                flash(f"Error updating property: {str(e)}")
+                flash("Error updating property: " + str(e))
             return redirect(url_for('propRoutes.REA_view_properties'))
 
         property = updatePropertyController().REA_getProperty(id)
@@ -129,10 +129,11 @@ class deleteProperty:
         user = result.get('user')        
         try:
             deletePropertyController.REA_deleteProperty(id)
+            flash("Deleted successfully!")
+
         except Exception as e:
             flash("Error deleting property: " + str(e))
         
-        flash("Deleted successfully!")
         return redirect(url_for('propRoutes.REA_view_properties'))
     
 class saveNewProperty:
