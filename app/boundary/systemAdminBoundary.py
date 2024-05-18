@@ -70,6 +70,8 @@ class SuspendProfilePage():
 
                 if status:
                     return redirect(url_for('.displayProfile'))
+                else:
+                    return render_template('systemAdmin/suspend-profile.html', error='Error suspending profile!')
             except Exception as e:
                 print(e)
         return render_template('systemAdmin/suspend-profile.html')

@@ -101,6 +101,9 @@ class UserProfile(Base):
     def suspend_profile(cls, role):
         try:
             profile = session.query(cls).filter(cls.roles==role).first()
+            if profile is None:
+                return False
+            
             profile.set_suspend_status(True) 
             session.commit()
             session.close()
