@@ -27,9 +27,16 @@
                             <label for="description"  class="form-label">Updated Description:</label>
                             <textarea class="form-control" id="description" name="description" rows=4 cols=50></textarea>
                         </div><br>
-                        <div>
-                            <button type="submit" class="btn btn-outline-success">Submit</button>
+
+                        <div style="display: flex; justify-content: space-between; align-items: center;"> 
+                            <div>
+                                <button type="submit" class="btn btn-outline-success">Submit</button>
+                            </div>
+                            <div>
+                                <button class="btn btn-light" style="margin-right: auto;" onclick="back()">Cancel</button>
+                            </div>
                         </div>
+                        
                     </form>
                 </div>
             </div>
@@ -55,6 +62,10 @@
           }, false)
         })
     })()
+
+    function back() {
+            window.location.href = 'dashboard.html'; // Redirect to view_properties.html
+        }
 </script>
 
 {% endblock %}

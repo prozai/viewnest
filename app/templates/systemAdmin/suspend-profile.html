@@ -16,8 +16,13 @@
                                 Please enter a valid role name.
                             </div>
                         </div> <br>
-                        <div>
-                            <button type="submit" class="btn btn-outline-success">Submit</button>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <button type="submit" class="btn btn-outline-success">Submit</button>
+                            </div>
+                            <div>
+                                <button class="btn btn-light" style="margin-right: auto;" onclick="back()">Back to Dashboard</button>
+                            </div>
                         </div>
                     </form>
                 </div>
@@ -44,6 +49,12 @@
           }, false)
         })
     })()
+
+function back() {
+    window.location.href = '/dashboard'; // Redirect to view_properties.html
+}
+
+    
 </script>
 
 {% endblock %}

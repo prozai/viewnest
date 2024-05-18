@@ -13,10 +13,10 @@ class ReviewController:
                 print("add review:"+ status)
                 return status
             else:
-                print("REA ID: " + str(rea_id))
+                print(rea_id)
                 review = Review(review, rating, user_id, rea_id)
                 status = Review.create_new_review(review=review)
-                print("add review:"+ status)
+                print("add review:"+ str(status))
                 return status
         except Exception as e:
             # Handle the exception here
