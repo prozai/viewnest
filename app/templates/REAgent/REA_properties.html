@@ -221,8 +221,6 @@
 </head>
 
 <body>
-          <!-- Include the menu bar -->
-          {% include 'topMenu.html' %}
 
     {% with messages = get_flashed_messages() %}
     {% if messages %}
@@ -305,6 +303,16 @@
             {% endfor %}
         </ul>
     </div>
+    <div class="button-container" style="text-align: center; margin-bottom: 20px;">
+        <button onclick="back()">Back to Dashboard</button>
+    </div>
+    <script>
+
+        function back() {
+            window.location.href = '/dashboard'; // Redirect to view_properties.html
+        }
+
+</script>
     <script>
         var modal = document.getElementsByClassName('modal');
 
