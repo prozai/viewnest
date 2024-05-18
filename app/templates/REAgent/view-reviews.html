@@ -3,29 +3,50 @@
 {% block title %} View Reviews {% endblock %}
 
 {% block body %} 
-<div class="container">
-    <div class="my-2">
-        <div class="table-responsive">
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>Id</th>
-                        <th>Description</th>
-                        <th>Ratings</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for review in reviews %}
-                    <tr>
-                        <td>{{review.review_id}}</td>
-                        <td>{{review.review}}</td>
-                        <td>{{review.rating}}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+<div>
+    <button class="btn btn-light" style="margin-right: auto;" onclick="back()">Back to Dashboard</button>
+</div>
+<div>
+    <div class="text-center">
+        <h1>View Reviews</h1>
+    </div>
+</div>
+{% for review in reviews %}
+<div>
+    <!-- View Reviews -->
+    <div class="'container my-2">
+        <div class="row-12 d-flex align-items-center h-100 justify-content-center flex-column">
+            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div>
+                            <label for="role" class="form-label">Review ID: {{review.review_id}}</label>
+                            <label for="role" class="form-label">Rating:
+                                {% for i in range(review.rating) %}
+                                <span class="fa fa-star checked">★</span>
+                                {% endfor %}
+                                {% for i in range(5 - review.rating) %}
+                                    <span class="fa fa-star"></span>
+                                {% endfor %}
+                            </label><br>
+                            <label for="role" class="form-label">Review: {{review.review}}</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
-
+{% endfor %}
+  
+<div>
+    <button class="btn btn-light" style="margin-right: auto;" onclick="back()">Back to Dashboard</button>
+</div>
+<br>
+<script>
+    function back() {
+        window.location.href = '/dashboard'; // Redirect to view_properties.html
+    } 
+    
+    </script>
 {% endblock %}
