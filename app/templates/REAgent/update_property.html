@@ -77,31 +77,31 @@
     <form id="propertyForm" enctype="multipart/form-data" method="POST" action="{{ url_for('propRoutes.update_property', id=property.ID) }}">
       <div class="form-group">
         <label for="propertyname">Property Name:</label>
-        <input type="text" id="propertyname" name="propertyname" class="form-control"  value="{{ property.propertyname }}" required>
+        <input type="text" id="propertyname" name="propertyname" class="form-control"  value="{{ property.propertyname }}">
       </div>
       <div class="form-group">
         <label for="propertytype">Property Type:</label>
-        <input type="text" id="propertytype" name="propertytype" class="form-control" value="{{ property.propertytype }}" required>
+        <input type="text" id="propertytype" name="propertytype" class="form-control" value="{{ property.propertytype }}">
       </div>
       <div class="form-group">
         <label for="district">District:</label>
-        <input type="text" id="district" name="district" class="form-control" value="{{ property.district }}" required>
+        <input type="text" id="district" name="district" class="form-control" value="{{ property.district }}">
       </div>
       <div class="form-group">
         <label for="bedroom_no">No. of bedrooms:</label>
-        <input type="text" id="bedroom_no" name="bedroom_no" class="form-control" value="{{ property.bedroom_no }}" required>
+        <input type="text" id="bedroom_no" name="bedroom_no" class="form-control" value="{{ property.bedroom_no }}">
       </div>
       <div class="form-group">
         <label for="price">Price ($):</label>
-        <input type="text" id="price" name="price" class="form-control" value="{{ property.price }}" required>
+        <input type="text" id="price" name="price" class="form-control" value="{{ property.price }}">
       </div>
       <div class="form-group">
         <label for="psf">Square Feet (m²):</label>
-        <input type="text" id="psf" name="psf" class="form-control" value="{{ property.psf }}" required>
+        <input type="text" id="psf" name="psf" class="form-control" value="{{ property.psf }}">
       </div>
       <div class="form-group">
         <label for="selleremail">Seller's Email :</label>
-        <input type="text" id="selleremail" name="selleremail" class="form-control" value="{{ property.selleremail }}" required>
+        <input type="text" id="selleremail" name="selleremail" class="form-control" value="{{ property.selleremail }}">
       </div>
       <div class="form-group">
         <label for="image_url">Image:</label>
