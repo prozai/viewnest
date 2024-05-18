@@ -34,10 +34,16 @@
                             <div class="invalid-feedback">
                                 Please enter a valid username.
                             </div>
+                        </div><br>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <button type="submit" class="btn btn-outline-success">Submit</button>
+                            </div>
+                            <div>
+                                <button class="btn btn-light" style="margin-right: auto;" onclick="back()">Back to Dashboard</button>
+                            </div>
                         </div>
-                        <div>
-                            <button type="submit" class="btn btn-outline-success">Submit</button>
-                        </div>
+                        
                     </form>
                 </div>
             </div>
@@ -81,6 +87,11 @@ function redirectToAnotherFunction() {
           }, false)
         })
     })()
+
+function back() {
+    window.location.href = '/dashboard'; // Redirect to view_properties.html
+}
+
 </script>
 
 {% endblock %}
