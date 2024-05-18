@@ -54,7 +54,7 @@ class UserProfile(Base):
     def create_new_profile(cls, profile):
         try:
             #check if role exist
-            role_exist = session.query(cls).filter(cls.roles==profile.roles).first is not None
+            role_exist = session.query(cls).filter(cls.roles==profile.roles).first() is not None
             if role_exist:
                 return False
             
