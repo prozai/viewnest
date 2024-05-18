@@ -201,7 +201,7 @@ class SuspendAccountPage():
                 print(e)
         return render_template('systemAdmin/suspend-account.html')
     
-class SearchProfilePage():
+class SearchAccountPage():
     @adminBP.route('/searchAccount', methods=['POST', 'GET'])
     def displaySearchAccount():
         try:
