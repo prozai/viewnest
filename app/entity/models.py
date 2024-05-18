@@ -312,15 +312,20 @@ class User(Base):
     def login(username, password):
         if username and password:
             user = session.query(User).filter_by(username=username).first()
-            if user and check_password_hash(user.password_hash, password):
-                user_info = {
-                    'user_id': user.user_id,
-                    'email': user.email,
-                    'profile_id': user.profile_id
-                }
-                return user_info, None
+            if user:
+                if user.suspend_status:
+                    return None, 'User account is currently suspended.'
+                if check_password_hash(user.password_hash, password):
+                    user_info = {
+                        'user_id': user.user_id,
+                        'email': user.email,
+                        'profile_id': user.profile_id
+                    }
+                    return user_info, None
+                return None, 'Incorrect username or password. Please try again.'
             return None, 'Incorrect username or password. Please try again.'
         return None, 'Username and password must be provided.'
+
 
     def dashboard(user_id):
         user = session.query(User).filter_by(user_id=user_id).first()
