@@ -137,8 +137,7 @@ class updatePropertyController:
                     image_path = os.path.join(path, filename)
                     updateProperty.image_url = image_path
 
-                # Commit the changes to the database
-                session.commit()
+                Property.update_property()
                 return updateProperty
             else:
                 return None
