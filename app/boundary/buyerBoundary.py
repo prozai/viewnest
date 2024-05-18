@@ -29,7 +29,9 @@ class buyerBoundary:
                     add_review_status = reviewController.addReview(review, rating, user_id, rea_email)
                     if add_review_status is False:
                         return render_template('buyer/create-review.html', error="Error adding review")
-                return redirect('/addReview')
+                    message = "Review added successfully!"
+                    print(message)
+                return render_template('buyer/create-review.html', message=message)
             except Exception as e:
                 # handle the exception here
                 print(f"An error occurred: {str(e)}")
