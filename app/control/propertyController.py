@@ -100,6 +100,7 @@ class createPropertyController:
                                     sold=False)
             
             Property.create_property(new_property)
+            return True
         except Exception as e:
             print("Error creating property:", str(e))
 
