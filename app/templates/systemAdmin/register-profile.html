@@ -27,8 +27,10 @@
                                 <button class="btn btn-outline-danger" style="margin-right: auto;" onclick="back()">Cancel</button>
                             </div>
                         </div>
-                        
                     </form>
+                    {% if error %}
+                    <p style="color: red;">{{ error }}</p>
+                    {% endif %}
                 </div>
             </div>
         </div>

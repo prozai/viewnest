@@ -53,11 +53,15 @@ class UserProfile(Base):
     @classmethod
     def create_new_profile(cls, profile):
         try:
-            #with session.begin():
-                session.add(profile)
-                session.commit()
-                session.close()
-                return True
+            #check if role exist
+            role_exist = session.query(cls).filter(cls.roles==profile.roles).first is not None
+            if role_exist:
+                return False
+            
+            session.add(profile)
+            session.commit()
+            session.close()
+            return True
         except Exception as e:
             session.rollback()
             print(f"Error creating new profile: {e}")
@@ -269,9 +273,12 @@ class User(Base):
     def suspend_account(cls, username):
         try:
             account = session.query(cls).filter(cls.username==username).first()
-            account.set_suspend_status(True) 
-            session.commit()
-            return True
+            if account is not None:
+                account.set_suspend_status(True) 
+                session.commit()
+                return True
+            else:
+                return False
         except Exception as e:
             print(e)
             return False

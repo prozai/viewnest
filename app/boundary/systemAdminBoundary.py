@@ -28,7 +28,7 @@ class CreateProfilePage():
                 if success:
                     return redirect(url_for('.displayProfile'))
                 else:
-                    raise Exception ('Error in creating profile!')
+                    return render_template('systemAdmin/register-profile.html', error='Role already exist!')
             except Exception as e:
                 print(e)
         return render_template('systemAdmin/register-profile.html')
@@ -194,7 +194,7 @@ class SuspendAccountPage():
                 if status:
                     return render_template('systemAdmin/suspend-account.html', message="Suspend Successful!")
                 else:
-                    return render_template('systemAdmin/suspend-account.html', Error='Error suspending account!')
+                    return render_template('systemAdmin/suspend-account.html', error='Account does not exist!')
             except Exception as e:
                 print(e)
         return render_template('systemAdmin/suspend-account.html')
