@@ -22,6 +22,7 @@ class LoginTestCase(unittest.TestCase):
             ), follow_redirects=True)
             self.assertEqual(response.status_code, 200)
             self.assertIn(b'ViewNest Dashboard', response.data)
+            print("\n\u2713 System Admin can login with correct credentials passed successfully.")
 
     # Test Case - Login as System Admin (Invalid Username)
     def test_login_sysadmin_incorrect_username(self):
@@ -32,6 +33,7 @@ class LoginTestCase(unittest.TestCase):
             ), follow_redirects=True)
             self.assertEqual(response.status_code, 200)
             self.assertIn(b'Incorrect username or password. Please try again.', response.data)
+            print("\n\u2713 System Admin cannot login with incorrect username passed successfully.")
 
     # Test Case - Login as System Admin (Invalid Password)
     def test_login_sysadmin_incorrect_password(self):
@@ -42,6 +44,7 @@ class LoginTestCase(unittest.TestCase):
             ), follow_redirects=True)
             self.assertEqual(response.status_code, 200)
             self.assertIn(b'Incorrect username or password. Please try again.', response.data)
+            print("\n\u2713 System Admin cannot login with incorrect password passed successfully.")
 
     # Test Case - Logout as Sysadmin
     def test_logout_sysadmin(self):
@@ -51,6 +54,7 @@ class LoginTestCase(unittest.TestCase):
             response = client.post('/logout', follow_redirects=True)
             self.assertEqual(response.status_code, 200)
             self.assertNotIn(b'ViewNest Dashboard', response.data)  # Check if redirected to login page
+            print("\n\u2713 System Admin can logout passed successfully.")
 
     # Test Case - Login as REA 
     def test_login_REA_credentials(self):
@@ -63,6 +67,7 @@ class LoginTestCase(unittest.TestCase):
             ), follow_redirects=True)
             self.assertEqual(response.status_code, 200)
             self.assertIn(b'ViewNest Dashboard', response.data)
+            print("\n\u2713 Real Estate Agent can login with correct credentials passed successfully.")
 
     # Test Case - Login as REA (Invalid Username)
     def test_login_REA_incorrect_username(self):
@@ -73,6 +78,7 @@ class LoginTestCase(unittest.TestCase):
             ), follow_redirects=True)
             self.assertEqual(response.status_code, 200)
             self.assertIn(b'Incorrect username or password. Please try again.', response.data)
+            print("\n\u2713 Real Estate Agent cannot login with incorrect username passed successfully.")
 
     # Test Case - Login as REA (Invalid Password)
     def test_login_REA_incorrect_password(self):
@@ -83,6 +89,7 @@ class LoginTestCase(unittest.TestCase):
             ), follow_redirects=True)
             self.assertEqual(response.status_code, 200)
             self.assertIn(b'Incorrect username or password. Please try again.', response.data)
+            print("\n\u2713 Real Estate Agent cannot login with incorrect password passed successfully.")
 
     # Test Case - Logout as REA
     def test_logout_REA(self):
@@ -92,6 +99,7 @@ class LoginTestCase(unittest.TestCase):
             response = client.post('/logout', follow_redirects=True)
             self.assertEqual(response.status_code, 200)
             self.assertNotIn(b'ViewNest Dashboard', response.data)  # Check if redirected to login page
+            print("\n\u2713 Real Estate Agent can logout passed successfully.")
 
    # Test Case - Login as Buyer 
     def test_login_buyer_valid_credentials(self):
@@ -104,6 +112,7 @@ class LoginTestCase(unittest.TestCase):
             ), follow_redirects=True)
             self.assertEqual(response.status_code, 200)
             self.assertIn(b'ViewNest Dashboard', response.data)
+            print("\n\u2713 Buyer can login with correct credentials passed successfully.")
 
     # Test Case - Login as Buyer (Invalid Username)
     def test_login_buyer_incorrect_username(self):
@@ -114,6 +123,7 @@ class LoginTestCase(unittest.TestCase):
             ), follow_redirects=True)
             self.assertEqual(response.status_code, 200)
             self.assertIn(b'Incorrect username or password. Please try again.', response.data)
+            print("\n\u2713 Buyer cannot login with incorrect username passed successfully.")
 
     # Test Case - Login as Buyer (Invalid Password)
     def test_login_buyer_incorrect_password(self):
@@ -124,6 +134,7 @@ class LoginTestCase(unittest.TestCase):
             ), follow_redirects=True)
             self.assertEqual(response.status_code, 200)
             self.assertIn(b'Incorrect username or password. Please try again.', response.data)
+            print("\n\u2713 Buyer cannot login with incorrect password passed successfully.")
 
     # Test Case - Logout as Buyer
     def test_logout_buyer(self):
@@ -133,6 +144,7 @@ class LoginTestCase(unittest.TestCase):
             response = client.post('/logout', follow_redirects=True)
             self.assertEqual(response.status_code, 200)
             self.assertNotIn(b'ViewNest Dashboard', response.data)  # Check if redirected to login page
+            print("\n\u2713 Buyer can logout passed successfully.")
 
 
    # Test Case - Login as Seller 
@@ -146,6 +158,7 @@ class LoginTestCase(unittest.TestCase):
             ), follow_redirects=True)
             self.assertEqual(response.status_code, 200)
             self.assertIn(b'ViewNest Dashboard', response.data)
+            print("\n\u2713 Seller can login with correct credentials passed successfully.")
 
     # Test Case - Login as Seller (Invalid Username)
     def test_login_seller_incorrect_username(self):
@@ -156,6 +169,7 @@ class LoginTestCase(unittest.TestCase):
             ), follow_redirects=True)
             self.assertEqual(response.status_code, 200)
             self.assertIn(b'Incorrect username or password. Please try again.', response.data)
+            print("\n\u2713 Seller cannot login with incorrect username passed successfully.")
 
     # Test Case - Login as Seller (Invalid Password)
     def test_login_seller_incorrect_password(self):
@@ -166,6 +180,7 @@ class LoginTestCase(unittest.TestCase):
             ), follow_redirects=True)
             self.assertEqual(response.status_code, 200)
             self.assertIn(b'Incorrect username or password. Please try again.', response.data)
+            print("\n\u2713 Seller cannot login with incorrect password passed successfully.")
 
     # Test Case - Logout as Seller
     def test_logout_seller(self):
@@ -175,6 +190,7 @@ class LoginTestCase(unittest.TestCase):
             response = client.post('/logout', follow_redirects=True)
             self.assertEqual(response.status_code, 200)
             self.assertNotIn(b'ViewNest Dashboard', response.data)  # Check if redirected to login page
+            print("\n\u2713 Seller can logout passed successfully.")
 
 
 if __name__ == '__main__':
