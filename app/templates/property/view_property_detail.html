@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -105,8 +106,7 @@
     </style>
 </head>
 <body>
-          <!-- Include the menu template -->
-          {% include 'topMenu.html' %}
+
 
     <div class="container">
         <h1>ViewNest Property Listings</h1>
@@ -116,6 +116,11 @@
                 <img src="{{ url_for('static', filename=property.image_url.replace('static/', '')) }}" alt="{{ property.propertyname }} image" class="property-image">
                 <div class="property-details">
                     <div class="property-name">{{ property.propertyname }}
+                        {% if property.date_sold %}
+                            <input type="hidden" id="date-sold" value="true">
+                        {% else %}
+                            <input type="hidden" id="date-sold" value="false">
+                        {% endif %}
                         {% if property.is_saved %}
                         <button type="button" class="save-button" id="add-to-saves" data-property-id="{{ property.ID }}">
                             <i class="saved far fa-star" is-saved="true"></i>
@@ -159,15 +164,21 @@
         document.addEventListener('DOMContentLoaded', function() {
             const saveButton = document.getElementById('add-to-saves');
             const savesCount = document.querySelector('.property-saves');
-        
+            const dateSold = document.getElementById('date-sold').value;
+            
             saveButton.addEventListener('click', function() {
                 const propertyId = this.dataset.propertyId;
                 const starIcon = this.querySelector('i');
                 let isSaved = starIcon.getAttribute('is-saved');
                 const formData = new FormData();
                 formData.append('property_id', propertyId);
-        
-                fetch('/save_property', {
+
+                let route = '/save_new'; 
+                if (dateSold === 'true') {
+                    route = '/save_sold';
+                }
+
+                fetch(route, {
                     method: 'POST',
                     body: formData
                 })

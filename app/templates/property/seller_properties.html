@@ -20,7 +20,7 @@
             background-color: #49bd7d;
             border-radius: 15px;
             color: white;
-            padding: auto ;
+            padding: auto;
             transition: opacity 0.5s;
         }
 
@@ -30,12 +30,13 @@
             width: 25%;
             cursor: pointer;
         }
+
         .flash-close:hover {
             color: dimgray;
             cursor: pointer;
         }
-     
-        .message{
+
+        .message {
             justify-content: center;
             text-align: center;
         }
@@ -57,25 +58,45 @@
             margin-bottom: 20px;
         }
 
+        .container2 {
+            position: relative;
+            text-align: center;
+            color: white;
+        }
+
+        .sold {
+            font-size: 20px;
+            font-weight: bold;
+            width: 100%;
+            padding: 10px 0px 10px 0px;
+            background: rgba(0, 0, 0, 0.6);
+            color: whitesmoke;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
         .property-list {
             list-style-type: none;
             padding: 0;
         }
 
         .property-item {
-            float: left;
-            width: 358px;
+            display: inline-block;
+            width: 377px;
+            box-sizing: border-box; 
             border: 1px solid #ccc;
-            border-radius: 4px;
             padding: 10px;
+            border-radius: 4px;
             margin: 10px;
             margin-bottom: 10px;
             background-color: #f9f9f9;
         }
-
+        
         .property-image {
             max-width: 100%;
-            height: auto;
+            height: 250px;
             margin-bottom: 10px;
         }
 
@@ -84,22 +105,44 @@
             text-align: center;
             color: white;
         }
+        .button-container {
+            text-align: center;
+        }
+        .button-container button {
+            background-color: #eee;
+            border-radius: 8px;
+            border: 0;
+            cursor: pointer;
+            display: inline-block;
+            font-size: 14px;
+            font-weight: 500;
+            line-height: 20px;
+            margin: 0;
+            padding: 10px 12px;
+            text-align: center;
+        }
     </style>
 </head>
 
 <body>
-          <!-- Include the menu template -->
-          {% include 'topMenu.html' %}
-
     <div class="container">
         <h1>My Property Listings</h1>
         <ul class="property-list">
+            <div class="button-container" style="text-align: center; margin-bottom: 20px;">
+                <button onclick="back()">Back to Dashboard</button>
+            </div>
             {% for property in properties|sort(attribute='sold') %}
             <li class="property-item">
-                <h2>
-                    {{ property.propertyname }}</h2>
-                <img src="{{ property.image_url }}" alt="{{ property.propertyname }} image" class="property-image"><br>
-
+                <h2>{{ property.propertyname }}</h2>
+                {% if property.date_sold %}
+                <div class="container2">
+                    <img src="{{ property.image_url }}" alt="{{ property.propertyname }} image" class="property-image">
+                    <div class="sold">SOLD</div>
+                </div>
+                {% else %}
+                <img src="{{ property.image_url }}" alt="{{ property.propertyname }} image" class="property-image">
+                {% endif %}
+                <br>
                 <div style="float: right; text-align: right">
                     {% if property.date_sold %}
                     <strong>SOLD</strong><br>
@@ -123,18 +166,15 @@
             {% endfor %}
         </ul>
     </div>
-    <script>
-        var modal = document.getElementsByClassName('modal');
-
-        window.onclick = function (event) {
-            for (var i = 0; i < modal.length; i++) {
-                if (event.target == modal[i]) {
-                    modal[i].style.display = "none";
-                }
-            }
-        }
-    </script>
-
 </body>
 
 </html>
+
+
+<script>
+
+    function back() {
+        window.location.href = '/dashboard'; // Redirect to view_properties.html
+    }
+
+</script>

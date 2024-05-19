@@ -6,7 +6,6 @@ from flask import render_template, request, redirect, url_for, flash, jsonify
 import os
 from datetime import datetime
 from app.entity.models import *
-from sqlalchemy import desc
 
 class viewPropertyController:
     
@@ -36,58 +35,48 @@ class viewPropertyController:
     #         session.close()
 
     # Function to show all properties.
-    def view_properties():
-        try:
-            properties = session.query(Property).all()
-            return properties
-        except Exception as e:
-            print(f"Error fetching properties: {e}")
-            return None
-        finally:
-            session.close()
-
+    def view_properties(offset, limit, filter_type):
+        properties = Property.view_properties(offset, limit, filter_type)
+        return properties 
+    
     # Function to show selected property.
     def view_property_detail(property_id):
+        property = Property.view_property_detail(property_id)
+        user_id = flask_session['user_id']
+        is_saved = Save.is_saved(user_id, property_id)
+        if is_saved:
+            property.is_saved = True
+        else:
+            property.is_saved = False
+
+        return property
+
+    def load_more_properties(offset, limit, filter_type):
         try:
-            property = session.query(Property).filter_by(ID=property_id).first()
-
-            # Check if property is saved
-            user_id = flask_session['user_id']
-
-#            user_id = 2  session['user_id']
-            saved = session.query(Save).filter_by(user_id=user_id, property_id=property_id).first()
-            if saved:
-                property.is_saved = True
-            else:
-                property.is_saved = False
-
-            return property
+            properties = Property.load_more_properties(offset, limit, filter_type)
+            if not properties:
+                return jsonify(error="No properties found"), 404
+            return jsonify(properties=properties)
         except Exception as e:
-            print(f"Error fetching property: {e}")
-            return None
-        finally:
-            session.close()
+            print("Error loading more properties:", str(e))
+            return jsonify(error="Internal server error"), 500
+    
 class viewCountController:
     # Function to add view count to property when viewed.
     def add_viewCount(property_id):
         try:
-            property = session.query(Property).filter_by(ID=property_id).first()
-            if property:
-                property.view_count += 1
-                session.commit()
-                return property
+            property = Property.add_ViewCount(property_id)
+            return property
         except Exception as e:
-                session.rollback()
-                print(f"Error fetching property: {e}")
-                return None
-        finally:
-            session.close()
+            print(f"Error fetching property: {e}")
+            return None
 
+# Create Property Listing
 class createPropertyController:
     def REA_createProperty(self, propertyname, propertytype, district, bedroom_no, price, psf, image_file, selleremail):
         try:
             user_id = flask_session['user_id']
-            max_id = session.query(Property).order_by(desc(Property.ID)).first()
+            max_id = Property.get_max_id(Property.ID)
             highest_id = max_id.ID if max_id else None
 
             propertyid = highest_id + 1
@@ -111,6 +100,7 @@ class createPropertyController:
                                     sold=False)
             
             Property.create_property(new_property)
+            return True
         except Exception as e:
             print("Error creating property:", str(e))
 
@@ -127,18 +117,9 @@ class REAPropertiesController:
 
 # Update Property Listing
 class updatePropertyController:
-    def REA_updateProperty(id):
+    def REA_updateProperty(self, id, propertyname, propertytype, district, bedroom_no, price, psf, selleremail, image_file):
         try:
-            if request.method == 'POST':
-                propertyname = request.form['propertyname']
-                propertytype = request.form['propertytype']
-                district = request.form['district']
-                bedroom_no = request.form['bedroom_no']
-                price = request.form['price']
-                psf = request.form['psf']
-                selleremail = request.form['selleremail']
-                image_file = request.files.get('image_url')
-                updateProperty = session.query(Property).filter_by(ID=id).first()
+            updateProperty = Property.get_property_by_id(id)
 
             if updateProperty:
                 updateProperty.propertyname = propertyname
@@ -164,10 +145,11 @@ class updatePropertyController:
 
         except Exception as e:
             print("Error updating property:", str(e))
+            return None
 
-    def REA_getProperty(id):
+    def REA_getProperty(self, id):
         try:
-            property = session.query(Property).filter_by(ID=id).first()
+            property = Property.get_property_by_id(id)
             return property
         except Exception as e:
             print("Error retrieving property:", str(e))
@@ -176,7 +158,7 @@ class updatePropertyController:
 class deletePropertyController:
     def REA_deleteProperty(id):
         try:
-            property = session.query(Property).filter_by(ID=id).first()
+            property = Property.get_property_by_id(id)
             if property:
                 if property.image_url:
                     upload_folder = './app/static/uploads/properties/'
@@ -217,51 +199,59 @@ class SearchController:
         results = Property.search_by_avail(search_query)
         return results
     
+    def searchPropertiesREA(self, search_query):
+        search_query = request.form.get('query')
+        user_id = flask_session['user_id']
+        if not search_query:
+            return jsonify({'error': 'No query provided'}), 400
+
+        results = Property.search_by_REA_Properties(search_query,user_id)
+        return results
+    
 search_controller = SearchController()
 
     
-
-
-
-
 # Save property
 class savePropertyController:
-    def buyer_saveProperty():
+    def buyer_saveNewProperty():
         try:
             property_id = request.form['property_id']
             user_id = flask_session['user_id']
-            saved = session.query(Save).filter_by(user_id=user_id, property_id=property_id).first()
-            property = session.query(Property).filter_by(ID=property_id).first()
+            saved = Save.get_save(user_id, property_id)
+            property = Property.get_property_by_id(property_id)
 
             if saved:
-                session.delete(saved)
-                property.saves -= 1
-                session.commit()
+                Save.delete_save_new(saved)
+                Property.minus_save_new(property)
                 return 'Save deleted'
             else:
-                new_favorite = Save(user_id=user_id, property_id=property_id)
-                session.add(new_favorite)
-                property.saves += 1 
-                session.commit()
+                new_save = Save(user_id=user_id, property_id=property_id)
+                Save.create_save_new(new_save)
+                Property.add_save_new(property)
                 return 'Save added'
         except Exception as e:
             print("Error adding saved property:", str(e))
 
-# Seller View Property Listings + Saves
-# class sellerPropertiesController:
-#     def seller_viewProperties():
-#         try:
-#                if 'email' in flask_session:
-#                      email = flask_session['email']
-#                      properties = session.query(Property).filter_by(selleremail=email).all()
-#                      return properties
-#         # try:
-#         #     properties = session.query(Property).filter_by(selleremail="seller1@gmail.com").all()  # user.email
-#         #     return properties
+    def buyer_saveSoldProperty():
+            try:
+                property_id = request.form['property_id']
+                user_id = flask_session['user_id']
+                saved = Save.get_save(user_id, property_id)
+                property = Property.get_property_by_id(property_id)
 
-#         except Exception as e:
-#             print("Error retrieving property listings:", str(e))
-            
+                if saved:
+                    Save.delete_save_sold(saved)
+                    Property.minus_save_sold(property)
+                    return 'Save deleted'
+                else:
+                    new_save = Save(user_id=user_id, property_id=property_id)
+                    Save.create_save_sold(new_save)
+                    Property.add_save_sold(property)
+                    return 'Save added'
+            except Exception as e:
+                print("Error adding saved property:", str(e))
+
+# Seller View Property Listings + Saves
 class sellerPropertiesController:
     def seller_viewProperties():
         try:

@@ -1,27 +1,49 @@
 {% extends "base.html" %}
-<!-- Include the menu bar -->
-{% include 'topMenu.html' %}
+
 {% block content %}
-<div class="'container my-2">
+<div class="container my-2">
+    <!-- Modal Structure -->
+    <div class="modal fade" id="messageModal" tabindex="-1" role="dialog" aria-labelledby="messageModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="messageModalLabel">From Viewnest: </h5>
+                </div>
+                <div class="modal-body" id="messageBody">
+                    {{ message }}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="redirectToAnotherFunction()">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>   
     <div class="row-12 d-flex align-items-center h-100 justify-content-center flex-column">
-        <h1>Suspend Profile</h1>
+        <h1>Suspend Account</h1>
         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12">
             <div class="card">
                 <div class="card-body">
                     <form method="post" class='needs-validation' id="createprofile" novalidate>
                         <!-- Profile Role -->
-
                         <div>
                             <label for="username"  class="form-label">Enter username:</label>
                             <input type="text" class="form-control" id="username" name="username" size="50" required>
                             <div class="invalid-feedback">
                                 Please enter a valid username.
                             </div>
-                        </div>
-                        <div>
-                            <button type="submit" class="btn btn-outline-success">Submit</button>
+                        </div><br>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <button type="submit" class="btn btn-outline-success">Submit</button>
+                            </div>
+                            <div>
+                                <button class="btn btn-light" style="margin-right: auto;" onclick="back()">Back to Dashboard</button>
+                            </div>
                         </div>
                     </form>
+                    {% if error %}
+                    <p style="color: red;">{{ error }}</p>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -29,6 +51,24 @@
 </div>
 
 <script>
+document.addEventListener('DOMContentLoaded', function() {
+    var messageElement = document.getElementById('messageBody');
+    var message = "{{ message }}";
+
+    if (message) {
+        var modal = new bootstrap.Modal(document.getElementById('messageModal'), {});
+        modal.show();
+    }
+});
+
+function redirectToAnotherFunction() {
+    // Generate the URL using Flask's url_for function
+    var url = "{{ url_for('.displayAccounts') }}";
+    
+    // Use JavaScript to redirect to the generated URL
+    window.location.href = url;
+}
+
     (function () {
       'use strict'
     
@@ -46,6 +86,11 @@
           }, false)
         })
     })()
+
+function back() {
+    window.location.href = '/dashboard'; // Redirect to view_properties.html
+}
+
 </script>
 
 {% endblock %}

@@ -2,6 +2,7 @@ from flask import render_template, redirect, url_for, request
 from werkzeug.security import generate_password_hash
 from flask_babel import _
 from app.entity.models import User, UserProfile
+from app.boundary import adminBP
 
 # ---  User Profile --- 
 
@@ -20,8 +21,8 @@ class ViewProfileController():
     
 # Update Profile Controller
 class UpdateProfileController():
-    def updateProfile(self, role, role_name, description):
-        status = UserProfile.update_profile(role, role_name, description)
+    def updateProfile(self, role, description):
+        status = UserProfile.update_profile(role, description)
         return status
 
 # Suspend Profile Controller
@@ -48,12 +49,23 @@ class CreateAccountController():
             password_hash = generate_password_hash(password)
 
             user = User(profile_id, fname, lname, email, phonenum, username, password_hash)
+
             User.create_new_account(user)
 
             return True
         except Exception as e:
             print("Error:", e) 
         return False
+    
+    def check_email(self, email):
+        return User.check_email(email)
+    
+    def check_phonenum(self, phonenum):
+        return User.check_phonenum(phonenum)
+    
+    def check_username(self, username):
+        return User.check_username(username)
+
 
 # View Account Controller
 class ViewAccountController():
@@ -63,10 +75,29 @@ class ViewAccountController():
     
 # Update Account Controller
 class UpdateAccountController():
+    def getExistingAccount(self, username):
+        user = User.get_account_by_username(username)
+        return user
+
     def updateAccount(self, username, fname, lname, email, phonenum, password):
         password_hash = generate_password_hash(password)
         status = User.update_account(username, fname, lname, email, phonenum, password_hash)
         return status
+    
+    def check_email(self, email, username):
+        current_user = User.get_account_by_username(username)
+        if (current_user.get_email() != email and User.check_email(email)):
+            return True
+        else:
+            return False
+    
+    def check_phonenum(self, phonenum, username):
+        current_user = User.get_account_by_username(username)
+        if (current_user.get_phone_num() != phonenum and User.check_phonenum(phonenum)):
+            return True
+        else:
+            return False
+
 
 # Suspend Account Controller
 class SuspendAccountController():

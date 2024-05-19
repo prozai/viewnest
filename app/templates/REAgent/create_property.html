@@ -58,13 +58,33 @@
     .error{
       color: red;
     }
+
+    .button-container {
+      text-align: center;
+      margin-top: 20px;
+    }
+    .button-container button {
+        background-color: #eee;
+        border-radius: 8px;
+        border: 0;
+        cursor: pointer;
+        display: inline-block;
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 20px;
+        margin: 0;
+        padding: 10px 12px;
+        text-align: center;
+    }
   </style>
 </head>
 <body>
-      <!-- Include the menu template -->
-      {% include 'topMenu.html' %}
-
   <h1> Create Property Listing </h1>
+  <div class="button-container">
+    <button onclick="back()">Back to Property Listings</button>
+    <button onclick="backDashboard()">Back to Dashboard</button>
+
+  </div>
   <div class="form-container">
     <form id="propertyForm" enctype="multipart/form-data">
       <span id="errorMessage" class="error"></span><br>
@@ -101,10 +121,17 @@
         <input type="file" id="image_url" class="form-control-image" required>
       </div>
       <button type="button" onclick="submitForm()" class="btn btn-primary">Submit</button>
-    </form>
-  </div>
 
+    </form>
+
+  </div>  
   <script>  
+    function back() {
+      window.location.href = '/REA_properties'; 
+    }
+    function backDashboard() {
+      window.location.href = '/dashboard'; 
+    }
     function isValid() {
       let isValid = true;
       const errorMessage = document.getElementById('errorMessage');

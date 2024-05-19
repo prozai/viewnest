@@ -1,30 +1,36 @@
 {% extends "base.html" %}
-<!-- Include the menu bar -->
-{% include 'topMenu.html' %}
+
 {% block content %}
 <div class="'container my-2">
     <div class="row-12 d-flex align-items-center h-100 justify-content-center flex-column">
         <h1>Create New User Profile</h1>
         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12">
             <div class="card">
-
                 <div class="card-body">
                     <form method="post" class='needs-validation' id="createprofile" novalidate>
                         <div>
                             <label for="role"  class="form-label">Role name:</label>
-                            <input type="text" class="form-control" id="role" name="role" value= "Renter" size="50" required>
+                            <input type="text" class="form-control" id="role" name="role" placeholder="E.g. Renter" size="50" required>
                             <div class="invalid-feedback">
                                 Please enter a valid role name.
                             </div>
-                        </div>
+                        </div><br>
                         <div>
                             <label for="description"  class="form-label">Description:</label>
                             <textarea class="form-control" id="description" name="description" rows=4 cols=50></textarea>
-                        </div>
-                        <div>
+                        </div><br>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
                             <button type="submit" class="btn btn-outline-success">Submit</button>
+                            </div>
+                            <div>
+                                <button class="btn btn-outline-danger" style="margin-right: auto;" onclick="back()">Cancel</button>
+                            </div>
                         </div>
                     </form>
+                    {% if error %}
+                    <p style="color: red;">{{ error }}</p>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -49,6 +55,10 @@
           }, false)
         })
     })()
+
+    function back() {
+        window.location.href = '/dashboard'; // Redirect to view_properties.html
+    }
 </script>
 
 {% endblock %}

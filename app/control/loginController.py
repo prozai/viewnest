@@ -1,6 +1,5 @@
 from flask import session, redirect
 from functools import wraps
-from werkzeug.security import check_password_hash
 from app.entity.models import User
 from app import session as sqlalchemy_session
 from app.control.propertyController import flask_session
@@ -8,24 +7,28 @@ from app.control.propertyController import flask_session
 class loginController:
 
     def login(username, password):
+        # Clear the session first
         session.pop('user_id', None)
         session.pop('email', None)
-        if username and password:
-            user = sqlalchemy_session.query(User).filter_by(username=username).first()
-            if user and check_password_hash(user.password_hash, password):
-                session['user_id'] = user.user_id
-                session['email'] = user.email
-                session['profile_id'] = user.profile_id
-                return {'redirect': '/dashboard'}
-            error = 'Incorrect username or password. Please try again.'
-            return {'error': error}
-        return {}
+        session.pop('profile_id', None)
+
+        # Call the login function from models.py
+        user_info, error = User.login(username, password)
+
+        if user_info:
+            # Populate the session with user info
+            session['user_id'] = user_info['user_id']
+            session['email'] = user_info['email']
+            session['profile_id'] = user_info['profile_id']
+            return {'redirect': '/dashboard'}
+    
+        # Return the error if login failed
+        return {'error': error} if error else {}
 
     def dashboard():
         if 'user_id' in session:
             user_id = session['user_id']
-            
-            user = sqlalchemy_session.query(User).filter_by(user_id=user_id).first()
+            user = User.dashboard(user_id)
             if user:
                 return {'template': '/login/dashboard.html', 'user': user}
         return {'redirect': '/login'}

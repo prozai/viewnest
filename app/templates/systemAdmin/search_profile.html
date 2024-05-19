@@ -1,17 +1,22 @@
 {% extends 'base.html' %}
-<!-- Include the menu bar -->
-{% include 'topMenu.html' %}
+
 {% block title %} View All Profile {% endblock %}
 
 {% block body %} 
 <div class="container">
     <div class="my-2">
-        <div class="col-12">
-            <form action="/searchProfile" method="POST">
-                <input type="text" id="query" name="query" placeholder="Search...">
-                <button type="submit">Search</button>
-            </form>
-        </div>
+        <h1 style="text-align: center;"> Profile List </h1> <br>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <form action="/searchProfile" method="POST">
+                    <input type="text" id="query" name="query" placeholder="Search...">
+                    <button class="btn btn-secondary" type="submit">Search</button>
+                </form>
+            </div>
+            <div>
+                <button class="btn btn-light" style="margin-right: auto;" onclick="back()">Back to Dashboard</button>
+            </div>
+        </div><br>
         <div class="table-responsive">
             <table class="table table-bordered">
                 <thead>
@@ -35,5 +40,11 @@
         </div>
     </div>
 </div>
+
+<script>
+    function back() {
+        window.location.href = '/dashboard'; // Redirect to view_properties.html
+    }  
+</script>
 
 {% endblock %}
