@@ -181,12 +181,21 @@ class SearchPropertyBoundary:
         results = self.controller.searchAvailable(search_query)
         return render_template('property/search.html', results=results)
 
-    def searchPropertiesREA(self, search_query):
-        results = self.controller.searchPropertiesREA(search_query)
-        return render_template('property/search.html', results=results)
+    # def searchPropertiesREA(self, search_query):
+    #     results = self.controller.searchPropertiesREA(search_query)
+    #     return render_template('property/search.html', results=results)
 
 search_boundary = SearchPropertyBoundary()
 
+class REASearchProperty:
+    def __init__(self):
+        self.controller = REASearchController()
+        
+    def searchPropertiesREA(self, search_query):
+        results = self.controller.searchPropertiesREA(search_query)
+        return render_template('property/search.html', results=results)
+    
+REA_SearchProperty = REASearchProperty()
 
 @propBP.route('/search', methods=['POST', 'GET'])
 @loginController.login_required
@@ -211,4 +220,4 @@ def searchAvailable():
 @loginController.login_required
 def searchPropertiesREA():
     search_query = request.form.get('query')
-    return search_boundary.searchPropertiesREA(search_query)
+    return REA_SearchProperty.searchPropertiesREA(search_query)
